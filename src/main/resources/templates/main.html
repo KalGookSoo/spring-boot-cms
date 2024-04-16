@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/_layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="jumbotron">
+        <h1 class="display-4">환영합니다!</h1>
+        <p class="lead">이곳은 메인 페이지입니다.</p>
+        <hr class="my-4">
+    </div>
+</main>
+</body>
+</html>

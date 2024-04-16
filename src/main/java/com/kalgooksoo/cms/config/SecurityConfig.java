@@ -1,6 +1,5 @@
 package com.kalgooksoo.cms.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -25,7 +24,7 @@ public class SecurityConfig {
     private static final String USERNAME_PARAM = "username";
     private static final String PASSWORD_PARAM = "password";
     private static final String LOGOUT_PATH = "/sign-out";
-    private static final String ACCOUNTS_PATH = "/accounts/**";
+    private static final String USERS_PATH = "/users/**";
     private static final String MANAGERS_PATH = "/managers/**";
     private static final String ADMINS_PATH = "/admins/**";
 
@@ -50,7 +49,7 @@ public class SecurityConfig {
 
     private Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> authorizeHttpRequests() {
         return authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                .requestMatchers(new AntPathRequestMatcher(ACCOUNTS_PATH)).authenticated()
+                .requestMatchers(new AntPathRequestMatcher(USERS_PATH)).authenticated()
                 .requestMatchers(new AntPathRequestMatcher(MANAGERS_PATH)).hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher(ADMINS_PATH)).hasRole("ADMIN")
                 .anyRequest().permitAll();
