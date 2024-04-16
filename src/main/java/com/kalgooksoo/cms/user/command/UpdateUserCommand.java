@@ -20,7 +20,7 @@ public record UpdateUserCommand(
         @Parameter(description = "이름", required = true)
         @Schema(description = "이름", example = "홍길동")
         @NotBlank(message = "이름은 필수입니다.")
-        @Size(min = 2, max = 20, message = "이름은 2자 이상 20자 이하이어야 합니다")
+        @Size(min = 2, max = 20, message = "이름은 2자 이상 20자 이하이어야 합니다.")
         String name,
 
         @Parameter(description = "이메일 ID")
