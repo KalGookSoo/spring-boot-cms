@@ -1,42 +1,40 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" language="java"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <!DOCTYPE html>
-<html lang="ko" th:lang="${#locale.language}"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="${cookie.lang.value}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>로그인</title>
-    <!--suppress JSUnresolvedLibraryURL -->
+    <title><spring:message code="label.button.sign.in"/></title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <!--suppress JSUnresolvedLibraryURL -->
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
-
 </head>
 <body>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h2 class="text-center">로그인</h2>
-            <form th:action="@{/sign-in}" th:method="post" class="mt-4">
+            <h2 class="text-center"><spring:message code="label.button.sign.in"/></h2>
+            <form action="${pageContext.request.contextPath}/sign-in" method="post" class="mt-4">
                 <div class="form-group">
-                    <label for="username">사용자명:</label>
+                    <label for="username"><spring:message code="user.username"/></label>
                     <input type="text" id="username" name="username" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="password">패스워드:</label>
+                    <label for="password"><spring:message code="user.password"/></label>
                     <input type="password" id="password" name="password" class="form-control">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">로그인</button>
-                    <a th:href="@{/sign-up}" class="btn btn-link btn-block">회원가입</a>
+                    <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.button.sign.in"/></button>
+                    <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-link btn-block"><spring:message code="label.button.sign.up"/></a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 </body>
 </html>
