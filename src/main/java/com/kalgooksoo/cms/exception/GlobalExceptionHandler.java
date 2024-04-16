@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException() {
         return "error/500";
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException() {
+        return "sign-in";
     }
 
 }
