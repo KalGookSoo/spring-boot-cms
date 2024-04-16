@@ -1,4 +1,4 @@
-package com.kalgooksoo.cms.main;
+package com.kalgooksoo.cms.user.controller;
 
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.service.UserService;
@@ -30,7 +30,7 @@ public class SignController {
     @Operation(summary = "계정 생성 화면", description = "계정 생성 화면으로 이동합니다.")
     @GetMapping("/sign-up")
     public String signUp(
-            @ModelAttribute("command") @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) CreateUserCommand command
+            @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @ModelAttribute("command") CreateUserCommand command
     ) {
         return "sign-up";
     }
@@ -38,7 +38,7 @@ public class SignController {
     @Operation(summary = "계정 생성", description = "계정을 생성합니다")
     @PostMapping("/sign-up")
     public String signUp(
-            @ModelAttribute("command") @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @Valid CreateUserCommand command,
+            @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @ModelAttribute("command") @Valid CreateUserCommand command,
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
