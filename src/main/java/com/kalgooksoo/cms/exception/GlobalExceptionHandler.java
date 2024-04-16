@@ -28,10 +28,4 @@ public class GlobalExceptionHandler {
         return "error/500";
     }
 
-    @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public String handleUsernameAlreadyExistsException() {
-        return "sign-up";
-    }
-
-
 }

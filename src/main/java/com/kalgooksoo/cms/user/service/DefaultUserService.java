@@ -47,10 +47,9 @@ public class DefaultUserService implements UserService {
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         user.changePassword(passwordEncoder.encode(user.getPassword()));
-
         User savedUser = userRepository.save(user);
         authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_USER"));
-        return userRepository.save(user);
+        return savedUser;
     }
 
     /**
