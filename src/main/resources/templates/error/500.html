@@ -1,9 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" language="java"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
 <!DOCTYPE html>
-<html lang="${cookie.lang.value}">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,9 +33,9 @@
 </head>
 <body>
 <div>
-    <h1><spring:message code="error.internal.server.error.title" /></h1>
-    <p><spring:message code="error.internal.server.error.message" /></p>
-    <a href="${pageContext.request.contextPath}/"><spring:message code="error.internal.server.error.link.text" /></a>
+    <h1 th:text="#{error.internal.server.error.title}"></h1>
+    <p th:text="#{error.internal.server.error.message}"></p>
+    <a th:href="@{/}" th:text="#{error.internal.server.error.link.text}"></a>
 </div>
 </body>
 </html>

@@ -37,9 +37,9 @@
 </head>
 <body>
 <div>
-    <h1><spring:message code="error.400.title" /></h1>
-    <p><spring:message code="error.400.message" /></p>
-    <a href="${pageContext.request.contextPath}/"><spring:message code="error.400.link.text" /></a>
+    <h1><spring:message code="error.bad.request.title" /></h1>
+    <p><spring:message code="error.bad.request.message" /></p>
+    <a href="${pageContext.request.contextPath}/"><spring:message code="error.bad.request.link.text" /></a>
 </div>
 </body>
 </html>
