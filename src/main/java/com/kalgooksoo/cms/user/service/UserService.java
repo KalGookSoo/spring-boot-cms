@@ -6,7 +6,7 @@ import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.search.UserSearch;
-import jakarta.annotation.Nonnull;
+import org.springframework.lang.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,7 +24,7 @@ public interface UserService {
      * @param command 계정 생성 커맨드
      * @return 생성된 계정
      */
-    User createUser(@Nonnull CreateUserCommand command);
+    User createUser(@NonNull CreateUserCommand command);
 
     /**
      * 관리자 계정 생성
@@ -32,7 +32,7 @@ public interface UserService {
      * @param command 계정 생성 커맨드
      * @return 생성된 계정
      */
-    User createAdmin(@Nonnull CreateUserCommand command);
+    User createAdmin(@NonNull CreateUserCommand command);
 
     /**
      * 계정 수정
@@ -41,7 +41,7 @@ public interface UserService {
      * @param command 수정 명령
      * @return 수정된 계정
      */
-    User update(@Nonnull String id, @Nonnull UpdateUserCommand command);
+    User update(@NonNull String id, @NonNull UpdateUserCommand command);
 
     /**
      * 계정 식별자로 계정 조회
@@ -49,7 +49,7 @@ public interface UserService {
      * @param id 계정 식별자
      * @return 계정
      */
-    Optional<User> findById(@Nonnull String id);
+    Optional<User> findById(@NonNull String id);
 
     /**
      * 계정 목록 조회
@@ -57,7 +57,7 @@ public interface UserService {
      * @param pageable 페이지 정보
      * @return 계정 목록
      */
-    Page<User> findAll(@Nonnull Pageable pageable);
+    Page<User> findAll(@NonNull Pageable pageable);
 
     /**
      * 계정 목록 조회
@@ -66,14 +66,14 @@ public interface UserService {
      * @param pageable 페이지 정보
      * @return 계정 목록
      */
-    Page<User> findAll(@Nonnull UserSearch search, @Nonnull Pageable pageable);
+    Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable);
 
     /**
      * 계정 삭제
      *
      * @param id 계정 식별자
      */
-    void delete(@Nonnull String id);
+    void delete(@NonNull String id);
 
     /**
      * 패스워드 변경
@@ -82,7 +82,7 @@ public interface UserService {
      * @param originPassword 기존 패스워드
      * @param newPassword    새로운 패스워드
      */
-    void updatePassword(@Nonnull String id, @Nonnull String originPassword, @Nonnull String newPassword);
+    void updatePassword(@NonNull String id, @NonNull String originPassword, @NonNull String newPassword);
 
     /**
      * 계정 검증
@@ -91,7 +91,7 @@ public interface UserService {
      * @param password 패스워드
      * @return 계정
      */
-    UserPrincipal verify(@Nonnull String username, @Nonnull String password);
+    UserPrincipal verify(@NonNull String username, @NonNull String password);
 
     /**
      * 계정 식별자로 권한 조회
@@ -99,6 +99,6 @@ public interface UserService {
      * @param userId 계정 식별자
      * @return 권한 목록
      */
-    List<Authority> findAuthoritiesByUserId(@Nonnull String userId);
+    List<Authority> findAuthoritiesByUserId(@NonNull String userId);
 
 }

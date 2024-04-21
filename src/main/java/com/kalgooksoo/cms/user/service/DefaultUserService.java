@@ -10,7 +10,7 @@ import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.repository.AuthorityRepository;
 import com.kalgooksoo.cms.user.repository.UserRepository;
 import com.kalgooksoo.cms.user.search.UserSearch;
-import jakarta.annotation.Nonnull;
+import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +42,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#createUser(CreateUserCommand)
      */
     @Override
-    public User createUser(@Nonnull CreateUserCommand command) {
+    public User createUser(@NonNull CreateUserCommand command) {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
@@ -56,7 +56,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#createAdmin(CreateUserCommand)
      */
     @Override
-    public User createAdmin(@Nonnull CreateUserCommand command) {
+    public User createAdmin(@NonNull CreateUserCommand command) {
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
@@ -71,7 +71,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#update(String, UpdateUserCommand)
      */
     @Override
-    public User update(@Nonnull String id, @Nonnull UpdateUserCommand command) {
+    public User update(@NonNull String id, @NonNull UpdateUserCommand command) {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         String name = command.name();
         Email email = new Email(command.emailId(), command.emailDomain());
@@ -85,7 +85,7 @@ public class DefaultUserService implements UserService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Optional<User> findById(@Nonnull String id) {
+    public Optional<User> findById(@NonNull String id) {
         return userRepository.findById(id);
     }
 
@@ -94,7 +94,7 @@ public class DefaultUserService implements UserService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<User> findAll(@Nonnull Pageable pageable) {
+    public Page<User> findAll(@NonNull Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
@@ -103,7 +103,7 @@ public class DefaultUserService implements UserService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<User> findAll(@Nonnull UserSearch search, @Nonnull Pageable pageable) {
+    public Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
 //        return userRepository.search(search, pageable);
         return Page.empty();
     }
@@ -113,7 +113,7 @@ public class DefaultUserService implements UserService {
      * 삭제 연산은 권한을 가진자에게만 허용할 예정이라 노출해도 무방할 것 같다고 판단하여 예외 처리를 하였습니다.
      */
     @Override
-    public void delete(@Nonnull String id) {
+    public void delete(@NonNull String id) {
         userRepository.deleteById(id);
         authorityRepository.deleteByUserId(id);
     }
@@ -122,7 +122,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#updatePassword(String, String, String)
      */
     @Override
-    public void updatePassword(@Nonnull String id, @Nonnull String originPassword, @Nonnull String newPassword) {
+    public void updatePassword(@NonNull String id, @NonNull String originPassword, @NonNull String newPassword) {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
         if (!passwordEncoder.matches(originPassword, user.getPassword())) {
             throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
@@ -141,7 +141,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#verify(String, String)
      */
     @Override
-    public UserPrincipal verify(@Nonnull String username, @Nonnull String password) {
+    public UserPrincipal verify(@NonNull String username, @NonNull String password) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
             Set<String> authorityNames = authorityRepository.findByUserId(user.getId())
@@ -157,7 +157,7 @@ public class DefaultUserService implements UserService {
      * @see UserService#findAuthoritiesByUserId(String)
      */
     @Override
-    public List<Authority> findAuthoritiesByUserId(@Nonnull String userId) {
+    public List<Authority> findAuthoritiesByUserId(@NonNull String userId) {
         return authorityRepository.findByUserId(userId);
     }
 
