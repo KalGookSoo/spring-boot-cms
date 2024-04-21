@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -36,6 +36,7 @@ public class User {
      * 계정 식별자
      */
     @Id
+    @UuidGenerator
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
@@ -115,7 +116,6 @@ public class User {
 
     public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
         User user = new User();
-        user.id = UUID.randomUUID().toString();
         user.username = username;
         user.password = password;
         user.name = name;

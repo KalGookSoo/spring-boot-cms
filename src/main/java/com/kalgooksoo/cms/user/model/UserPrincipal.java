@@ -1,5 +1,7 @@
 package com.kalgooksoo.cms.user.model;
 
+import com.kalgooksoo.cms.user.entity.Authority;
+import com.kalgooksoo.cms.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,57 +14,44 @@ import java.util.stream.Collectors;
  */
 public class UserPrincipal implements UserDetails {
 
-    private final String username;
+    private final User user;
 
-    private final String password;
-
-    private final boolean accountNonExpired;
-
-    private final boolean accountNonLocked;
-
-    private final boolean credentialsNonExpired;
-
-    private final Collection<String> authorities;
-
-    public UserPrincipal(String username, String password, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, Collection<String> authorities) {
-        this.username = username;
-        this.password = password;
-        this.accountNonExpired = accountNonExpired;
-        this.accountNonLocked = accountNonLocked;
-        this.credentialsNonExpired = credentialsNonExpired;
-        this.authorities = authorities;
+    public UserPrincipal(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities.stream()
+        return user.getAuthorities()
+                .stream()
+                .map(Authority::getName)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return accountNonExpired;
+        return user.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return accountNonLocked;
+        return user.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
+        return user.isCredentialsNonExpired();
     }
 
     @Override
@@ -71,6 +60,32 @@ public class UserPrincipal implements UserDetails {
         boolean accountNonExpired = isAccountNonExpired();
         boolean credentialsNonExpired = isCredentialsNonExpired();
         return accountNonLocked && accountNonExpired && credentialsNonExpired;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User that) {
+            return getUsername().equals(that.getUsername());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getUsername().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + " [" +
+                "Username=" + getUsername() + ", " +
+                "Password=[PROTECTED], " +
+                "Enabled=" + isEnabled() + ", " +
+                "AccountNonExpired=" + isAccountNonExpired() + ", " +
+                "CredentialsNonExpired=" + isCredentialsNonExpired() + ", " +
+                "AccountNonLocked=" + isAccountNonLocked() + ", " +
+                "Granted Authorities=" + getAuthorities() + "]";
     }
 
 }

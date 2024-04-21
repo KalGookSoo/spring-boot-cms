@@ -3,7 +3,6 @@ package com.kalgooksoo.cms.user.service;
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserCommand;
 import com.kalgooksoo.cms.user.entity.User;
-import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.search.UserSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,14 +80,5 @@ public interface UserService {
      * @param newPassword    새로운 패스워드
      */
     void updatePassword(@NonNull String id, @NonNull String originPassword, @NonNull String newPassword);
-
-    /**
-     * 계정 검증
-     *
-     * @param username 계정명
-     * @param password 패스워드
-     * @return 계정
-     */
-    UserPrincipal verify(@NonNull String username, @NonNull String password);
 
 }

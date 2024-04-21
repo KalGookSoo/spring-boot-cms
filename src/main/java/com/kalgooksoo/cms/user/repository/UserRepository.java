@@ -12,7 +12,8 @@ import org.springframework.lang.NonNull;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
-    Optional<User> findByUsername(String username);
+
+    Optional<User> findByUsername(@NonNull String username);
 
     default Page<User> searchAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
         Specification<User> specification = Specification.where(null);
@@ -33,19 +34,19 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
         return findAll(specification, pageable);
     }
 
-    default Specification<User> usernameContains(String username) {
+    default Specification<User> usernameContains(@NonNull String username) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("username"), "%" + username + "%");
     }
 
-    default Specification<User> nameContains(String name) {
+    default Specification<User> nameContains(@NonNull String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
-    default Specification<User> emailIdContains(String emailId) {
+    default Specification<User> emailIdContains(@NonNull String emailId) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("emailId"), "%" + emailId + "%");
     }
 
-    default Specification<User> contactNumberContains(String contactNumber) {
+    default Specification<User> contactNumberContains(@NonNull String contactNumber) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("contactNumber"), "%" + contactNumber + "%");
     }
 

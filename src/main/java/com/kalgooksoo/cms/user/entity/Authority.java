@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -31,6 +31,7 @@ public class Authority {
      * 권한 식별자
      */
     @Id
+    @UuidGenerator
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
@@ -42,8 +43,7 @@ public class Authority {
      */
     private String name;
 
-    private Authority(String id, String name, User user) {
-        this.id = id;
+    private Authority(String name, User user) {
         this.name = name;
         this.users.add(user);
     }
@@ -52,7 +52,7 @@ public class Authority {
         if (!name.startsWith("ROLE_")) {
             throw new IllegalArgumentException("name must start with 'ROLE_'\n name: " + name);
         }
-        return new Authority(UUID.randomUUID().toString(), name, user);
+        return new Authority(name, user);
     }
 
 }

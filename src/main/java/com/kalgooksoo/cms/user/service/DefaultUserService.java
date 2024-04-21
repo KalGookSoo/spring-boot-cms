@@ -6,7 +6,6 @@ import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.ContactNumber;
 import com.kalgooksoo.cms.user.entity.Email;
 import com.kalgooksoo.cms.user.entity.User;
-import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.repository.UserRepository;
 import com.kalgooksoo.cms.user.search.UserSearch;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @see UserService
@@ -123,28 +120,6 @@ public class DefaultUserService implements UserService {
         }
         user.changePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-    }
-
-    /**
-     * 계정 정보를 검증합니다.
-     *
-     * @param username 계정명
-     * @param password 패스워드
-     * @return 계정 정보가 일치하면 계정 정보를 반환합니다.
-     * @throws IllegalArgumentException 보안상 이유로 계정 정보가 일치하지 않는 경우, 계정을 찾지 못한 경우 모두 같은 예외를 발생시킵니다.
-     * @see UserService#verify(String, String)
-     */
-    @Override
-    public UserPrincipal verify(@NonNull String username, @NonNull String password) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            Set<String> authorityNames = user.getAuthorities()
-                    .stream()
-                    .map(Authority::getName)
-                    .collect(Collectors.toSet());
-            return new UserPrincipal(user.getUsername(), user.getPassword(), user.isAccountNonExpired(), user.isAccountNonLocked(), user.isCredentialsNonExpired(), authorityNames);
-        }
-        throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
     }
 
 }
