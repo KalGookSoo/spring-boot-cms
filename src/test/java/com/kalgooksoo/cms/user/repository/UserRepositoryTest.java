@@ -6,13 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -107,8 +105,8 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("계정을 삭제합니다. 존재하지 않는 계정 삭제 시 NoSuchElementException을 던집니다.")
-    void deleteByIdShouldThrowNoSuchElementException() {
+    @DisplayName("계정을 삭제합니다. 존재하지 않는 계정 삭제 시 빈 Optional을 던집니다.")
+    void deleteByIdShouldReturnOptionalEmpty() {
         // Given
         String id = UUID.randomUUID().toString();
 
@@ -116,7 +114,7 @@ class UserRepositoryTest {
         userRepository.deleteById(id);
 
         // Then
-        assertThrows(NoSuchElementException.class, () -> userRepository.findById(id).get());
+        assertTrue(userRepository.findById(id).isEmpty());
     }
 
     @Test
