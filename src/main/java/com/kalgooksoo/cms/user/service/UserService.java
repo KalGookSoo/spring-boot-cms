@@ -2,15 +2,13 @@ package com.kalgooksoo.cms.user.service;
 
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserCommand;
-import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.search.UserSearch;
-import org.springframework.lang.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -92,13 +90,5 @@ public interface UserService {
      * @return 계정
      */
     UserPrincipal verify(@NonNull String username, @NonNull String password);
-
-    /**
-     * 계정 식별자로 권한 조회
-     *
-     * @param userId 계정 식별자
-     * @return 권한 목록
-     */
-    List<Authority> findAuthoritiesByUserId(@NonNull String userId);
 
 }

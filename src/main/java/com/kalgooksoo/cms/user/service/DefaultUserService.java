@@ -7,18 +7,16 @@ import com.kalgooksoo.cms.user.entity.ContactNumber;
 import com.kalgooksoo.cms.user.entity.Email;
 import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.model.UserPrincipal;
-import com.kalgooksoo.cms.user.repository.AuthorityRepository;
 import com.kalgooksoo.cms.user.repository.UserRepository;
 import com.kalgooksoo.cms.user.search.UserSearch;
-import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -28,13 +26,10 @@ import java.util.stream.Collectors;
  * @see UserService
  */
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
-
-    private final AuthorityRepository authorityRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -47,9 +42,9 @@ public class DefaultUserService implements UserService {
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         user.changePassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_USER"));
-        return savedUser;
+        Authority authority = Authority.create("ROLE_USER", user);
+        user.addAuthority(authority);
+        return userRepository.save(user);
     }
 
     /**
@@ -61,9 +56,8 @@ public class DefaultUserService implements UserService {
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
         User user = User.create(command.username(), command.password(), command.name(), email, contactNumber);
         user.changePassword(passwordEncoder.encode(user.getPassword()));
-
-        User savedUser = userRepository.save(user);
-        authorityRepository.save(Authority.create(savedUser.getId(), "ROLE_ADMIN"));
+        Authority authority = Authority.create("ROLE_ADMIN", user);
+        user.addAuthority(authority);
         return userRepository.save(user);
     }
 
@@ -104,8 +98,7 @@ public class DefaultUserService implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
-//        return userRepository.search(search, pageable);
-        return Page.empty();
+        return userRepository.searchAll(search, pageable);
     }
 
     /**
@@ -114,8 +107,9 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public void delete(@NonNull String id) {
+        User user = userRepository.getReferenceById(id);
+        user.removeAuthorities();
         userRepository.deleteById(id);
-        authorityRepository.deleteByUserId(id);
     }
 
     /**
@@ -144,21 +138,13 @@ public class DefaultUserService implements UserService {
     public UserPrincipal verify(@NonNull String username, @NonNull String password) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("계정 정보가 일치하지 않습니다."));
         if (passwordEncoder.matches(password, user.getPassword())) {
-            Set<String> authorityNames = authorityRepository.findByUserId(user.getId())
+            Set<String> authorityNames = user.getAuthorities()
                     .stream()
                     .map(Authority::getName)
                     .collect(Collectors.toSet());
             return new UserPrincipal(user.getUsername(), user.getPassword(), user.isAccountNonExpired(), user.isAccountNonLocked(), user.isCredentialsNonExpired(), authorityNames);
         }
         throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
-    }
-
-    /**
-     * @see UserService#findAuthoritiesByUserId(String)
-     */
-    @Override
-    public List<Authority> findAuthoritiesByUserId(@NonNull String userId) {
-        return authorityRepository.findByUserId(userId);
     }
 
 }

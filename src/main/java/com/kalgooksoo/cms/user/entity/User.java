@@ -12,6 +12,8 @@ import org.springframework.util.Assert;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -74,6 +76,17 @@ public class User {
             @AttributeOverride(name = "last", column = @Column(name = "last_contact_number"))
     })
     private ContactNumber contactNumber;
+
+    /**
+     * 권한
+     */
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "tb_user_authority",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "authorityId")
+    )
+    private final Set<Authority> authorities = new LinkedHashSet<>();
 
     /**
      * 생성 일시
@@ -169,6 +182,20 @@ public class User {
         boolean accountNonExpired = isAccountNonExpired();
         boolean credentialsNonExpired = isCredentialsNonExpired();
         return accountNonLocked && accountNonExpired && credentialsNonExpired;
+    }
+
+    public void addAuthority(Authority authority) {
+        authorities.add(authority);
+        authority.getUsers().add(this);
+    }
+
+    public void removeAuthority(Authority authority) {
+        authorities.remove(authority);
+        authority.getUsers().remove(this);
+    }
+
+    public void removeAuthorities() {
+        authorities.clear();
     }
 
 }

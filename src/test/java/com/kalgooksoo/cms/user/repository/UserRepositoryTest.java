@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.user.repository;
 
 import com.kalgooksoo.cms.user.entity.User;
+import com.kalgooksoo.cms.user.search.UserSearch;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +151,6 @@ class UserRepositoryTest {
         assertTrue(page.isEmpty());
     }
 
-/*
     @Test
     @DisplayName("검색 조건에 기반한 계정 목록을 조회합니다. 성공 시 계정 목록을 반환합니다.")
     void searchTest() {
@@ -169,27 +169,25 @@ class UserRepositoryTest {
         search.setUsername("tester3");
 
         // When
-        Page<User> page = userRepository.searchAll("tester3", pageable);
+        Page<User> page = userRepository.searchAll(search, pageable);
 
         // Then
         List<User> users = page.getContent();
         assertEquals(1, users.size());
     }
-*/
 
-/*
     @Test
     @DisplayName("검색 조건에 기반한 계정 목록을 조회합니다. 실패 시 빈 목록을 반환합니다.")
     void searchTestWithEmpty() {
         // Given
-        String keyword = null;
+        UserSearch search = new UserSearch();
+        search.setUsername("tester3");
 
         // When
-        Page<User> page = userRepository.searchAll(keyword, PageRequest.of(0, 10));
+        Page<User> page = userRepository.searchAll(search, PageRequest.of(0, 10));
 
         // Then
         assertTrue(page.isEmpty());
     }
-*/
 
 }

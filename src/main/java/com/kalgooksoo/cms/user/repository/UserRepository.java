@@ -1,21 +1,52 @@
 package com.kalgooksoo.cms.user.repository;
 
 import com.kalgooksoo.cms.user.entity.User;
+import com.kalgooksoo.cms.user.search.UserSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 
-public interface UserRepository extends Repository<User, String> {
-    User save(@NonNull User user);
+public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+    Optional<User> findByUsername(String username);
 
-    Optional<User> findById(@NonNull String id);
+    default Page<User> searchAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
+        Specification<User> specification = Specification.where(null);
 
-    Page<User> findAll(@NonNull Pageable pageable);
+        if (!search.isEmptyUsername()) {
+            specification = specification.and(usernameContains(search.getUsername()));
+        }
+        if (!search.isEmptyName()) {
+            specification = specification.and(nameContains(search.getName()));
+        }
+        if (!search.isEmptyEmailId()) {
+            specification = specification.and(emailIdContains(search.getEmailId()));
+        }
+        if (!search.isEmptyContactNumber()) {
+            specification = specification.and(contactNumberContains(search.getContactNumber()));
+        }
 
-    void deleteById(@NonNull String id);
+        return findAll(specification, pageable);
+    }
 
-    Optional<User> findByUsername(@NonNull String username);
+    default Specification<User> usernameContains(String username) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("username"), "%" + username + "%");
+    }
+
+    default Specification<User> nameContains(String name) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%");
+    }
+
+    default Specification<User> emailIdContains(String emailId) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("emailId"), "%" + emailId + "%");
+    }
+
+    default Specification<User> contactNumberContains(String contactNumber) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("contactNumber"), "%" + contactNumber + "%");
+    }
+
 }
