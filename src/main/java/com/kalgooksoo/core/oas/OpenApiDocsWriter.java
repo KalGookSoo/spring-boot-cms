@@ -13,7 +13,7 @@ import java.util.List;
 
 public class OpenApiDocsWriter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenApiDocsWriter.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final RestTemplate restTemplate;
 
@@ -31,7 +31,7 @@ public class OpenApiDocsWriter {
         try {
             FileIOService.write(pathname, yaml.getBytes(StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
-            LOGGER.error("Failed to write OpenAPI docs to file: {}", pathname, e);
+            logger.error("Failed to write OpenAPI docs to file: {}", pathname, e);
         }
     }
 

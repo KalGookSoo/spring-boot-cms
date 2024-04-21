@@ -12,7 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 @Configuration
 public class ApplicationRunner implements CommandLineRunner {
 
-    private final Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
