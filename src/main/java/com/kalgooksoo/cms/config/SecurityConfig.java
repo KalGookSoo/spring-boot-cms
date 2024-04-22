@@ -41,12 +41,6 @@ public class SecurityConfig {
 
     private static final String LOGOUT_PATH = "/sign-out";
 
-    private static final String USERS_PATH = "/users/**";
-
-    private static final String MANAGERS_PATH = "/managers/**";
-
-    private static final String ADMINS_PATH = "/admins/**";
-
     private final UserPrincipalRepository userPrincipalRepository;
 
     @Bean
@@ -70,9 +64,9 @@ public class SecurityConfig {
 
     private void handleAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
         authorizationManagerRequestMatcherRegistry
-                .requestMatchers(new AntPathRequestMatcher(USERS_PATH)).authenticated()
-                .requestMatchers(new AntPathRequestMatcher(MANAGERS_PATH)).hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher(ADMINS_PATH)).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/managers/**")).hasAnyRole("MANAGER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/admins/**")).hasRole("ADMIN")
                 .anyRequest().permitAll();
     }
 
