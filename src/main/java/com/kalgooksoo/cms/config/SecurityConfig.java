@@ -5,6 +5,7 @@ import com.kalgooksoo.cms.user.service.DefaultUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -56,11 +57,12 @@ public class SecurityConfig {
 
     private void handleAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
         authorizationManagerRequestMatcherRegistry
-                .requestMatchers(new AntPathRequestMatcher("/sign-out")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/sign-out", HttpMethod.POST.name())).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/managers/**")).hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/admins/**")).hasRole("ADMIN")
-                .anyRequest().permitAll();
+                .anyRequest()
+                .permitAll();
     }
 
 }
