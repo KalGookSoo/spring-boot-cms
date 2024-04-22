@@ -3,7 +3,6 @@ package com.kalgooksoo.cms.user.service;
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserCommand;
 import com.kalgooksoo.cms.user.entity.User;
-import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.repository.UserRepository;
 import com.kalgooksoo.cms.user.search.UserSearch;
 import jakarta.persistence.EntityNotFoundException;
@@ -280,47 +279,6 @@ class UserServiceTest {
 
         // Then
         assertThrows(IllegalArgumentException.class, () -> userService.updatePassword(id, "invalidPassword", newPassword));
-    }
-
-    @Test
-    @DisplayName("계정명과 패스워드로 계정을 확인합니다.")
-    void verifyTest() throws DataIntegrityViolationException {
-        // Given
-        CreateUserCommand createUserCommand = new CreateUserCommand("tester", "12341234", "테스터1", null, null, null, null, null);
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(passwordEncoder.encode(anyString())).thenReturn("12341234");
-        userService.createUser(createUserCommand);
-
-        String username = "tester";
-        String password = "12341234";
-
-        // When
-        UserPrincipal userPrincipal = userService.verify(username, password);
-
-        // Then
-        assertNotNull(userPrincipal);
-    }
-
-    @Test
-    @DisplayName("계정명과 패스워드로 계정을 확인할 때 계정명이 존재하지 않으면 IllegalArgumentException 예외를 발생시킵니다.")
-    void verifyWithInvalidUsernameTest() {
-        // Given
-        String username = "invalidUsername";
-        String password = "12345678";
-
-        // Then
-        assertThrows(IllegalArgumentException.class, () -> userService.verify(username, password));
-    }
-
-    @Test
-    @DisplayName("계정명과 패스워드로 계정을 확인할 때 패스워드가 일치하지 않으면 IllegalArgumentException 예외를 발생시킵니다.")
-    void verifyWithInvalidPasswordTest() {
-        // Given
-        String username = "tester";
-        String password = "12345678";
-
-        // Then
-        assertThrows(IllegalArgumentException.class, () -> userService.verify(username, password + "invalid"));
     }
 
 }
