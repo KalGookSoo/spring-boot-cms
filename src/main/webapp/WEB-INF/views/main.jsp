@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <!DOCTYPE html>
 <html lang="${cookie.lang.value}">
@@ -19,10 +21,22 @@
             box-sizing: border-box;
         }
     </style>
+
+    <%--@elvariable id="message" type="java.lang.String"--%>
+    <c:if test="${not empty message}">
+        <script>
+            alert('${message}');
+        </script>
+    </c:if>
 </head>
 <body>
 <header class="border-red">
     <h1>헤더 영역</h1>
+    <sec:authorize access="isAuthenticated()">
+        <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
+            <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
+        </form:form>
+    </sec:authorize>
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-red">
