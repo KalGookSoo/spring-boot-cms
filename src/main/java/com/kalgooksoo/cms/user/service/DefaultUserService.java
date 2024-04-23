@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 /**
  * @see UserService
@@ -63,7 +62,7 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public User update(@NonNull String id, @NonNull UpdateUserCommand command) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
         String name = command.name();
         Email email = new Email(command.emailId(), command.emailDomain());
         ContactNumber contactNumber = new ContactNumber(command.firstContactNumber(), command.middleContactNumber(), command.lastContactNumber());
@@ -76,8 +75,8 @@ public class DefaultUserService implements UserService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Optional<User> findById(@NonNull String id) {
-        return userRepository.findById(id);
+    public User findById(@NonNull String id) {
+        return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     /**
@@ -114,7 +113,7 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public void updatePassword(@NonNull String id, @NonNull String originPassword, @NonNull String newPassword) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("계정을 찾을 수 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
         if (!passwordEncoder.matches(originPassword, user.getPassword())) {
             throw new IllegalArgumentException("계정 정보가 일치하지 않습니다.");
         }

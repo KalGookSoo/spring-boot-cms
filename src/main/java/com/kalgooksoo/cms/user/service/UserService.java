@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
-import java.util.Optional;
-
 /**
  * 계정 서비스
  */
@@ -46,7 +44,7 @@ public interface UserService {
      * @param id 계정 식별자
      * @return 계정
      */
-    Optional<User> findById(@NonNull String id);
+    User findById(@NonNull String id);
 
     /**
      * 계정 목록 조회

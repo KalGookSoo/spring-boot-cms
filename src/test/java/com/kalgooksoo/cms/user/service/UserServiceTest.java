@@ -20,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,7 +115,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("계정을 ID로 찾습니다. 성공 시 계정을 반환합니다.")
-    void findByIdTest() throws DataIntegrityViolationException {
+    void findByIdShouldReturnUser() throws DataIntegrityViolationException {
         // Given
         CreateUserCommand createUserCommand = new CreateUserCommand("tester", "12341234", "테스터1", null, null, null, null, null);
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
@@ -124,23 +124,20 @@ class UserServiceTest {
         String id = createdUser.getId();
 
         // When
-        Optional<User> foundUser = userService.findById(id);
+        User foundUser = userService.findById(id);
 
         // Then
-        assertTrue(foundUser.isPresent());
+        assertNotNull(foundUser);
     }
 
     @Test
     @DisplayName("계정을 ID로 찾을 때 계정이 존재하지 않으면 빈 Optional을 반환합니다.")
-    void findByIdShouldReturnEmptyOptional() {
+    void findByIdShouldThrowNoSuchElementException() {
         // Given
         String id = UUID.randomUUID().toString();
 
-        // When
-        Optional<User> foundUser = userService.findById(id);
-
-        // Then
-        assertTrue(foundUser.isEmpty());
+        // When & Then
+        assertThrows(NoSuchElementException.class, () -> userService.findById(id));
     }
 
     @Test
@@ -229,8 +226,7 @@ class UserServiceTest {
         userService.delete(id);
 
         // Then
-        Optional<User> deletedUser = userService.findById(id);
-        assertTrue(deletedUser.isEmpty());
+        assertThrows(NoSuchElementException.class, () -> userService.findById(id));
     }
 
     @Test
@@ -258,9 +254,9 @@ class UserServiceTest {
         userService.updatePassword(id, "12345678", newPassword);
 
         // Then
-        Optional<User> updatedUser = userService.findById(id);
-        assertTrue(updatedUser.isPresent());
-        assertEquals(id, updatedUser.get().getId());
+        User updatedUser = userService.findById(id);
+        assertNotNull(updatedUser);
+        assertEquals(id, updatedUser.getId());
     }
 
     @Test
