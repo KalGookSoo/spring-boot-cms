@@ -1,3 +1,4 @@
+<%--suppress HtmlUnknownTarget --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -13,7 +14,7 @@
     <title>메인페이지</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         .border-red {
