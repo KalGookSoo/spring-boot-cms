@@ -11,6 +11,8 @@
             <sec:authorize access="isAuthenticated()">
                 <sec:authentication property="principal.username" var="username"/>
                 <span><spring:message code="message.welcome" arguments="${username}"/></span>
+                <sec:authentication property="principal.id" var="id"/>
+                <a href="${pageContext.request.contextPath}/users/${id}/edit" class="btn btn-outline-primary"></a>
                 <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
                     <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
                 </form:form>
