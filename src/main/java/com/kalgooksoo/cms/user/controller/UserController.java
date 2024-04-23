@@ -55,7 +55,7 @@ public class UserController {
             return "users/edit";
         }
         userService.update(id, command);
-        redirectAttributes.addFlashAttribute("message", "수정 성공");
+        redirectAttributes.addFlashAttribute("message", "command.success.update");
         return "redirect:/users/" + id + "/edit";
     }
 
@@ -67,7 +67,7 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         userService.delete(id);
-        redirectAttributes.addFlashAttribute("message", "삭제 성공");
+        redirectAttributes.addFlashAttribute("message", "command.success.delete");
         return "redirect:/";
     }
 
@@ -96,7 +96,7 @@ public class UserController {
             return "users/edit-password";
         }
         userService.updatePassword(id, command.originPassword(), command.newPassword());
-        redirectAttributes.addFlashAttribute("message", "수정 성공");
+        redirectAttributes.addFlashAttribute("message", "command.success.update");
         return "redirect:/users/" + id + "/edit-password";
     }
 

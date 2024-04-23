@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -40,6 +42,8 @@ public class SignController {
     private final UserService userService;  // 계정 서비스
 
     private final AuthenticationManager authenticationManager;
+
+    private final MessageSource messageSource;
 
     @Operation(summary = "계정 인증 화면", description = "계정 인증 화면으로 이동합니다")
     @GetMapping("/sign-in")
@@ -121,7 +125,7 @@ public class SignController {
             bindingResult.rejectValue("username", "validation.user.username.exists");
             return "sign-up";
         }
-        redirectAttributes.addFlashAttribute("message", "계정이 생성되었습니다");
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale()));
         return "redirect:/sign-in";
     }
 
@@ -134,7 +138,7 @@ public class SignController {
         if (session != null) {
             session.invalidate();
         }
-        redirectAttributes.addFlashAttribute("message", "로그아웃 되었습니다");
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.sign.out", null, LocaleContextHolder.getLocale()));
         return "redirect:/sign-in";
     }
 

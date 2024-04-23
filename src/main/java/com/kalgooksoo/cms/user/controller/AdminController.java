@@ -5,6 +5,8 @@ import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +25,8 @@ public class AdminController {
 
     private final UserService userService;
 
+    private MessageSource messageSource;
+
     @Operation(summary = "계정 목록 화면", description = "계정 목록 화면")
     @GetMapping
     public String getAll(
@@ -40,7 +44,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes
     ) {
         // TODO Implements
-        redirectAttributes.addFlashAttribute("message", "저장 성공");
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.save", null, LocaleContextHolder.getLocale()));
         return "redirect:/admins";
     }
 
