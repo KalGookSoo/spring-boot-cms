@@ -6,11 +6,13 @@ import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+@Tag(name = "SignController", description = "계정 생성 및 인증을 수행하는 컨트롤러")
 @Controller
 @RequiredArgsConstructor
 public class SignController {
@@ -123,6 +126,7 @@ public class SignController {
     }
 
     @Operation(summary = "계정 인증 해제", description = "계정 인증을 해제합니다")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/sign-out")
     public String signOut(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         SecurityContextHolder.clearContext();

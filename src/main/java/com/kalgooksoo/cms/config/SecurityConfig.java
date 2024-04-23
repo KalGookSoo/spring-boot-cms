@@ -57,8 +57,6 @@ public class SecurityConfig {
 
     private void handleAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
         authorizationManagerRequestMatcherRegistry
-                .requestMatchers(new AntPathRequestMatcher("/sign-out", HttpMethod.POST.name())).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/managers/**")).hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/admins/**")).hasRole("ADMIN")
                 .anyRequest()
