@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,9 @@ class UserServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     private final PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
 
@@ -221,9 +225,11 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("12341234");
         User createdUser = userService.createUser(createUserCommand);
         String id = createdUser.getId();
+        entityManager.flush();
 
         // When
         userService.delete(id);
+        entityManager.flush();
 
         // Then
         assertThrows(NoSuchElementException.class, () -> userService.findById(id));
