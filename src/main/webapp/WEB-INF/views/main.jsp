@@ -31,13 +31,20 @@
     </c:if>
 </head>
 <body>
-<header class="border-red">
-    <h1>헤더 영역</h1>
-    <sec:authorize access="isAuthenticated()">
-        <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
-            <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
-        </form:form>
-    </sec:authorize>
+<header class="border-red d-flex justify-content-between align-items-center">
+    <h1>Logo Text or Image Here</h1>
+    <div>
+        <sec:authorize access="isAuthenticated()">
+            <span><sec:authentication property="username"/></span>
+            <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
+                <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
+            </form:form>
+        </sec:authorize>
+        <sec:authorize access="!isAuthenticated()">
+            <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-primary"><spring:message code="label.button.sign.in"/></a>
+            <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-secondary"><spring:message code="label.button.sign.up"/></a>
+        </sec:authorize>
+    </div>
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-red">

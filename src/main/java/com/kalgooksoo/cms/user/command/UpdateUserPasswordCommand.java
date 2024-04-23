@@ -14,13 +14,13 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateUserPasswordCommand(
         @Parameter(description = "현재 패스워드", required = true)
         @Schema(description = "현재 패스워드", example = "password")
-        @NotNull(message = "현재 패스워드는 필수입니다.")
-        @NotBlank(message = "현재 패스워드는 NULL이 될 수 없습니다.")
+        @NotNull
+        @NotBlank
         String originPassword,
 
         @Parameter(description = "변경할 패스워드", required = true)
         @Schema(description = "변경할 패스워드", example = "newpassword")
-        @NotNull(message = "변경할 패스워드는 필수입니다.")
-        @NotBlank(message = "변경할 패스워드는 NULL이 될 수 없습니다.")
+        @NotNull
+        @NotBlank
         String newPassword
 ) {}

@@ -31,24 +31,24 @@
     </c:if>
 </head>
 <body>
-<div class="container">
+<div class="container-sm">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="text-center"><spring:message code="label.button.sign.in"/></h2>
             <form:form action="${pageContext.request.contextPath}/sign-in" method="post" class="mt-4" modelAttribute="command">
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="username"><spring:message code="user.username"/></label>
                     <form:input path="username" id="username" class="form-control"/>
                     <form:errors path="username" class="error"/>
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="password"><spring:message code="user.password"/></label>
                     <form:password path="password" id="password" class="form-control"/>
                     <form:errors path="password" class="error"/>
                 </div>
-                <div class="form-group">
+                <div class="mb-3 d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.button.sign.in"/></button>
-                    <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-link btn-block"><spring:message code="label.button.sign.up"/></a>
+                    <a class="btn btn-secondary btn-block" href="${pageContext.request.contextPath}/sign-up"><spring:message code="label.button.sign.up"/></a>
                 </div>
             </form:form>
         </div>

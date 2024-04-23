@@ -16,14 +16,14 @@
 
          @Parameter(description = "계정명", required = true)
          @Schema(description = "계정명", example = "testuser")
-         @NotBlank(message = "계정명은 필수입니다")
-         @NotNull(message = "계정명은 null이 될 수 없습니다")
+         @NotBlank
+         @NotNull
          String username,
 
          @Parameter(description = "패스워드", required = true)
          @Schema(description = "패스워드", example = "12341234")
-         @NotBlank(message = "패스워드는 필수입니다")
-         @NotNull(message = "패스워드는 null이 될 수 없습니다")
+         @NotBlank
+         @NotNull
          String password
 
  ) {}

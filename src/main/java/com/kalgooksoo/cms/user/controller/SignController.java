@@ -118,7 +118,7 @@ public class SignController {
         try {
             userService.createUser(command);
         } catch (DataIntegrityViolationException e) {
-            bindingResult.rejectValue("username", "username.exists", "계정이 이미 존재합니다");
+            bindingResult.rejectValue("username", "validation.user.username.exists");
             return "sign-up";
         }
         redirectAttributes.addFlashAttribute("message", "계정이 생성되었습니다");

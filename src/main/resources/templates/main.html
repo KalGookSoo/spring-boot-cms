@@ -7,7 +7,7 @@
     <title>메인페이지</title>
 
     <!-- Bootstrap CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 
     <style>
         .border-red {
@@ -21,11 +21,20 @@
     </script>
 </head>
 <body>
-<header class="border-red">
-    <h1>헤더 영역</h1>
-    <form class="d-inline float-right" th:action="@{/sign-out}" th:method="post" sec:authorize="isAuthenticated()">
-        <button type="submit" class="btn btn-danger" th:text="#{label.button.sign.out}"></button>
-    </form>
+<header class="border-red d-flex justify-content-between align-items-center">
+    <h1>Logo Text or Imagedddd Here</h1>
+    <div>
+        <div sec:authorize="isAuthenticated()">
+            <span th:text="${#authentication.username}"></span>
+            <form class="d-inline float-right" th:action="@{/sign-out}" th:method="post" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-danger" th:text="#{label.button.sign.out}"></button>
+            </form>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <a class="btn btn-primary" th:href="@{/sign-in}" th:text="#{label.button.sign.in}"></a>
+            <a class="btn btn-secondary" th:href="@{/sign-up}" th:text="#{label.button.sign.up}"></a>
+        </div>
+    </div>
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-red">
