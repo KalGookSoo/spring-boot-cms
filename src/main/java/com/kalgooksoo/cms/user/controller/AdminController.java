@@ -25,7 +25,6 @@ public class AdminController {
     private final UserService userService;
 
     @Operation(summary = "계정 목록 화면", description = "계정 목록 화면")
-    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     @GetMapping
     public String getAll(
             @PageableDefault Pageable pageable,
@@ -37,7 +36,6 @@ public class AdminController {
     }
 
     @Operation(summary = "계정 목록 저장", description = "계정 목록 저장")
-    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     @PostMapping
     public String saveAll(
             RedirectAttributes redirectAttributes
