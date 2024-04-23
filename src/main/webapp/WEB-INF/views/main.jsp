@@ -31,25 +31,9 @@
     </c:if>
 </head>
 <body>
-<header class="border-red d-flex justify-content-between align-items-center">
-    <h1>Logo Text or Image Here</h1>
-    <div>
-        <sec:authorize access="isAuthenticated()">
-            <span><sec:authentication property="username"/></span>
-            <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
-                <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
-            </form:form>
-        </sec:authorize>
-        <sec:authorize access="!isAuthenticated()">
-            <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-primary"><spring:message code="label.button.sign.in"/></a>
-            <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-secondary"><spring:message code="label.button.sign.up"/></a>
-        </sec:authorize>
-    </div>
-</header>
+<%@ include file="header.jsp" %>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-red">
-    <a class="navbar-brand" href="#">네비게이션 바</a>
-</nav>
+<%@ include file="nav.jsp" %>
 
 <main class="container border-red">
     <div class="row">
@@ -60,13 +44,9 @@
     </div>
 </main>
 
-<footer class="footer bg-light border-red">
-    <div class="container">
-        <span class="text-muted">풋터 영역</span>
-    </div>
-</footer>
+<%@ include file="nav.jsp" %>
 
 <!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </body>
 </html>
