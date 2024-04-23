@@ -1,7 +1,10 @@
 package com.kalgooksoo.cms;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.NoSuchElementException;
 
@@ -26,6 +29,13 @@ public class IndexController {
     @GetMapping("/500")
     public String error500() {
         throw new RuntimeException();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseBody
+    @GetMapping("/session")
+    public String getSession(HttpServletRequest request) {
+        return request.getSession().getId();
     }
 
 }
