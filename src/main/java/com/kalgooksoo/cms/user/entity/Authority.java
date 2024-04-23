@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "tb_authority")
 @DynamicInsert
 @DynamicUpdate
-public class Authority {
+public class Authority implements Serializable {
 
     /**
      * 권한 식별자

@@ -1,19 +1,19 @@
 package com.kalgooksoo.cms.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.io.Serializable;
 
 import static lombok.AccessLevel.PROTECTED;
 
-@Getter
 @Embeddable
+@Getter
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-public class ContactNumber {
+public class ContactNumber implements Serializable {
 
     private String first;
 

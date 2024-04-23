@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,14 +24,14 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id"})
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_user")
 @DynamicInsert
 @DynamicUpdate
-public class User {
+public class User implements Serializable {
 
     /**
      * 계정 식별자
