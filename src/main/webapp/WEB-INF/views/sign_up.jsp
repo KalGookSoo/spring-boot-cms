@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><spring:message code="label.button.sign.up"/></title>
+    <title><spring:message code="label.sign.up"/></title>
     <link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/signin.css" rel="stylesheet">
 
@@ -27,7 +27,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h2 class="text-center"><spring:message code="label.button.sign.up"/></h2>
+            <h2 class="text-center"><spring:message code="label.sign.up"/></h2>
             <form:form action="${pageContext.request.contextPath}/sign-up" modelAttribute="command" method="post" class="mt-4">
                 <div class="form-group">
                     <label for="username"><spring:message code="user.username"/></label>
@@ -45,8 +45,8 @@
                     <form:errors path="name" class="error"/>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.button.sign.up"/></button>
-                    <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-link btn-block"><spring:message code="label.button.sign.in"/></a>
+                    <button type="submit" class="btn btn-primary btn-block"><spring:message code="label.sign.up"/></button>
+                    <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-link btn-block"><spring:message code="label.sign.in"/></a>
                 </div>
             </form:form>
         </div>

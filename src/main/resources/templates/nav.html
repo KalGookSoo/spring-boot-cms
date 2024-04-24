@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
-    <nav id="sidebar" class="p-3" th:fragment="nav">
+    <nav class="p-3" th:fragment="nav">
         <!-- Sidebar content -->
         <h3>Sidebar</h3>
         <!-- Add your menu items here -->
+        <ul>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{'/users/' + ${#authentication.principal.id} + '/edit'}" th:text="#{label.my.page}"></a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/users}" th:text="#{entity.users}"></a>
+            </li>
+        </ul>
     </nav>
 
 </html>

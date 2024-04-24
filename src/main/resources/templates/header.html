@@ -7,13 +7,11 @@
             <div>
                 <div sec:authorize="isAuthenticated()">
                     <span th:text="#{message.welcome(${#authentication.principal.username})}"></span>
-                    <form class="d-inline float-right" th:action="@{/sign-out}" th:method="post" sec:authorize="isAuthenticated()">
-                        <button type="submit" class="btn btn-danger" th:text="#{label.button.sign.out}"></button>
-                    </form>
+                    <button type="submit" class="btn btn-danger" th:formaction="@{/sign-out}" th:formmethod="post" th:text="#{label.sign.out}"></button>
                 </div>
                 <div sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-primary" th:href="@{/sign-in}" th:text="#{label.button.sign.in}"></a>
-                    <a class="btn btn-secondary" th:href="@{/sign-up}" th:text="#{label.button.sign.up}"></a>
+                    <a class="btn btn-primary" th:href="@{/sign-in}" th:text="#{label.sign.in}"></a>
+                    <a class="btn btn-secondary" th:href="@{/sign-up}" th:text="#{label.sign.up}"></a>
                 </div>
             </div>
         </div>

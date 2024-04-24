@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title th:text="#{label.button.sign.in}"></title>
+    <title th:text="#{label.sign.in}"></title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/signin.css}">
 
@@ -26,21 +26,21 @@
 <div class="container-sm">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h2 class="text-center" th:text="#{label.button.sign.in}"></h2>
+            <h2 class="text-center" th:text="#{label.sign.in}"></h2>
             <form class="mt-4" th:action="@{/sign-in}" th:object="${command}" th:method="post">
                 <div class="mb-3">
-                    <label for="username" class="form-label" th:text="#{user.username}"></label>
+                    <label for="username" class="form-label" th:text="#{entity.user.username}"></label>
                     <input type="text" id="username" name="username" class="form-control">
                     <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label" th:text="#{user.password}"></label>
+                    <label for="password" class="form-label" th:text="#{entity.user.password}"></label>
                     <input type="password" id="password" name="password" class="form-control">
                     <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
                 <div class="mb-3 d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-block" th:text="#{label.button.sign.in}"></button>
-                    <a class="btn btn-secondary btn-block" th:href="@{/sign-up}" th:text="#{label.button.sign.up}"></a>
+                    <button type="submit" class="btn btn-primary btn-block" th:text="#{label.sign.in}"></button>
+                    <a class="btn btn-secondary btn-block" th:href="@{/sign-up}" th:text="#{label.sign.up}"></a>
                 </div>
             </form>
         </div>

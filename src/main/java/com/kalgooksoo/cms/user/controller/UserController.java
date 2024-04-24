@@ -2,17 +2,23 @@ package com.kalgooksoo.cms.user.controller;
 
 import com.kalgooksoo.cms.user.command.UpdateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserPasswordCommand;
+import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.User;
+import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Set;
 
 @Tag(name = "UserController", description = "계정 컨트롤러")
 @Controller
@@ -30,6 +36,11 @@ public class UserController {
             Model model
     ) {
         User user = userService.findById(id);
+        model.addAttribute("user", user);
+
+        Set<Authority> authorities = user.getAuthorities();
+        model.addAttribute("authorities", authorities);
+
         UpdateUserCommand command = new UpdateUserCommand(
                 user.getName(),
                 user.getEmail().getId(),

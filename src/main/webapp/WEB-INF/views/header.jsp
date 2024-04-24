@@ -14,12 +14,12 @@
                 <sec:authentication property="principal.id" var="id"/>
                 <a href="${pageContext.request.contextPath}/users/${id}/edit" class="btn btn-outline-primary"></a>
                 <form:form action="${pageContext.request.contextPath}/sign-out" method="post" cssClass="d-inline float-right">
-                    <input type="submit" value="<spring:message code="label.button.sign.out"/>" class="btn btn-danger" />
+                    <input type="submit" value="<spring:message code="label.sign.out"/>" class="btn btn-danger" />
                 </form:form>
             </sec:authorize>
             <sec:authorize access="!isAuthenticated()">
-                <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-primary"><spring:message code="label.button.sign.in"/></a>
-                <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-secondary"><spring:message code="label.button.sign.up"/></a>
+                <a href="${pageContext.request.contextPath}/sign-in" class="btn btn-primary"><spring:message code="label.sign.in"/></a>
+                <a href="${pageContext.request.contextPath}/sign-up" class="btn btn-secondary"><spring:message code="label.sign.up"/></a>
             </sec:authorize>
         </div>
 </header>
