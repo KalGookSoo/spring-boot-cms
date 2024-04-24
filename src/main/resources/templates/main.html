@@ -21,25 +21,10 @@
     </script>
 </head>
 <body>
-<header class="border-red d-flex justify-content-between align-items-center">
-    <h1>Logo Text or Imagedddd Here</h1>
-    <div>
-        <div sec:authorize="isAuthenticated()">
-            <span th:text="${#authentication.username}"></span>
-            <form class="d-inline float-right" th:action="@{/sign-out}" th:method="post" sec:authorize="isAuthenticated()">
-                <button type="submit" class="btn btn-danger" th:text="#{label.button.sign.out}"></button>
-            </form>
-        </div>
-        <div sec:authorize="!isAuthenticated()">
-            <a class="btn btn-primary" th:href="@{/sign-in}" th:text="#{label.button.sign.in}"></a>
-            <a class="btn btn-secondary" th:href="@{/sign-up}" th:text="#{label.button.sign.up}"></a>
-        </div>
-    </div>
-</header>
+<!--include header.html-->
+<header th:replace="~{header :: header}"></header>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-red">
-    <a class="navbar-brand" href="#">네비게이션 바</a>
-</nav>
+<nav th:replace="~{nav :: nav}"></nav>
 
 <main class="container border-red">
     <div class="row">
@@ -50,11 +35,7 @@
     </div>
 </main>
 
-<footer class="footer bg-light border-red">
-    <div class="container">
-        <span class="text-muted">풋터 영역</span>
-    </div>
-</footer>
+<footer th:replace="~{footer :: footer}"></footer>
 
 <!-- Bootstrap JS -->
 <script src="/js/bootstrap.min.js"></script>
