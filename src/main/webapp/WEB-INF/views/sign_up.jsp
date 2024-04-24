@@ -12,7 +12,7 @@
     <meta name="author" content="">
 
     <title><spring:message code="label.button.sign.up"/></title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/signin.css" rel="stylesheet">
 
     <style>

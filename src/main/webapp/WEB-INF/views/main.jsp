@@ -14,7 +14,7 @@
     <title>메인페이지</title>
 
     <!-- Bootstrap CSS -->
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.css" rel="stylesheet">
 
     <style>
         .border-red {
@@ -47,6 +47,6 @@
 <%@ include file="nav.jsp" %>
 
 <!-- Bootstrap JS -->
-<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
 </body>
 </html>
