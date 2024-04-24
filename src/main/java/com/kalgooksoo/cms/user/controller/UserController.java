@@ -80,7 +80,7 @@ public class UserController {
     ) {
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand(null, null);
         model.addAttribute("command", command);
-        return "users/edit-password";
+        return "edit_password";
     }
 
     @Operation(summary = "패스워드 수정", description = "패스워드 수정")
@@ -93,7 +93,7 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            return "users/edit-password";
+            return "edit_password";
         }
         userService.updatePassword(id, command.originPassword(), command.newPassword());
         redirectAttributes.addFlashAttribute("message", "command.success.update");

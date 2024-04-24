@@ -54,7 +54,7 @@ public class SignController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         }
-        return "sign-in";
+        return "sign_in";
     }
 
     @Operation(summary = "계정 인증", description = "계정을 인증합니다")
@@ -67,7 +67,7 @@ public class SignController {
     ) {
         // validation
         if (bindingResult.hasErrors()) {
-            return "sign-in";
+            return "sign_in";
         }
 
         // Authenticate
@@ -106,7 +106,7 @@ public class SignController {
     public String signUp(
             @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @ModelAttribute("command") CreateUserCommand command
     ) {
-        return "sign-up";
+        return "sign_up";
     }
 
     @Operation(summary = "계정 생성", description = "계정을 생성합니다")
@@ -117,13 +117,13 @@ public class SignController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            return "sign-up";
+            return "sign_up";
         }
         try {
             userService.createUser(command);
         } catch (DataIntegrityViolationException e) {
             bindingResult.rejectValue("username", "validation.user.username.exists");
-            return "sign-up";
+            return "sign_up";
         }
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale()));
         return "redirect:/sign-in";
