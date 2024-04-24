@@ -37,7 +37,7 @@
 
     <main class="flex-grow-1 p-3">
 
-        <form th:action="@{/users/{id}(${user.id})}" th:method="put" th:object="${command}">
+        <form th:action="@{'/users/' + ${id}}" th:method="put" th:object="${command}">
             <div class="form-group">
                 <span th:text="#{entity.user.id}"></span>
                 <span class="form-control" th:text="${user.id}"></span>
@@ -51,21 +51,31 @@
                 <input id="name" class="form-control" th:field="*{name}">
                 <span class="error" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
             </div>
-            <div class="form-group">
-                <label for="emailId" th:text="#{entity.user.email}"></label>
-                <input id="emailId" class="form-control" th:field="*{emailId}">@
-                <span class="error" th:errors="*{emailId}" th:if="${#fields.hasErrors('emailId')}"></span>
-                <input class="form-control" th:field="*{emailDomain}">
-                <span class="error" th:errors="*{emailDomain}" th:if="${#fields.hasErrors('emailDomain')}"></span>
+            <div class="form-group row">
+                <label for="emailId" class="col-form-label" th:text="#{entity.user.email}"></label>
+                <div class="col-sm-5">
+                    <input id="emailId" class="form-control" th:field="*{emailId}">
+                    <span class="error" th:errors="*{emailId}" th:if="${#fields.hasErrors('emailId')}"></span>
+                </div>
+                <div class="col-sm-5">
+                    <input class="form-control" th:field="*{emailDomain}">
+                    <span class="error" th:errors="*{emailDomain}" th:if="${#fields.hasErrors('emailDomain')}"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="firstContactNumber" th:text="#{entity.user.contactNumber}"></label>
-                <input id="firstContactNumber" class="form-control" th:field="*{firstContactNumber}">
-                <span class="error" th:errors="*{firstContactNumber}" th:if="${#fields.hasErrors('firstContactNumber')}"></span>
-                <input id="middleContactNumber" class="form-control" th:field="*{middleContactNumber}">
-                <span class="error" th:errors="*{middleContactNumber}" th:if="${#fields.hasErrors('middleContactNumber')}"></span>
-                <input id="lastContactNumber" class="form-control" th:field="*{lastContactNumber}">
-                <span class="error" th:errors="*{lastContactNumber}" th:if="${#fields.hasErrors('lastContactNumber')}"></span>
+            <div class="form-group row">
+                <label for="firstContactNumber" class="col-form-label" th:text="#{entity.user.contactNumber}"></label>
+                <div class="col-sm-3">
+                    <input id="firstContactNumber" class="form-control" th:field="*{firstContactNumber}">
+                    <span class="error" th:errors="*{firstContactNumber}" th:if="${#fields.hasErrors('firstContactNumber')}"></span>
+                </div>
+                <div class="col-sm-3">
+                    <input id="middleContactNumber" class="form-control" th:field="*{middleContactNumber}">
+                    <span class="error" th:errors="*{middleContactNumber}" th:if="${#fields.hasErrors('middleContactNumber')}"></span>
+                </div>
+                <div class="col-sm-4">
+                    <input id="lastContactNumber" class="form-control" th:field="*{lastContactNumber}">
+                    <span class="error" th:errors="*{lastContactNumber}" th:if="${#fields.hasErrors('lastContactNumber')}"></span>
+                </div>
             </div>
             <div class="form-group">
                 <label th:text="#{entity.user.createdAt}"></label>
@@ -88,10 +98,11 @@
                 <span class="form-control" th:text="${user.credentialsExpiredAt}"></span>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" th:text="#{button.submit}"></button>
-                <a type="button" class="btn btn-secondary" th:href="@{/}" th:text="#{button.home}"></a>
-                <a type="button" class="btn btn-danger" th:href="@{'/users/delete/' + ${user.id}}" th:text="#{button.delete}"></a>
+            <div class="d-flex justify-content-center p-3 mb-3 rounded">
+                <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
+                <a type="button" class="btn btn-outline-primary mx-2" th:href="@{'/users/' + ${user.id} + '/edit-password'}" th:text="#{entity.user.password} + ' ' + #{label.update}"></a>
+                <a type="button" class="btn btn-secondary mx-2" th:href="@{/}" th:text="#{label.cancel}"></a>
+                <a type="button" class="btn btn-danger mx-2" th:href="@{'/users/delete/' + ${user.id}}" th:text="#{label.delete}" sec:authorize="!hasRole('ROLE_ADMIN')"></a>
             </div>
 
         </form>

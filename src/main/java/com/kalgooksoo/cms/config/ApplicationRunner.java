@@ -22,7 +22,7 @@ public class ApplicationRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        CreateUserCommand command = new CreateUserCommand(
+        CreateUserCommand createAdminCommand = new CreateUserCommand(
                 "admin",
                 "12341234",
                 "관리자",
@@ -32,11 +32,27 @@ public class ApplicationRunner implements CommandLineRunner {
                 "1234",
                 "5678"
         );
+        CreateUserCommand createUserCommand = new CreateUserCommand(
+                "tester",
+                "12341234",
+                "테스터",
+                "miro3721",
+                "gmail.com",
+                "010",
+                "1234",
+                "5678"
+        );
         try {
-            this.userService.createAdmin(command);
+            userService.createAdmin(createAdminCommand);
         } catch (DataIntegrityViolationException e) {
             logger.info("계정이 이미 존재합니다");
         }
+        try {
+            userService.createUser(createUserCommand);
+        } catch (DataIntegrityViolationException e) {
+            logger.info("계정이 이미 존재합니다");
+        }
+
     }
 
 }

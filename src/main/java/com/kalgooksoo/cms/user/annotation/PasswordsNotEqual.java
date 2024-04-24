@@ -22,7 +22,7 @@ public @interface PasswordsNotEqual {
      * 제약 조건 위반 시 반환되는 기본 메시지입니다.
      * @return 기본 메시지
      */
-    String message() default "Passwords must not be equal";
+    String message() default "{validation.user.password.not.equal}";
 
     /**
      * 제약 조건이 속하는 그룹입니다.

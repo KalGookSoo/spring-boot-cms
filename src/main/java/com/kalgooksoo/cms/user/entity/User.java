@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -174,17 +175,6 @@ public class User implements Serializable {
         return credentialsExpiredAt == null || credentialsExpiredAt.isAfter(LocalDateTime.now());
     }
 
-    /**
-     * 계정이 사용 가능한지 여부를 반환합니다.
-     * @return 계정이 사용 가능한지 여부
-     */
-    public boolean isEnabled() {
-        boolean accountNonLocked = isAccountNonLocked();
-        boolean accountNonExpired = isAccountNonExpired();
-        boolean credentialsNonExpired = isCredentialsNonExpired();
-        return accountNonLocked && accountNonExpired && credentialsNonExpired;
-    }
-
     public void addAuthority(Authority authority) {
         authorities.add(authority);
         authority.getUsers().add(this);
@@ -197,6 +187,14 @@ public class User implements Serializable {
 
     public void removeAuthorities() {
         authorities.clear();
+    }
+
+    public Email getEmail() {
+        return Optional.ofNullable(email).orElseGet(Email::new);
+    }
+
+    public ContactNumber getContactNumber() {
+        return Optional.ofNullable(contactNumber).orElseGet(ContactNumber::new);
     }
 
 }

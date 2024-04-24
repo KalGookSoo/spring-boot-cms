@@ -4,8 +4,6 @@ import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.SignInCommand;
 import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -39,16 +37,21 @@ public class SignController {
 
     private static final String SPRING_SECURITY_SAVED_REQUEST = "SPRING_SECURITY_SAVED_REQUEST";
 
-    private final UserService userService;  // 계정 서비스
+    private final UserService userService;
 
     private final AuthenticationManager authenticationManager;
 
     private final MessageSource messageSource;
 
+    @SuppressWarnings("SameParameterValue")
+    private String getMessage(String code, Object[] args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
     @Operation(summary = "계정 인증 화면", description = "계정 인증 화면으로 이동합니다")
     @GetMapping("/sign-in")
     public String signIn(
-            @Parameter(schema = @Schema(implementation = SignInCommand.class)) @ModelAttribute("command") SignInCommand command
+            @ModelAttribute("command") SignInCommand command
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -60,7 +63,7 @@ public class SignController {
     @Operation(summary = "계정 인증", description = "계정을 인증합니다")
     @PostMapping("/sign-in")
     public String signIn(
-            @Parameter(schema = @Schema(implementation = SignInCommand.class)) @ModelAttribute("command") @Valid SignInCommand command,
+            @ModelAttribute("command") @Valid SignInCommand command,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             HttpServletRequest request
@@ -104,7 +107,7 @@ public class SignController {
     @Operation(summary = "계정 생성 화면", description = "계정 생성 화면으로 이동합니다")
     @GetMapping("/sign-up")
     public String signUp(
-            @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @ModelAttribute("command") CreateUserCommand command
+            @ModelAttribute("command") CreateUserCommand command
     ) {
         return "sign_up";
     }
@@ -112,7 +115,7 @@ public class SignController {
     @Operation(summary = "계정 생성", description = "계정을 생성합니다")
     @PostMapping("/sign-up")
     public String signUp(
-            @Parameter(schema = @Schema(implementation = CreateUserCommand.class)) @ModelAttribute("command") @Valid CreateUserCommand command,
+            @ModelAttribute("command") @Valid CreateUserCommand command,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
@@ -125,7 +128,7 @@ public class SignController {
             bindingResult.rejectValue("username", "validation.user.username.exists");
             return "sign_up";
         }
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale()));
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.create", null));
         return "redirect:/sign-in";
     }
 
@@ -138,7 +141,7 @@ public class SignController {
         if (session != null) {
             session.invalidate();
         }
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.sign.out", null, LocaleContextHolder.getLocale()));
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.sign.out", null));
         return "redirect:/sign-in";
     }
 

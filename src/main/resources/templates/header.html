@@ -3,11 +3,13 @@
 
     <header class="text-center py-3 mb-4" th:fragment="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h1>Header</h1>
+            <h1><a th:href="@{/}">Header</a></h1>
             <div>
                 <div sec:authorize="isAuthenticated()">
                     <span th:text="#{message.welcome(${#authentication.principal.username})}"></span>
-                    <button type="submit" class="btn btn-danger" th:formaction="@{/sign-out}" th:formmethod="post" th:text="#{label.sign.out}"></button>
+                    <form class="d-inline-block" th:action="@{/sign-out}" th:method="post">
+                        <button type="submit" class="btn btn-danger" th:text="#{label.sign.out}"></button>
+                    </form>
                 </div>
                 <div sec:authorize="!isAuthenticated()">
                     <a class="btn btn-primary" th:href="@{/sign-in}" th:text="#{label.sign.in}"></a>

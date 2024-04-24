@@ -4,14 +4,14 @@ import com.kalgooksoo.cms.user.command.UpdateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.User;
-import com.kalgooksoo.cms.user.model.UserPrincipal;
 import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +27,13 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
+
+    private final MessageSource messageSource;
+
+    @SuppressWarnings("SameParameterValue")
+    private String getMessage(String code, Object[] args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
 
     @Operation(summary = "수정 화면", description = "수정 화면")
     @PreAuthorize("authentication.principal.id == #id")
@@ -58,7 +65,7 @@ public class UserController {
     @PutMapping("/{id}")
     public String update(
             @PathVariable String id,
-            @ModelAttribute("command") UpdateUserCommand command,
+            @ModelAttribute("command") @Valid UpdateUserCommand command,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
@@ -66,7 +73,7 @@ public class UserController {
             return "users/edit";
         }
         userService.update(id, command);
-        redirectAttributes.addFlashAttribute("message", "command.success.update");
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
         return "redirect:/users/" + id + "/edit";
     }
 
@@ -78,7 +85,7 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         userService.delete(id);
-        redirectAttributes.addFlashAttribute("message", "command.success.delete");
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
         return "redirect:/";
     }
 
@@ -91,7 +98,7 @@ public class UserController {
     ) {
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand(null, null);
         model.addAttribute("command", command);
-        return "edit_password";
+        return "users/edit_password";
     }
 
     @Operation(summary = "패스워드 수정", description = "패스워드 수정")
@@ -99,15 +106,22 @@ public class UserController {
     @PutMapping("/{id}/password")
     public String updatePassword(
             @PathVariable String id,
-            @ModelAttribute("command") UpdateUserPasswordCommand command,
+            @ModelAttribute("command") @Valid UpdateUserPasswordCommand command,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
+            // TODO PasswordsNotEqual 일 경우 다국어 처리
+            bindingResult.rejectValue("newPassword", getMessage("validation.user.password.not.equal", null));
             return "edit_password";
         }
-        userService.updatePassword(id, command.originPassword(), command.newPassword());
-        redirectAttributes.addFlashAttribute("message", "command.success.update");
+        try {// TODO 에러 핸들링 중앙화할 것
+            userService.updatePassword(id, command.originPassword(), command.newPassword());
+        } catch (IllegalArgumentException e) {
+            bindingResult.rejectValue("originPassword", getMessage(e.getMessage(), null));
+        }
+
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
         return "redirect:/users/" + id + "/edit-password";
     }
 
