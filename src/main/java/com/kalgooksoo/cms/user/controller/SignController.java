@@ -6,6 +6,7 @@ import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ public class SignController {
     private final UserService userService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final RememberMeServices rememberMeServices;
 
     private final MessageSource messageSource;
 
@@ -66,7 +70,8 @@ public class SignController {
             @ModelAttribute("command") @Valid SignInCommand command,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
-            HttpServletRequest request
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
         // validation
         if (bindingResult.hasErrors()) {
@@ -87,6 +92,9 @@ public class SignController {
         securityContext.setAuthentication(authentication);
         HttpSession httpSession = request.getSession(true);
         httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+
+        // Remember me
+        rememberMeServices.loginSuccess(request, response, authentication);
 
         // Redirect
         SavedRequest savedRequest = (SavedRequest) httpSession.getAttribute(SPRING_SECURITY_SAVED_REQUEST);

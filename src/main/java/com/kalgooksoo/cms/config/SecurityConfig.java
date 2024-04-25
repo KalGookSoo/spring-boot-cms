@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.config;
 
+import com.kalgooksoo.cms.security.service.JpaPersistentTokenRepository;
 import com.kalgooksoo.cms.user.repository.UserPrincipalRepository;
 import com.kalgooksoo.cms.user.service.DefaultUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -33,6 +33,8 @@ public class SecurityConfig {
 
     private final UserPrincipalRepository userPrincipalRepository;
 
+    private final JpaPersistentTokenRepository jpaPersistentTokenRepository;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new DefaultUserDetailsService(userPrincipalRepository);
@@ -45,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        return new InMemoryTokenRepositoryImpl();
+        return jpaPersistentTokenRepository;
     }
 
     @Bean
