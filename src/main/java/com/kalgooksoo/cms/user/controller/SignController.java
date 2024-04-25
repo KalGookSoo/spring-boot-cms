@@ -22,6 +22,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
@@ -143,12 +145,13 @@ public class SignController {
     @Operation(summary = "계정 인증 해제", description = "계정 인증을 해제합니다")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/sign-out")
-    public String signOut(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        SecurityContextHolder.clearContext();
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+    public String signOut(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        // Clear SecurityContext and invalidate HttpSession
+        new SecurityContextLogoutHandler().logout(request, response, null);
+
+        // Delete remember-me cookie
+        new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
+
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.sign.out", null));
         return "redirect:/sign-in";
     }
