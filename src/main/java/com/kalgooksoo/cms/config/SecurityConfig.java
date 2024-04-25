@@ -93,7 +93,7 @@ public class SecurityConfig {
         int tokenValiditySeconds = 60 * 60 * 24;
         httpSecurityRememberMeConfigurer
                 .key(key)
-                .rememberMeParameter("rememberMe")
+                .rememberMeParameter("remember-me")
                 .userDetailsService(userDetailsService())
                 .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(tokenValiditySeconds);

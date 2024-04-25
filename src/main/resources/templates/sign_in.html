@@ -39,8 +39,8 @@
                     <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
                 <div class="mb-3 form-check">
-                    <input type="checkbox" id="rememberMe" name="rememberMe" class="form-check-input">
-                    <label for="rememberMe" class="form-check-label" th:text="#{label.remember.me}"></label>
+                    <input type="checkbox" id="remember-me" name="remember-me" class="form-check-input">
+                    <label for="remember-me" class="form-check-label" th:text="#{label.remember.me}"></label>
                 </div>
                 <div class="mb-3 d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-block" th:text="#{label.sign.in}"></button>
