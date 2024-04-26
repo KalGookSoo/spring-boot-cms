@@ -47,8 +47,7 @@ erDiagram
 
     %% 투표
     TB_VOTE {
-        varchar(36) article_id PK
-        varchar(255) voter PK
+        varchar(36) id PK
     }
 
     TB_ARTICLE_VOTE {
