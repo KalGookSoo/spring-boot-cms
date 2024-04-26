@@ -113,12 +113,13 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             // TODO PasswordsNotEqual 일 경우 다국어 처리
             bindingResult.rejectValue("newPassword", getMessage("validation.user.password.not.equal", null));
-            return "edit_password";
+            return "users/edit_password";
         }
         try {// TODO 에러 핸들링 중앙화할 것
             userService.updatePassword(id, command.originPassword(), command.newPassword());
         } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("originPassword", getMessage(e.getMessage(), null));
+            bindingResult.rejectValue("originPassword", e.getMessage());
+            return "users/edit_password";
         }
 
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
