@@ -29,17 +29,17 @@ public class GlobalExceptionHandler {
         return "error/404";
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException e) {
+        logger.error(e.getMessage());
+        return "redirect:/sign-in";
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(RuntimeException e) {
         logger.error(e.getMessage());
         return "error/500";
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDeniedException(AccessDeniedException e) {
-        logger.error(e.getMessage());
-        return "redirect:/sign-in";
     }
 
 }
