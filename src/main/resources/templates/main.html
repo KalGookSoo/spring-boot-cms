@@ -14,7 +14,7 @@
         <script th:src="@{/js/bootstrap.js}"></script>
 
         <style>
-            header, nav, main, footer {
+            header, aside, main, footer {
                 border: 1px dashed red;
                 box-sizing: border-box;
             }
@@ -32,7 +32,7 @@
 
         <div class="d-flex">
 
-            <nav th:replace="~{nav :: nav}"></nav>
+            <aside th:replace="~{aside :: aside}"></aside>
 
             <main class="flex-grow-1 p-3">
 

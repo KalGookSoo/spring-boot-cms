@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
-    <nav class="p-3" th:fragment="nav">
+    <aside id="aside" class="p-3" th:fragment="aside">
         <!-- Sidebar content -->
         <h3>Sidebar</h3>
         <!-- Add your menu items here -->
@@ -19,6 +19,6 @@
                 <a th:href="@{/v3/api-docs.yaml}">OAS download</a>
             </li>
         </ul>
-    </nav>
+    </aside>
 
 </html>
