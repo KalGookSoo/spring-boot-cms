@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--suppress HtmlFormInputWithoutLabel -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title th:text="#{entity.categories}"></title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/grid.css}">
+
+    <!-- JS -->
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/Grid.js}"></script>
+
+    <style>
+        header, aside, main, footer {
+            border: 1px dashed red;
+            box-sizing: border-box;
+        }
+    </style>
+
+    <script th:if="${message}" th:inline="javascript">
+        alert([[${message}]]);
+    </script>
+
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"></header>
+
+<div class="d-flex">
+
+    <aside th:replace="~{aside :: aside}"></aside>
+
+    <main class="flex-grow-1 p-3">
+
+        <div class="d-flex justify-content-center p-3 mb-3 rounded">
+            <a type="button" class="btn btn-primary mx-2" th:href="@{/categories/new}" th:text="#{label.create}"></a>
+        </div>
+
+        <form th:action="@{/categories}" th:method="put">
+            <table id="categories" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" th:text="#{entity.category.id}"></th>
+                        <th scope="col" th:text="#{entity.category.createdBy}"></th>
+                        <th scope="col" th:text="#{entity.category.createdDate}"></th>
+                        <th scope="col" th:text="#{entity.category.lastModifiedBy}"></th>
+                        <th scope="col" th:text="#{entity.category.lastModifiedDate}"></th>
+                        <th scope="col" th:text="#{entity.category.parentId}"></th>
+                        <th scope="col" th:text="#{entity.category.name}"></th>
+                        <th scope="col" th:text="#{entity.category.type}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:data-id="${category.id}" th:each="category, status : ${categories}">
+                        <th scope="row" th:text="${status.index}"></th>
+                        <td th:text="${category.id}"></td>
+                        <td th:text="${category.createdBy}"></td>
+                        <td th:text="${category.createdDate}"></td>
+                        <td th:text="${category.lastModifiedBy}"></td>
+                        <td th:text="${category.lastModifiedDate}"></td>
+                        <td th:text="${category.parent?.id}"></td>
+                        <td th:text="${category.name}"></td>
+                        <td th:text="${category.type}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </form>
+
+    </main>
+
+</div>
+
+<footer th:replace="~{footer :: footer}"></footer>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const $categories = document.getElementById('categories');
+        $categories.addEventListener('click', e => {
+
+            const $tr = e.target.closest(`tbody tr`);
+            if ($tr) {
+                const id = $tr.dataset.id;
+                location.href = `/categories/${id}/edit`
+            }
+        });
+
+
+        const columns = [
+            {name: 'id', header: [[#{entity.category.id}]], type: 'text', hidden: true, editable: false},
+            {name: 'createdBy', header: [[#{entity.category.createdBy}]], type: 'datetime-local', hidden: false, editable: false},
+            {name: 'createdDate', header: [[#{entity.category.createdDate}]], type: 'datetime-local', hidden: false, editable: false},
+            {name: 'lastModifiedBy', header: [[#{entity.category.lastModifiedBy}]], type: 'datetime-local', hidden: false, editable: false},
+            {name: 'lastModifiedDate', header: [[#{entity.category.lastModifiedDate}]], type: 'datetime-local', hidden: false, editable: false},
+            {name: 'parentId', header: [[#{entity.category.parentId}]], type: 'text', hidden: false, editable: false},
+            {name: 'name', header: [[#{entity.category.name}]], type: 'text', hidden: false, editable: false},
+            {name: 'type', header: [[#{entity.category.type}]], type: 'text', hidden: false, editable: false},
+        ];
+
+        const categories = new Grid($categories, columns);
+    });
+</script>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 package com.kalgooksoo.core.bulk.command;
 
-public interface Command {
-    String getId();
+public interface Command<ID> {
+    ID getId();
 }

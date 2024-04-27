@@ -18,22 +18,22 @@ public class ExampleService {
     }
 
     // Transactional
-    public void execute(List<CommandWrapper<Command>> commandWrappers) {
-        List<Command> commandsByCreate = new ArrayList<>();
-        List<Command> commandsByUpdate = new ArrayList<>();
+    public void execute(List<CommandWrapper<Command<String>>> commandWrappers) {
+        List<Command<String>> commandsByCreate = new ArrayList<>();
+        List<Command<String>> commandsByUpdate = new ArrayList<>();
         List<String> commandsByDelete = new ArrayList<>();
 
-        for(CommandWrapper<Command> commandWrapper : commandWrappers) {
-            switch (commandWrapper.getType()) {
+        for(CommandWrapper<Command<String>> commandWrapper : commandWrappers) {
+            switch (commandWrapper.type()) {
                 case CREATE:
-                    commandsByCreate.add(commandWrapper.getCommand());
+                    commandsByCreate.add(commandWrapper.command());
                     break;
                 case UPDATE:
-                    commandsByUpdate.add(commandWrapper.getCommand());
+                    commandsByUpdate.add(commandWrapper.command());
                     break;
                 case DELETE:
                     // Assuming payload ID is fetchable via getId()
-                    commandsByDelete.add(commandWrapper.getCommand().getId());
+                    commandsByDelete.add(commandWrapper.command().getId());
                     break;
             }
         }

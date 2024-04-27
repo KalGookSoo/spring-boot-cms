@@ -7,11 +7,15 @@ import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -82,10 +86,18 @@ public class UserController {
     @DeleteMapping("/{id}")
     public String delete(
             @PathVariable String id,
+            HttpServletRequest request,
+            HttpServletResponse response,
             RedirectAttributes redirectAttributes
     ) {
         userService.delete(id);
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
+
+        // Clear SecurityContext and invalidate HttpSession
+        new SecurityContextLogoutHandler().logout(request, response, null);
+
+        // Delete remember-me cookie
+        new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
         return "redirect:/";
     }
 

@@ -55,17 +55,16 @@ public class Category extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CategoryType type;
 
-    public static Category create(String name, String type, String createdBy) {
-        Assert.notNull(createdBy, "생성자는 필수입니다.");
+    public static Category create(String name, CategoryType type) {
         Category category = new Category();
         category.name = name;
-        category.type = CategoryType.valueOf(type);
+        category.type = type;
         return category;
     }
 
-    public void update(String name, String type) {
+    public void update(String name, CategoryType type) {
         this.name = name;
-        this.type = CategoryType.valueOf(type);
+        this.type = type;
     }
 
     public void addCategory(Category category) {
