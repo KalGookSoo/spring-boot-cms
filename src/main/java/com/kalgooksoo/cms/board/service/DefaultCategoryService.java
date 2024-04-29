@@ -43,7 +43,12 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public Category update(String id, UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
-        category.update(command.name(), command.type());
+        if (command.parentId() == null || command.parentId().isEmpty()) {
+            category.update(null, command.name(), command.type());
+        } else {
+            Category parent = categoryRepository.getReferenceById(command.parentId());
+            category.update(parent, command.name(), command.type());
+        }
         return categoryRepository.save(category);
     }
 

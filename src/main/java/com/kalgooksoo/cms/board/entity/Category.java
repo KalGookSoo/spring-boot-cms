@@ -62,7 +62,8 @@ public class Category extends BaseEntity {
         return category;
     }
 
-    public void update(String name, CategoryType type) {
+    public void update(Category parent, String name, CategoryType type) {
+        this.parent = parent;
         this.name = name;
         this.type = type;
     }

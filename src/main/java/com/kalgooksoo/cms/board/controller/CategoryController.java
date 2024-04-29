@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Tag(name = "CategoryController", description = "카테고리 컨트롤러")
 @Controller
@@ -34,7 +36,7 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping("/list")
     public String getCategories(Model model) {
         // Query
         List<Category> categories = categoryService.findAll();
@@ -44,6 +46,13 @@ public class CategoryController {
 
         // View
         return "categories/list";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<List<Category>> findAll() {
+        return ResponseEntity.ok(categoryService.findAll());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -92,10 +101,17 @@ public class CategoryController {
             Model model
     ) {
         // Query
-        Category category = categoryService.find(id);
-        UpdateCategoryCommand command = new UpdateCategoryCommand(category.getName(), category.getType());
+        List<Category> categories = categoryService.findAll();
+        Category category = categories.stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+        categories.remove(category);
+        String parentId = category.getParent() != null ? category.getParent().getId() : null;
+        UpdateCategoryCommand command = new UpdateCategoryCommand(parentId, category.getName(), category.getType());
 
         // Model
+        model.addAttribute("categories", categories);
         model.addAttribute("category", category);
         model.addAttribute("command", command);
 
