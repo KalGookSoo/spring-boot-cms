@@ -43,7 +43,7 @@
         </div>
 
         <form th:action="@{/categories}" th:method="put">
-            <table id="categories" class="table">
+            <table id="categories" class="table table-hover">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -52,7 +52,7 @@
                         <th scope="col" th:text="#{entity.category.createdDate}"></th>
                         <th scope="col" th:text="#{entity.category.lastModifiedBy}"></th>
                         <th scope="col" th:text="#{entity.category.lastModifiedDate}"></th>
-                        <th scope="col" th:text="#{entity.category.parentId}"></th>
+                        <th scope="col" th:text="#{entity.category.parent}"></th>
                         <th scope="col" th:text="#{entity.category.name}"></th>
                         <th scope="col" th:text="#{entity.category.type}"></th>
                     </tr>
@@ -118,7 +118,7 @@
             {name: 'createdDate', header: [[#{entity.category.createdDate}]], type: 'datetime-local', hidden: false, editable: false},
             {name: 'lastModifiedBy', header: [[#{entity.category.lastModifiedBy}]], type: 'datetime-local', hidden: false, editable: false},
             {name: 'lastModifiedDate', header: [[#{entity.category.lastModifiedDate}]], type: 'datetime-local', hidden: false, editable: false},
-            {name: 'parentId', header: [[#{entity.category.parentId}]], type: 'text', hidden: false, editable: false},
+            {name: 'parentId', header: [[#{entity.category.parent}]], type: 'text', hidden: false, editable: false},
             {name: 'name', header: [[#{entity.category.name}]], type: 'text', hidden: false, editable: false},
             {name: 'type', header: [[#{entity.category.type}]], type: 'text', hidden: false, editable: false},
         ];

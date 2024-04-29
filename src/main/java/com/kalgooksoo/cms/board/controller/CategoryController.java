@@ -67,11 +67,12 @@ public class CategoryController {
     public String create(
             @ModelAttribute("command") @Valid CreateCategoryCommand command,
             BindingResult bindingResult,
+            Model model,
             RedirectAttributes redirectAttributes
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return "categories/new";
+            return getNew(command, model);
         }
 
         // Command
@@ -108,11 +109,12 @@ public class CategoryController {
             @PathVariable String id,
             @ModelAttribute("command") @Valid UpdateCategoryCommand command,
             BindingResult bindingResult,
+            Model model,
             RedirectAttributes redirectAttributes
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return "categories/edit";
+            return getEdit(id, model);
         }
 
         // Command

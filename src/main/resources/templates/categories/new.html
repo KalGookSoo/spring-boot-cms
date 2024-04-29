@@ -39,9 +39,11 @@
 
         <form th:action="@{/categories}" th:method="post" th:object="${command}">
             <div class="form-group">
-                <label for="parentId" th:text="#{entity.category.parentId}"></label>
-                <input id="parentId" class="form-control" th:field="*{parentId}">
-                <span class="d-block invalid-feedback" th:errors="*{parentId}" th:if="${#fields.hasErrors('parentId')}"></span>
+                <label for="parentId" th:text="#{entity.category.parent}"></label>
+                <select id="parentId" name="parentId" class="form-select">
+                    <option value="" th:text="#{label.select}"></option>
+                    <option th:each="category, status : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="name" th:text="#{entity.category.name}"></label>
@@ -50,8 +52,8 @@
             </div>
             <div class="form-group">
                 <label for="type" th:text="#{entity.category.type}"></label>
-                <select id="type" class="form-select" th:name="type">
-                    <option value="" selected>Choose</option>
+                <select id="type" name="type" class="form-select">
+                    <option value="" th:text="#{label.select}"></option>
                     <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
                 </select>
                 <span class="d-block invalid-feedback" th:errors="*{type}" th:if="${#fields.hasErrors('type')}"></span>

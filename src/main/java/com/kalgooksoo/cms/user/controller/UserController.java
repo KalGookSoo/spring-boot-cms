@@ -74,11 +74,12 @@ public class UserController {
             @PathVariable String id,
             @ModelAttribute("command") @Valid UpdateUserCommand command,
             BindingResult bindingResult,
+            Model model,
             RedirectAttributes redirectAttributes
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return "users/edit";
+            return getEdit(id, model);
         }
 
         // Command
