@@ -41,12 +41,12 @@
             <div class="form-group">
                 <label for="parentId" th:text="#{entity.category.parentId}"></label>
                 <input id="parentId" class="form-control" th:field="*{parentId}">
-                <span class="error" th:errors="*{parentId}" th:if="${#fields.hasErrors('parentId')}"></span>
+                <span class="d-block invalid-feedback" th:errors="*{parentId}" th:if="${#fields.hasErrors('parentId')}"></span>
             </div>
             <div class="form-group">
                 <label for="name" th:text="#{entity.category.name}"></label>
                 <input id="name" class="form-control" th:field="*{name}">
-                <span class="error" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
+                <span class="d-block invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
             </div>
             <div class="form-group">
                 <label for="type" th:text="#{entity.category.type}"></label>
@@ -54,7 +54,7 @@
                     <option value="" selected>Choose</option>
                     <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
                 </select>
-                <span class="error" th:errors="*{type}" th:if="${#fields.hasErrors('type')}"></span>
+                <span class="d-block invalid-feedback" th:errors="*{type}" th:if="${#fields.hasErrors('type')}"></span>
             </div>
 
             <div class="d-flex justify-content-center p-3 mb-3 rounded">

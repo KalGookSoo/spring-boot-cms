@@ -49,32 +49,32 @@
                     <div class="form-group">
                         <label for="name" th:text="#{entity.user.name}"></label>
                         <input id="name" class="form-control" th:field="*{name}">
-                        <span class="error" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
+                        <span class="d-block invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></span>
                     </div>
                     <div class="form-group row">
                         <label for="emailId" class="col-form-label" th:text="#{entity.user.email}"></label>
                         <div class="col-sm-5">
                             <input id="emailId" class="form-control" th:field="*{emailId}">
-                            <span class="error" th:errors="*{emailId}" th:if="${#fields.hasErrors('emailId')}"></span>
+                            <span class="d-block invalid-feedback" th:errors="*{emailId}" th:if="${#fields.hasErrors('emailId')}"></span>
                         </div>
                         <div class="col-sm-5">
                             <input class="form-control" th:field="*{emailDomain}">
-                            <span class="error" th:errors="*{emailDomain}" th:if="${#fields.hasErrors('emailDomain')}"></span>
+                            <span class="d-block invalid-feedback" th:errors="*{emailDomain}" th:if="${#fields.hasErrors('emailDomain')}"></span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="firstContactNumber" class="col-form-label" th:text="#{entity.user.contactNumber}"></label>
                         <div class="col-sm-3">
                             <input id="firstContactNumber" class="form-control" th:field="*{firstContactNumber}">
-                            <span class="error" th:errors="*{firstContactNumber}" th:if="${#fields.hasErrors('firstContactNumber')}"></span>
+                            <span class="d-block invalid-feedback" th:errors="*{firstContactNumber}" th:if="${#fields.hasErrors('firstContactNumber')}"></span>
                         </div>
                         <div class="col-sm-3">
                             <input id="middleContactNumber" class="form-control" th:field="*{middleContactNumber}">
-                            <span class="error" th:errors="*{middleContactNumber}" th:if="${#fields.hasErrors('middleContactNumber')}"></span>
+                            <span class="d-block invalid-feedback" th:errors="*{middleContactNumber}" th:if="${#fields.hasErrors('middleContactNumber')}"></span>
                         </div>
                         <div class="col-sm-4">
                             <input id="lastContactNumber" class="form-control" th:field="*{lastContactNumber}">
-                            <span class="error" th:errors="*{lastContactNumber}" th:if="${#fields.hasErrors('lastContactNumber')}"></span>
+                            <span class="d-block invalid-feedback" th:errors="*{lastContactNumber}" th:if="${#fields.hasErrors('lastContactNumber')}"></span>
                         </div>
                     </div>
                     <div class="form-group">

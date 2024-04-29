@@ -10,14 +10,6 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/signin.css}">
 
-    <style>
-        .error {
-            color: red;
-            font-size: small;
-            margin-left: 5px;
-        }
-    </style>
-
     <script th:if="${message}" th:inline="javascript">
         alert([[${message}]]);
     </script>
@@ -31,12 +23,12 @@
                 <div class="mb-3">
                     <label for="username" class="form-label" th:text="#{entity.user.username}"></label>
                     <input type="text" id="username" name="username" class="form-control">
-                    <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                    <span class="d-block invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label" th:text="#{entity.user.password}"></label>
                     <input type="password" id="password" name="password" class="form-control">
-                    <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                    <span class="d-block invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" id="remember-me" name="remember-me" class="form-check-input">
