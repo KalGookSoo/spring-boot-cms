@@ -37,7 +37,7 @@
 
     <main class="flex-grow-1 p-3">
 
-        <form th:action="@{/categories}" th:method="put" th:object="${command}">
+        <form name="form" th:action="@{'/categories/' + ${category.id}}" th:method="put" th:object="${command}">
             <div class="form-group">
                 <label for="name" th:text="#{entity.category.name}"></label>
                 <input id="name" class="form-control" th:field="*{name}">
@@ -55,7 +55,7 @@
             <div class="d-flex justify-content-center p-3 mb-3 rounded">
                 <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
                 <a type="button" class="btn btn-secondary mx-2" th:href="@{/categories}" th:text="#{label.cancel}"></a>
-                <a type="button" class="btn btn-danger mx-2" th:formmethod="delete" th:formaction="@{'/categories/delete/' + ${category.id}}" th:text="#{label.delete}"></a>
+                <button type="submit" class="btn btn-danger mx-2" data-role="delete" th:text="#{label.delete}"></button>
             </div>
         </form>
 
@@ -64,6 +64,16 @@
 </div>
 
 <footer th:replace="~{footer :: footer}"></footer>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        document.form.addEventListener('submit', e => {
+            if (!!e.submitter.dataset.role && e.submitter.dataset.role === 'delete') {
+                e.target['_method'].value = 'delete';
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

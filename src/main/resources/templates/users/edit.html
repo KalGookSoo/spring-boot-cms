@@ -37,7 +37,7 @@
 
             <main class="flex-grow-1 p-3">
 
-                <form th:action="@{'/users/' + ${id}}" th:method="put" th:object="${command}">
+                <form name="form" th:action="@{'/users/' + ${id}}" th:method="put" th:object="${command}">
                     <div class="form-group">
                         <label for="id" th:text="#{entity.user.id}"></label>
                         <input id="id" class="form-control-plaintext" th:value="${user.id}" readonly>
@@ -102,7 +102,7 @@
                         <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
                         <a type="button" class="btn btn-outline-primary mx-2" th:href="@{'/users/' + ${user.id} + '/edit-password'}" th:text="#{entity.user.password} + ' ' + #{label.update}"></a>
                         <a type="button" class="btn btn-secondary mx-2" th:href="@{/}" th:text="#{label.cancel}"></a>
-                        <a type="button" class="btn btn-danger mx-2" th:formmethod="delete" th:formaction="@{'/users/delete/' + ${user.id}}" th:text="#{label.delete}" sec:authorize="!hasRole('ROLE_ADMIN')"></a>
+                        <button type="submit" class="btn btn-danger mx-2" data-role="delete" th:text="#{label.delete}" sec:authorize="!hasRole('ROLE_ADMIN')"></button>
                     </div>
 
                 </form>
@@ -112,6 +112,16 @@
         </div>
 
         <footer th:replace="~{footer :: footer}"></footer>
+
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', () => {
+                document.form.addEventListener('submit', e => {
+                    if (!!e.submitter.dataset.role && e.submitter.dataset.role === 'delete') {
+                        e.target['_method'].value = 'delete';
+                    }
+                });
+            });
+        </script>
 
     </body>
 </html>
