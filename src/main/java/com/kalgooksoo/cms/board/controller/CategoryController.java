@@ -36,8 +36,10 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public String getCategories(Model model) {
-        // Model
+        // Query
         List<Category> categories = categoryService.findAll();
+
+        // Model
         model.addAttribute("categories", categories);
 
         // View
@@ -50,8 +52,10 @@ public class CategoryController {
             @ModelAttribute("command") CreateCategoryCommand command,
             Model model
     ) {
-        // Model
+        // Query
         List<Category> categories = categoryService.findAll();
+
+        // Model
         model.addAttribute("categories", categories);
 
         // View
@@ -70,8 +74,10 @@ public class CategoryController {
             return "categories/new";
         }
 
-        // Model
+        // Command
         Category category = categoryService.create(command);
+
+        // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.create", null));
 
         // View
@@ -84,10 +90,12 @@ public class CategoryController {
             @PathVariable String id,
             Model model
     ) {
-        // Model
+        // Query
         Category category = categoryService.find(id);
-        model.addAttribute("category", category);
         UpdateCategoryCommand command = new UpdateCategoryCommand(category.getName(), category.getType());
+
+        // Model
+        model.addAttribute("category", category);
         model.addAttribute("command", command);
 
         // View
@@ -107,8 +115,10 @@ public class CategoryController {
             return "categories/edit";
         }
 
-        // Model
+        // Command
         categoryService.update(id, command);
+
+        // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
 
         // View
@@ -121,8 +131,10 @@ public class CategoryController {
             @PathVariable String id,
             RedirectAttributes redirectAttributes
     ) {
-        // Model
+        // Command
         categoryService.delete(id);
+
+        // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
 
         // View

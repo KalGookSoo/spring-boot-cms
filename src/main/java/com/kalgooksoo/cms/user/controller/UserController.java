@@ -46,12 +46,9 @@ public class UserController {
             @PathVariable String id,
             Model model
     ) {
+        // Query
         User user = userService.findById(id);
-        model.addAttribute("user", user);
-
         Set<Authority> authorities = user.getAuthorities();
-        model.addAttribute("authorities", authorities);
-
         UpdateUserCommand command = new UpdateUserCommand(
                 user.getName(),
                 user.getEmail().getId(),
@@ -60,7 +57,13 @@ public class UserController {
                 user.getContactNumber().getMiddle(),
                 user.getContactNumber().getLast()
         );
+
+        // Model
+        model.addAttribute("user", user);
+        model.addAttribute("authorities", authorities);
         model.addAttribute("command", command);
+
+        // View
         return "users/edit";
     }
 
@@ -73,11 +76,18 @@ public class UserController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
+        // Validation
         if (bindingResult.hasErrors()) {
             return "users/edit";
         }
+
+        // Command
         userService.update(id, command);
+
+        // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
+
+        // View
         return "redirect:/users/" + id + "/edit";
     }
 
@@ -90,14 +100,17 @@ public class UserController {
             HttpServletResponse response,
             RedirectAttributes redirectAttributes
     ) {
+        // Command
         userService.delete(id);
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
 
         // Clear SecurityContext and invalidate HttpSession
         new SecurityContextLogoutHandler().logout(request, response, null);
 
         // Delete remember-me cookie
         new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
+
+        // Model
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
         return "redirect:/";
     }
 
@@ -108,10 +121,16 @@ public class UserController {
             @PathVariable String id,
             Model model
     ) {
+        // Query
         UpdateUserPasswordCommand command = new UpdateUserPasswordCommand(null, null);
+
+        // Model
         model.addAttribute("command", command);
+
+        // View
         return "users/edit_password";
     }
+
 
     @Operation(summary = "패스워드 수정", description = "패스워드 수정")
     @PreAuthorize("authentication.principal.id == #id")
@@ -122,19 +141,26 @@ public class UserController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
+        // Validation
         if (bindingResult.hasErrors()) {
             bindingResult.rejectValue("originPassword", "validation.user.password.not.equal");
             bindingResult.rejectValue("newPassword", "validation.user.password.not.equal");
             return "users/edit_password";
         }
+
+        // Command
         try {// TODO 에러 핸들링 중앙화할 것
             userService.updatePassword(id, command.originPassword(), command.newPassword());
         } catch (IllegalArgumentException e) {
-            bindingResult.rejectValue("originPassword", e.getMessage());
+            //noinspection DataFlowIssue
+            bindingResult.rejectValue("originPassword", null, e.getMessage());
             return "users/edit_password";
         }
 
+        // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
+
+        // View
         return "redirect:/users/" + id + "/edit-password";
     }
 
