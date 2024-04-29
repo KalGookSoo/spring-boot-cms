@@ -41,7 +41,7 @@
                         <label for="parentId" th:text="#{entity.category.parent}"></label>
                         <select id="parentId" name="parentId" class="form-select">
                             <option value="" th:text="#{label.select}"></option>
-                            <option th:each="category, status : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                            <option th:each="category, status : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${command.parentId?.equals(category.parent?.id)}"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -52,7 +52,6 @@
                     <div class="form-group">
                         <label for="type" th:text="#{entity.category.type}"></label>
                         <select id="type" class="form-select" th:name="type">
-                            <option value="">Choose</option>
                             <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}" th:selected="${command.type.equals(type)}"></option>
                         </select>
                         <span class="d-block invalid-feedback" th:errors="*{type}" th:if="${#fields.hasErrors('type')}"></span>
