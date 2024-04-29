@@ -42,73 +42,14 @@
             <a type="button" class="btn btn-primary mx-2" th:href="@{/categories/new}" th:text="#{label.create}"></a>
         </div>
 
-        <form th:action="@{/categories}" th:method="put">
-            <table id="categories" class="table table-hover border">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th class="d-none" th:text="#{entity.category.id}"></th>
-                        <th th:text="#{entity.category.createdBy}"></th>
-                        <th th:text="#{entity.category.createdDate}"></th>
-                        <th th:text="#{entity.category.lastModifiedBy}"></th>
-                        <th th:text="#{entity.category.lastModifiedDate}"></th>
-                        <th th:text="#{entity.category.parent}"></th>
-                        <th th:text="#{entity.category.name}"></th>
-                        <th th:text="#{entity.category.type}"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="pointer" th:data-id="${category.id}" th:each="category, status : ${categories}">
-                        <td>
-                            <input type="number" class="form-control-plaintext" th:value="${status.index + 1}" readonly>
-                        </td>
-                        <td class="d-none">
-                            <input type="text" class="form-control-plaintext" th:value="${category.id}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${category.createdBy}" readonly>
-                        </td>
-                        <td>
-                            <input type="datetime-local" class="form-control-plaintext" th:value="${category.createdDate?.withNano(0)}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${category.lastModifiedBy}" readonly>
-                        </td>
-                        <td>
-                            <input type="datetime-local" class="form-control-plaintext" th:value="${category.lastModifiedDate?.withNano(0)}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${category.parent?.name}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${category.name}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${category.type.description}" readonly>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <nav class="justify-content-center">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            <span>&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            <span>&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-        </form>
+        <div th:fragment="tree(categories)">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="category : ${categories}">
+                    <a th:href="@{'/categories/' + ${category.id} + '/edit'}" th:text="${category.name}">Category Name</a>
+                    <div th:if="${!#lists.isEmpty(category.children)}" th:replace=":: tree(${category.children})"></div>
+                </li>
+            </ul>
+        </div>
 
     </main>
 
@@ -117,17 +58,17 @@
 <footer th:replace="~{footer :: footer}"></footer>
 
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-        const $categories = document.getElementById('categories');
-        $categories.addEventListener('click', e => {
-
-            const $tr = e.target.closest(`tbody tr`);
-            if ($tr) {
-                const id = $tr.dataset.id;
-                location.href = `/categories/${id}/edit`
-            }
-        });
+        // const $categories = document.getElementById('categories');
+        // $categories.addEventListener('click', e => {
+        //
+        //     const $tr = e.target.closest(`tbody tr`);
+        //     if ($tr) {
+        //         const id = $tr.dataset.id;
+        //         location.href = `/categories/${id}/edit`
+        //     }
+        // });
 
     });
 </script>

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CategoryService {
     Category create(CreateCategoryCommand command);
+    List<Category> findAllByParentIsNull();
     List<Category> findAll();
     Category find(String id);
     Category update(String id, UpdateCategoryCommand command);

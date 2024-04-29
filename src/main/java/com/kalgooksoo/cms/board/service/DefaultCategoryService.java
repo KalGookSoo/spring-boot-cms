@@ -31,8 +31,13 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public List<Category> findAll() {
+    public List<Category> findAllByParentIsNull() {
         return categoryRepository.findAllByParentIsNull();
+    }
+
+    @Override
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
     @Override
