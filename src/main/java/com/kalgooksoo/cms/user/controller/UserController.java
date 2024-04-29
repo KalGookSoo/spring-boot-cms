@@ -123,8 +123,8 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            // TODO PasswordsNotEqual 일 경우 다국어 처리
-            bindingResult.rejectValue("newPassword", getMessage("validation.user.password.not.equal", null));
+            bindingResult.rejectValue("originPassword", "validation.user.password.not.equal");
+            bindingResult.rejectValue("newPassword", "validation.user.password.not.equal");
             return "users/edit_password";
         }
         try {// TODO 에러 핸들링 중앙화할 것
