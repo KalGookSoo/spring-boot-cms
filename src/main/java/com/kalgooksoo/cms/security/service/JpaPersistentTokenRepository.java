@@ -7,6 +7,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -46,6 +47,7 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
                 .orElse(null);
     }
 
+    @Transactional
     @Override
     public void removeUserTokens(String username) {
         rememberMeTokenRepository.deleteByUsername(username);
