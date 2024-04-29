@@ -22,12 +22,12 @@ import static lombok.AccessLevel.PROTECTED;
 @Comment("카테고리")
 public class Category extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @Comment("부모 식별자")
     private Category parent;
 
-    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "parent")
     private List<Category> children = new ArrayList<>();
 
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -40,8 +40,9 @@ public class Category extends BaseEntity {
     @Comment("타입")
     private CategoryType type;
 
-    public static Category create(String name, CategoryType type) {
+    public static Category create(Category parent, String name, CategoryType type) {
         Category category = new Category();
+        category.parent = parent;
         category.name = name;
         category.type = type;
         return category;
@@ -51,16 +52,6 @@ public class Category extends BaseEntity {
         this.parent = parent;
         this.name = name;
         this.type = type;
-    }
-
-    public void addCategory(Category category) {
-        children.add(category);
-        category.parent = this;
-    }
-
-    public void removeCategory(Category category) {
-        children.remove(category);
-        category.parent = null;
     }
 
     public void addArticle(Article article) {

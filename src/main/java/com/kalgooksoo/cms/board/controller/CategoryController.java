@@ -98,7 +98,7 @@ public class CategoryController {
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
-        categories.remove(category);
+        removeCategoryAndItsChildren(categories, category);
         String parentId = category.getParent() != null ? category.getParent().getId() : null;
         UpdateCategoryCommand command = new UpdateCategoryCommand(parentId, category.getName(), category.getType());
 
@@ -149,6 +149,13 @@ public class CategoryController {
 
         // View
         return "redirect:/categories/list";
+    }
+
+    void removeCategoryAndItsChildren(List<Category> categories, Category category) {
+        categories.remove(category);
+        for (Category subCategory : category.getChildren()) {
+            removeCategoryAndItsChildren(categories, subCategory);
+        }
     }
 
 }

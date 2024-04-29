@@ -19,13 +19,12 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public Category create(CreateCategoryCommand command) {
         if (command.parentId() == null || command.parentId().isEmpty()) {
-            Category category = Category.create(command.name(), command.type());
+            Category category = Category.create(null, command.name(), command.type());
             return categoryRepository.save(category);
         } else {
-            Category parentCategory = categoryRepository.getReferenceById(command.parentId());
-            Category category = Category.create(command.name(), command.type());
-            parentCategory.addCategory(category);
-            categoryRepository.save(parentCategory);
+            Category parent = categoryRepository.getReferenceById(command.parentId());
+            Category category = Category.create(parent, command.name(), command.type());
+            categoryRepository.save(category);
             return category;
         }
     }
@@ -46,7 +45,7 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public Category update(String id, UpdateCategoryCommand command) {
+    public void update(String id, UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
         if (command.parentId() == null || command.parentId().isEmpty()) {
             category.update(null, command.name(), command.type());
@@ -54,7 +53,7 @@ public class DefaultCategoryService implements CategoryService {
             Category parent = categoryRepository.getReferenceById(command.parentId());
             category.update(parent, command.name(), command.type());
         }
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     @Override

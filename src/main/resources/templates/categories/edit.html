@@ -41,7 +41,7 @@
                         <label for="parentId" th:text="#{entity.category.parent}"></label>
                         <select id="parentId" name="parentId" class="form-select">
                             <option value="" th:text="#{label.select}"></option>
-                            <option th:each="category, status : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${command.parentId?.equals(category.parent?.id)}"></option>
+                            <option th:each="_category, status : ${categories}" th:value="${_category.id}" th:text="${_category.name}" th:selected="${#strings.equals(_category.id, category.parent?.id)}"></option>
                         </select>
                     </div>
                     <div class="form-group">
