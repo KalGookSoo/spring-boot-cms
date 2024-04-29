@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
@@ -20,9 +21,6 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
-/**
- * 계정
- */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(of = {"id"})
@@ -32,57 +30,43 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "tb_user")
 @DynamicInsert
 @DynamicUpdate
+@Comment("계정")
 public class User implements Serializable {
 
-    /**
-     * 계정 식별자
-     */
     @Id
     @UuidGenerator
     @Column(length = 36, nullable = false, updatable = false)
+    @Comment("식별자")
     private String id;
 
-    /**
-     * 계정명
-     */
     @Column(unique = true, nullable = false)
+    @Comment("계정명")
     private String username;
 
-    /**
-     * 패스워드
-     */
     @JsonIgnore
+    @Comment("패스워드")
     private String password;
 
-    /**
-     * 이름
-     */
+    @Comment("이름")
     private String name;
 
-    /**
-     * 이메일
-     */
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "id", column = @Column(name = "email_id")),
             @AttributeOverride(name = "domain", column = @Column(name = "email_domain"))
     })
+    @Comment("이메일")
     private Email email;
 
-    /**
-     * 연락처
-     */
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "first", column = @Column(name = "first_contact_number")),
             @AttributeOverride(name = "middle", column = @Column(name = "middle_contact_number")),
             @AttributeOverride(name = "last", column = @Column(name = "last_contact_number"))
     })
+    @Comment("연락처")
     private ContactNumber contactNumber;
 
-    /**
-     * 권한
-     */
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_user_authority",
@@ -91,29 +75,19 @@ public class User implements Serializable {
     )
     private final Set<Authority> authorities = new LinkedHashSet<>();
 
-    /**
-     * 생성 일시
-     */
+    @Comment("생성 일시")
     private LocalDateTime createdAt;
 
-    /**
-     * 수정 일시
-     */
+    @Comment("수정 일시")
     private LocalDateTime modifiedAt;
 
-    /**
-     * 만료 일시
-     */
+    @Comment("만료 일시")
     private LocalDateTime expiredAt;
 
-    /**
-     * 잠금 일시
-     */
+    @Comment("잠금 일시")
     private LocalDateTime lockedAt;
 
-    /**
-     * 패스워드 만료 일시
-     */
+    @Comment("패스워드 만료 일시")
     private LocalDateTime credentialsExpiredAt;
 
     public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
@@ -14,34 +15,27 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
-/**
- * 권한
- */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(of = {"id"})
-@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_authority")
 @DynamicInsert
 @DynamicUpdate
+@Comment("권한")
 public class Authority implements Serializable {
 
-    /**
-     * 권한 식별자
-     */
     @Id
     @UuidGenerator
     @Column(length = 36, nullable = false, updatable = false)
+    @Comment("식별자")
     private String id;
 
     @ManyToMany(mappedBy = "authorities")
     private final Set<User> users = new LinkedHashSet<>();
 
-    /**
-     * 이름
-     */
+    @Comment("이름")
     private String name;
 
     private Authority(String name, User user) {
