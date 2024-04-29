@@ -59,15 +59,33 @@
                 </thead>
                 <tbody>
                     <tr class="pointer" th:data-id="${category.id}" th:each="category, status : ${categories}">
-                        <td th:text="${status.index + 1}"></td>
-                        <td class="d-none" th:text="${category.id}"></td>
-                        <td th:text="${category.createdBy}"></td>
-                        <td th:text="${category.createdDate}"></td>
-                        <td th:text="${category.lastModifiedBy}"></td>
-                        <td th:text="${category.lastModifiedDate}"></td>
-                        <td th:text="${category.parent?.name}"></td>
-                        <td th:text="${category.name}"></td>
-                        <td th:text="${category.type.description}"></td>
+                        <td>
+                            <input type="number" class="form-control-plaintext" th:value="${status.index + 1}" readonly>
+                        </td>
+                        <td class="d-none">
+                            <input type="text" class="form-control-plaintext" th:value="${category.id}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" th:value="${category.createdBy}" readonly>
+                        </td>
+                        <td>
+                            <input type="datetime-local" class="form-control-plaintext" th:value="${category.createdDate?.withNano(0)}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" th:value="${category.lastModifiedBy}" readonly>
+                        </td>
+                        <td>
+                            <input type="datetime-local" class="form-control-plaintext" th:value="${category.lastModifiedDate?.withNano(0)}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" th:value="${category.parent?.name}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" th:value="${category.name}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" th:value="${category.type.description}" readonly>
+                        </td>
                     </tr>
                 </tbody>
             </table>

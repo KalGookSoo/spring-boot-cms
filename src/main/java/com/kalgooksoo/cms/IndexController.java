@@ -31,7 +31,7 @@ public class IndexController {
         throw new RuntimeException();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     @GetMapping("/session")
     public String getSession(HttpServletRequest request) {

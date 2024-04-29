@@ -10,7 +10,7 @@
                 <a th:href="@{'/users/' + ${#authentication.principal.id} + '/edit'}" th:text="#{label.my.page}"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/users}" th:text="#{entity.users}"></a>
+                <a th:href="@{/users/list}" th:text="#{entity.users}"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{/categories/list}" th:text="#{entity.categories}"></a>

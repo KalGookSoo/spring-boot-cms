@@ -148,7 +148,7 @@ public class CategoryController {
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
 
         // View
-        return "redirect:/categories";
+        return "redirect:/categories/list";
     }
 
 }

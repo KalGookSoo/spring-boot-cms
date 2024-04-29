@@ -47,8 +47,8 @@ public class JpaPersistentTokenRepository implements PersistentTokenRepository {
                 .orElse(null);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void removeUserTokens(String username) {
         rememberMeTokenRepository.deleteByUsername(username);
     }
