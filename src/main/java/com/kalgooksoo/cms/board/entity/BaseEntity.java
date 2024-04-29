@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,38 +22,28 @@ import java.time.LocalDateTime;
 @Setter(AccessLevel.PROTECTED)
 public class BaseEntity {
 
-    /**
-     * 식별자
-     */
     @Id
     @UuidGenerator
     @Column(length = 36, nullable = false, updatable = false)
+    @Comment("식별자")
     private String id;
 
-    /**
-     * 생성자
-     */
     @CreatedBy
+    @Comment("생성자")
     private String createdBy;
 
-    /**
-     * 생성일시
-     */
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
+    @Comment("생성일시")
     private LocalDateTime createdDate;
 
-    /**
-     * 수정자
-     */
     @LastModifiedBy
+    @Comment("수정자")
     private String lastModifiedBy;
 
-    /**
-     * 수정일시
-     */
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
+    @Comment("수정일시")
     private LocalDateTime lastModifiedDate;
 
 }

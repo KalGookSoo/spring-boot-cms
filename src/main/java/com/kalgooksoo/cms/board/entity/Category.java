@@ -3,56 +3,41 @@ package com.kalgooksoo.cms.board.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
-/**
- * 카테고리
- */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_category")
 @DynamicInsert
 @DynamicUpdate
+@Comment("카테고리")
 public class Category extends BaseEntity {
 
-    /**
-     * 상위 카테고리
-     */
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    @Comment("부모 식별자")
     private Category parent;
 
-    /**
-     * 하위 카테고리
-     */
     @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Category> children = new ArrayList<>();
 
-    /**
-     * 게시글
-     */
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Article> articles = new ArrayList<>();
 
-    /**
-     * 이름
-     */
+    @Comment("이름")
     private String name;
 
-    /**
-     * 타입
-     */
     @Enumerated(EnumType.STRING)
+    @Comment("타입")
     private CategoryType type;
 
     public static Category create(String name, CategoryType type) {
