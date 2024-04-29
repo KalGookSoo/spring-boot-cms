@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,13 +45,6 @@ public class CategoryController {
 
         // View
         return "categories/list";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    @ResponseBody
-    public ResponseEntity<List<Category>> findAll() {
-        return ResponseEntity.ok(categoryService.findAll());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
