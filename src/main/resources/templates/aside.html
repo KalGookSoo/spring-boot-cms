@@ -13,7 +13,7 @@
                 <a th:href="@{/users}" th:text="#{entity.users}"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/categories}" th:text="#{entity.categories}"></a>
+                <a th:href="@{/categories/list}" th:text="#{entity.categories}"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{/swagger-ui/index.html}">swagger-ui</a>
