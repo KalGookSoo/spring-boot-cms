@@ -32,7 +32,7 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public List<Category> findAll() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByParentIsNull();
     }
 
     @Override
