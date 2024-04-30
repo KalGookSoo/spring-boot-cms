@@ -37,7 +37,7 @@
             <main class="flex-grow-1 p-3">
 
                 <form name="form" th:action="@{'/users/' + ${id}}" th:method="put" th:object="${command}">
-                    <div class="form-group">
+                    <div class="form-group d-none">
                         <label for="id" th:text="#{entity.user.id}"></label>
                         <input id="id" class="form-control-plaintext" th:value="${user.id}" readonly>
                     </div>

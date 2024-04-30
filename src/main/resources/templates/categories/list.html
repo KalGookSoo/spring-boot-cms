@@ -39,7 +39,7 @@
     <main class="flex-grow-1 p-3">
 
         <div class="d-flex justify-content-end p-3 mb-3 rounded">
-            <a type="button" class="btn btn-primary mx-2" th:href="@{/categories/new}" th:text="#{label.create}"></a>
+            <a class="btn btn-primary mx-2" th:href="@{/categories/new}" th:text="#{label.create}"></a>
         </div>
 
         <div th:fragment="tree(categories)">
@@ -56,22 +56,6 @@
 </div>
 
 <footer th:replace="~{footer :: footer}"></footer>
-
-<script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // const $categories = document.getElementById('categories');
-        // $categories.addEventListener('click', e => {
-        //
-        //     const $tr = e.target.closest(`tbody tr`);
-        //     if ($tr) {
-        //         const id = $tr.dataset.id;
-        //         location.href = `/categories/${id}/edit`
-        //     }
-        // });
-
-    });
-</script>
 
 </body>
 </html>

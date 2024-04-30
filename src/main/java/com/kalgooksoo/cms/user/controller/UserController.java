@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @Operation(summary = "수정 화면", description = "수정 화면")
-    @PreAuthorize("authentication.principal.id == #id")
+    @PreAuthorize("authentication.principal.id == #id or hasRole('ADMIN')")
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
