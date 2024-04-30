@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,15 +19,13 @@ public class DefaultCategoryService implements CategoryService {
 
     @Override
     public Category create(CreateCategoryCommand command) {
-        if (command.parentId() == null || command.parentId().isEmpty()) {
-            Category category = Category.create(null, command.name(), command.type());
-            return categoryRepository.save(category);
-        } else {
-            Category parent = categoryRepository.getReferenceById(command.parentId());
-            Category category = Category.create(parent, command.name(), command.type());
-            categoryRepository.save(category);
-            return category;
-        }
+        String parentId = command.parentId();
+        Category parent = Optional.ofNullable(parentId)
+                .filter(value -> !value.isEmpty())
+                .map(categoryRepository::getReferenceById)
+                .orElse(null);
+        Category category = Category.create(parent, command.name(), command.type());
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -47,12 +46,13 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public void update(String id, UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
-        if (command.parentId() == null || command.parentId().isEmpty()) {
-            category.update(null, command.name(), command.type());
-        } else {
-            Category parent = categoryRepository.getReferenceById(command.parentId());
-            category.update(parent, command.name(), command.type());
-        }
+        String parentId = command.parentId();
+        Category parent = Optional.ofNullable(parentId)
+                .filter(value -> !value.isEmpty())
+                .map(categoryRepository::getReferenceById)
+                .orElse(null);
+
+        category.update(parent, command.name(), command.type());
         categoryRepository.save(category);
     }
 
