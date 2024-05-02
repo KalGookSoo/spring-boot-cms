@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--suppress HtmlFormInputWithoutLabel -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title th:text="#{entity.user}"></title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/grid.css}">
+
+    <!-- JS -->
+    <script th:src="@{/js/bootstrap.js}"></script>
+
+    <style>
+        header, aside, main, footer {
+            border: 1px dashed red;
+            box-sizing: border-box;
+        }
+    </style>
+
+    <script th:if="${message}" th:inline="javascript">
+        alert([[${message}]]);
+    </script>
+
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"></header>
+
+<div class="d-flex">
+
+    <aside th:replace="~{aside :: aside}"></aside>
+
+    <main class="flex-grow-1 p-3">
+
+        <form th:action="@{/articles}" th:method="post" th:object="${command}">
+            <div class="form-group d-none">
+                <label for="categoryId" th:text="#{entity.category.id}"></label>
+                <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
+                <span class="d-block invalid-feedback" th:errors="*{categoryId}" th:if="${#fields.hasErrors('categoryId')}"></span>
+            </div>
+            <div class="form-group">
+                <label for="title" th:text="#{entity.article.title}"></label>
+                <input id="title" class="form-control" th:field="*{title}">
+                <span class="d-block invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}"></span>
+            </div>
+            <div class="form-group">
+                <label for="content" th:text="#{entity.article.content}"></label>
+                <textarea id="content" class="form-control" th:field="*{content}"></textarea>
+                <span class="d-block invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></span>
+            </div>
+
+            <div class="d-flex justify-content-center p-3 mb-3 rounded">
+                <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
+                <a type="button" class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
+            </div>
+        </form>
+
+    </main>
+
+</div>
+
+<footer th:replace="~{footer :: footer}"></footer>
+
+</body>
+</html>

@@ -1,9 +1,14 @@
 package com.kalgooksoo.cms.board.controller;
 
+import com.kalgooksoo.cms.board.command.CreateArticleCommand;
+import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
+import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Article;
+import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +17,12 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Tag(name = "ArticleController", description = "게시글 컨트롤러")
 @Controller
@@ -33,7 +42,10 @@ public class ArticleController {
     }
 
     @GetMapping("/list")
-    public String getArticles(ArticleSearch search, Model model) {
+    public String getArticles(
+            @ModelAttribute("search") ArticleSearch search,
+            Model model
+    ) {
         // Query
         Page<Article> page = articleService.findAll(search);
 
@@ -44,4 +56,55 @@ public class ArticleController {
         return "articles/list";
     }
 
+    @GetMapping("/new")
+    public String getNew(
+            @ModelAttribute("command") CreateArticleCommand command,
+            Model model
+    ) {
+        // Query
+
+        // Model
+
+        // View
+        return "articles/new";
+    }
+
+    @PostMapping
+    public String create(
+            @ModelAttribute("command") @Valid CreateArticleCommand command,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        // Validation
+        if (bindingResult.hasErrors()) {
+            return getNew(command, model);
+        }
+
+        // Command
+        articleService.create(command);
+
+        // Model
+        redirectAttributes.addFlashAttribute("message", getMessage("command.success.create", null));
+
+        // View
+        return "redirect:/articles/list?categoryId=" + command.categoryId();
+    }
+
+    @GetMapping("/{id}/edit")
+    public String getEdit(
+            @PathVariable String id,
+            Model model
+    ) {
+        // Query
+        Article article = articleService.find(id);
+        UpdateArticleCommand command = new UpdateArticleCommand(article.getCategory().getId(), article.getTitle(), article.getContent());
+
+        // Model
+        model.addAttribute("article", article);
+        model.addAttribute("command", command);
+
+        // View
+        return "articles/edit";
+    }
 }

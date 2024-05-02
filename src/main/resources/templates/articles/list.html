@@ -38,6 +38,10 @@
 
     <main class="flex-grow-1 p-3">
 
+        <div class="d-flex justify-content-end p-3 mb-3 rounded">
+            <a class="btn btn-primary mx-2" th:href="@{/articles/new(categoryId=${search.categoryId})}" th:text="#{label.create}"></a>
+        </div>
+
         <form th:action="@{/users}" th:method="put">
             <table id="users" class="table table-hover border">
                 <thead>
@@ -55,33 +59,36 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="article, status : ${page.content}">
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="100%" class="text-center" th:text="#{search.result.empty}"></td>
+                </tr>
+                <tr th:if="${!page.isEmpty()}" th:each="article, status : ${page.content}">
                     <td>
-                        <input type="number" class="form-control-plaintext" th:value="${status.index + 1}" readonly>
+                        <input type="number" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
                     </td>
                     <td class="d-none">
-                        <input type="text" class="form-control-plaintext" th:value="${article.id}" readonly>
+                        <input type="text" class="form-control-plaintext" name="id" th:value="${article.id}" readonly>
                     </td>
                     <td class="d-none">
-                        <input type="text" class="form-control-plaintext" th:value="${article.categoryId}" readonly>
+                        <input type="text" class="form-control-plaintext" name="categoryId" th:value="${article.category.id}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.title}" readonly>
+                        <input type="text" class="form-control-plaintext" name="title" th:value="${article.title}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.content}" readonly>
+                        <input type="text" class="form-control-plaintext" name="content" th:value="${article.content}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.createdBy}" readonly>
+                        <input type="text" class="form-control-plaintext" name="createdBy" th:value="${article.createdBy}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.createdDate}" readonly>
+                        <input type="datetime-local" class="form-control-plaintext" name="createdDate" th:value="${article.createdDate?.withNano(0)}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.lastModifiedBy}" readonly>
+                        <input type="text" class="form-control-plaintext" name="lastModifiedBy" th:value="${article.lastModifiedBy}" readonly>
                     </td>
                     <td>
-                        <input type="text" class="form-control-plaintext" th:value="${article.lastModifiedDate}" readonly>
+                        <input type="datetime-local" class="form-control-plaintext" name="lastModifiedDate" th:value="${article.lastModifiedDate?.withNano(0)}" readonly>
                     </td>
                     <td>
                         <a class="btn btn-primary" th:href="@{'/articles/' + ${article.id} + '/edit'}" th:text="#{label.detail}"></a>
