@@ -39,17 +39,24 @@
     <main class="flex-grow-1 p-3">
 
         <form th:action="@{/articles}" th:method="post" th:object="${command}">
-            <div class="form-group d-none">
+            <div class="form-group mb-3 d-none">
                 <label for="categoryId" th:text="#{entity.category.id}"></label>
                 <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
                 <span class="d-block invalid-feedback" th:errors="*{categoryId}" th:if="${#fields.hasErrors('categoryId')}"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group mb-3">
                 <label for="title" th:text="#{entity.article.title}"></label>
                 <input id="title" class="form-control" th:field="*{title}">
                 <span class="d-block invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}"></span>
             </div>
-            <div class="form-group">
+
+            <div class="form-group  mb-3">
+                <label for="multipartFiles" class="form-label" th:text="#{entity.attachments}"></label>
+                <input type="file" id="multipartFiles" class="form-control" multiple>
+            </div>
+
+            <div class="form-group  mb-3">
                 <label for="content" th:text="#{entity.article.content}"></label>
                 <textarea id="content" class="form-control" th:field="*{content}"></textarea>
                 <span class="d-block invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></span>

@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Schema(description = "게시글 생성 커맨드")
 public record CreateArticleCommand(
@@ -23,6 +26,10 @@ public record CreateArticleCommand(
         @Schema(description = "본문", example = "본문")
         @NotBlank
         @NotNull
-        String content
+        String content,
+
+        @Parameter(description = "첨부파일")
+        @Schema(description = "첨부파일", example = "첨부파일")
+        List<MultipartFile> multipartFiles
 ) {
 }
