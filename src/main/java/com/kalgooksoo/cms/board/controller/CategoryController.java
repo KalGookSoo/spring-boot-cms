@@ -169,7 +169,7 @@ public class CategoryController {
         logger.error(e.getMessage());
 
         // Model
-        redirectAttributes.addFlashAttribute("message", getMessage("command.failure.delete", null));
+        redirectAttributes.addFlashAttribute("message", getMessage("error.constraint.violation", null));
 
         // View
         return "redirect:/categories/" + e.getCategoryId() + "/edit";

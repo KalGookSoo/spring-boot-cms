@@ -5,6 +5,7 @@ import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class DefaultCategoryService implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category create(CreateCategoryCommand command) {
+    public Category create(@NonNull CreateCategoryCommand command) {
         String parentId = command.parentId();
         Category parent = Optional.ofNullable(parentId)
                 .filter(value -> !value.isEmpty())
@@ -39,12 +40,12 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public Category find(String id) {
+    public Category find(@NonNull String id) {
         return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
-    public Category update(String id, UpdateCategoryCommand command) {
+    public Category update(@NonNull String id, @NonNull UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
         String parentId = command.parentId();
         Category parent = Optional.ofNullable(parentId)
@@ -57,7 +58,7 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
     }
 }
