@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.board.service;
 
 import com.kalgooksoo.cms.board.command.CreateArticleCommand;
+import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.repository.ArticleRepository;
@@ -38,5 +39,24 @@ public class DefaultArticleService implements ArticleService {
     @Override
     public Article find(@NonNull String id) {
         return articleRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    @Override
+    public Article update(@NonNull String id, @NonNull UpdateArticleCommand command) {
+        Article article = articleRepository.getReferenceById(id);
+        article.update(command.title(), command.content());
+        Category category = article.getCategory();
+        categoryRepository.save(category);
+        return article;
+    }
+
+    @Override
+    public String delete(@NonNull String id) {
+        Article article = articleRepository.getReferenceById(id);
+        String categoryId = article.getCategory().getId();
+        // TODO Removal propagate
+        articleRepository.delete(article);
+        return categoryId;
+
     }
 }

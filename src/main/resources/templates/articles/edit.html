@@ -36,7 +36,7 @@
 
             <main class="flex-grow-1 p-3">
 
-                <form th:action="@{'/articles' + ${article.id}}" th:method="put" th:object="${command}">
+                <form name="form" th:action="@{'/articles/' + ${article.id}}" th:method="put" th:object="${command}">
                     <div class="form-group d-none">
                         <label for="categoryId" th:text="#{entity.category.id}"></label>
                         <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>

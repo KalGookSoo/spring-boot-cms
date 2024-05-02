@@ -96,6 +96,8 @@ public class CategoryController {
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
+            @ModelAttribute UpdateCategoryCommand command,
+            BindingResult bindingResult,
             Model model
     ) {
         // Query
@@ -106,7 +108,7 @@ public class CategoryController {
                 .orElseThrow(NoSuchElementException::new);
         removeCategoryAndItsChildren(categories, category);
         String parentId = category.getParent() != null ? category.getParent().getId() : null;
-        UpdateCategoryCommand command = new UpdateCategoryCommand(parentId, category.getName(), category.getType());
+        command = bindingResult.hasErrors() ? command : new UpdateCategoryCommand(parentId, category.getName(), category.getType());
 
         // Model
         model.addAttribute("categories", categories);
@@ -128,7 +130,7 @@ public class CategoryController {
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return getEdit(id, model);
+            return getEdit(id, command, bindingResult, model);
         }
 
         // Command
