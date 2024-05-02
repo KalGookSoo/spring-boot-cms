@@ -11,6 +11,6 @@ public interface CategoryService {
     List<Category> findAllByParentIsNull();
     List<Category> findAll();
     Category find(String id);
-    void update(String id, UpdateCategoryCommand command);
+    Category update(String id, UpdateCategoryCommand command);
     void delete(String id);
 }

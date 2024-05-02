@@ -44,7 +44,7 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public void update(String id, UpdateCategoryCommand command) {
+    public Category update(String id, UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
         String parentId = command.parentId();
         Category parent = Optional.ofNullable(parentId)
@@ -53,7 +53,7 @@ public class DefaultCategoryService implements CategoryService {
                 .orElse(null);
 
         category.update(parent, command.name(), command.type());
-        categoryRepository.save(category);
+        return categoryRepository.save(category);
     }
 
     @Override
