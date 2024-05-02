@@ -1,5 +1,7 @@
 package com.kalgooksoo.cms.user.repository;
 
+import com.kalgooksoo.cms.user.entity.ContactNumber;
+import com.kalgooksoo.cms.user.entity.Email;
 import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.search.UserSearch;
 import org.springframework.data.domain.Page;
@@ -20,8 +22,8 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
         if (!search.isEmptyName()) {
             specification = specification.and(nameContains(search.getName()));
         }
-        if (!search.isEmptyEmailId()) {
-            specification = specification.and(emailIdContains(search.getEmailId()));
+        if (!search.isEmptyEmail()) {
+            specification = specification.and(emailContains(search.getEmail()));
         }
         if (!search.isEmptyContactNumber()) {
             specification = specification.and(contactNumberContains(search.getContactNumber()));
@@ -38,12 +40,12 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
-    default Specification<User> emailIdContains(@NonNull String emailId) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("emailId"), "%" + emailId + "%");
+    default Specification<User> emailContains(@NonNull Email email) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("email.value"), "%" + email.getValue() + "%");
     }
 
-    default Specification<User> contactNumberContains(@NonNull String contactNumber) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("contactNumber"), "%" + contactNumber + "%");
+    default Specification<User> contactNumberContains(@NonNull ContactNumber contactNumber) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("contactNumber"), "%" + contactNumber.getValue() + "%");
     }
 
 }

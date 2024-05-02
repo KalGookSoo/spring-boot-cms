@@ -1,13 +1,10 @@
 package com.kalgooksoo.cms.board.entity;
 
-import com.kalgooksoo.cms.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -37,7 +34,7 @@ public class Vote extends BaseEntity {
      * 댓글
      */
     @ManyToMany(mappedBy = "votes")
-    private final Set<Comment> comments = new LinkedHashSet<>();
+    private final Set<Reply> replies = new LinkedHashSet<>();
 
     /**
      * 타입

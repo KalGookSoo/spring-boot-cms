@@ -2,6 +2,7 @@ package com.kalgooksoo.cms.user.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import org.springframework.util.Assert;
 
 import java.io.Serializable;
 
@@ -12,7 +13,6 @@ import static lombok.AccessLevel.PROTECTED;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 public class ContactNumber implements Serializable {
 
     private String first;
@@ -25,4 +25,12 @@ public class ContactNumber implements Serializable {
         return first + "-" + middle + "-" + last;
     }
 
+    public ContactNumber(String first, String middle, String last) {
+        Assert.notNull(first, "first must not be null");
+        Assert.notNull(middle, "middle must not be null");
+        Assert.notNull(last, "last must not be null");
+        this.first = first;
+        this.middle = middle;
+        this.last = last;
+    }
 }

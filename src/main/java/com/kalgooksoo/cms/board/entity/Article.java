@@ -5,10 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,9 +16,6 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
-/**
- * 게시글
- */
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
@@ -26,32 +23,22 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tb_article")
+@Comment("게시글")
 @DynamicInsert
 @DynamicUpdate
 public class Article extends BaseEntity {
 
-    /**
-     * 카테고리
-     */
+    @Comment("카테고리 식별자")
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    /**
-     * 댓글
-     */
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Comment> comments = new ArrayList<>();
+    private List<Reply> replies = new ArrayList<>();
 
-    /**
-     * 조회
-     */
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<View> views = new ArrayList<>();
 
-    /**
-     * 첨부파일
-     */
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_article_attachment",
@@ -60,9 +47,6 @@ public class Article extends BaseEntity {
     )
     private Set<Attachment> attachments = new LinkedHashSet<>();
 
-    /**
-     * 투표
-     */
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_article_vote",
@@ -71,31 +55,12 @@ public class Article extends BaseEntity {
     )
     private Set<Vote> votes = new LinkedHashSet<>();
 
-    /**
-     * 제목
-     */
+    @Comment("제목")
     private String title;
 
-    /**
-     * 본문
-     */
     @Lob
+    @Comment("본문")
     private String content;
-
-    /**
-     * 작성자
-     */
-    private String author;
-
-    /**
-     * 생성 일시
-     */
-    private LocalDateTime createdAt;
-
-    /**
-     * 수정 일시
-     */
-    private LocalDateTime modifiedAt;
 
     public static Article create(String title, String content) {
         Article article = new Article();
@@ -109,14 +74,14 @@ public class Article extends BaseEntity {
         this.content = content;
     }
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setArticle(this);
+    public void addReply(Reply reply) {
+        replies.add(reply);
+        reply.setArticle(this);
     }
 
-    public void removeComment(Comment comment) {
-        comments.remove(comment);
-        comment.setArticle(null);
+    public void removeReply(Reply reply) {
+        replies.remove(reply);
+        reply.setArticle(null);
     }
 
     public void addView(View view) {

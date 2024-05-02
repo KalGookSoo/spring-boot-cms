@@ -33,7 +33,7 @@ public class Attachment extends BaseEntity {
     private final Set<Article> articles = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "attachments")
-    private final Set<Comment> comments = new LinkedHashSet<>();
+    private final Set<Reply> replies = new LinkedHashSet<>();
 
     /**
      * 이름
