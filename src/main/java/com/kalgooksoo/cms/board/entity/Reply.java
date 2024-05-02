@@ -30,7 +30,7 @@ public class Reply extends BaseEntity {
     private Reply parent;
 
     /**
-     * 하위 댓글
+     * 하위 답글
      */
     @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Reply> children = new ArrayList<>();

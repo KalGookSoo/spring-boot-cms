@@ -31,7 +31,7 @@ public class Vote extends BaseEntity {
     private final Set<Article> articles = new LinkedHashSet<>();
 
     /**
-     * 댓글
+     * 답글
      */
     @ManyToMany(mappedBy = "votes")
     private final Set<Reply> replies = new LinkedHashSet<>();
