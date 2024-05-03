@@ -164,8 +164,6 @@ public class UserController {
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            bindingResult.rejectValue("originPassword", "validation.user.password.not.equal");
-            bindingResult.rejectValue("newPassword", "validation.user.password.not.equal");
             return "users/edit_password";
         }
 
