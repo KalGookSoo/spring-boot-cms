@@ -9,6 +9,8 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -75,11 +77,13 @@ public class User implements Serializable {
     )
     private final Set<Authority> authorities = new LinkedHashSet<>();
 
+    @CreatedDate
     @Comment("생성 일시")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 
+    @LastModifiedDate
     @Comment("수정 일시")
-    private LocalDateTime modifiedAt;
+    private LocalDateTime lastModifiedDate;
 
     @Comment("만료 일시")
     private LocalDateTime expiredAt;
@@ -97,7 +101,6 @@ public class User implements Serializable {
         user.name = name;
         user.email = email;
         user.contactNumber = contactNumber;
-        user.createdAt = LocalDateTime.now();
         user.initializeAccountPolicy();
         return user;
     }
@@ -106,14 +109,12 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.contactNumber = contactNumber;
-        this.modifiedAt = LocalDateTime.now();
     }
 
     public void changePassword(String password) {
         Assert.notNull(password, "패스워드는 NULL이 될 수 없습니다.");
         this.password = password;
         this.credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
-        this.modifiedAt = LocalDateTime.now();
     }
 
     /**

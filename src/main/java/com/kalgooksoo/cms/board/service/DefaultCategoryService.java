@@ -5,10 +5,12 @@ import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,16 +19,14 @@ public class DefaultCategoryService implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category create(CreateCategoryCommand command) {
-        if (command.parentId() == null || command.parentId().isEmpty()) {
-            Category category = Category.create(null, command.name(), command.type());
-            return categoryRepository.save(category);
-        } else {
-            Category parent = categoryRepository.getReferenceById(command.parentId());
-            Category category = Category.create(parent, command.name(), command.type());
-            categoryRepository.save(category);
-            return category;
-        }
+    public Category create(@NonNull CreateCategoryCommand command) {
+        String parentId = command.parentId();
+        Category parent = Optional.ofNullable(parentId)
+                .filter(value -> !value.isEmpty())
+                .map(categoryRepository::getReferenceById)
+                .orElse(null);
+        Category category = Category.create(parent, command.name(), command.type());
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -40,24 +40,25 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public Category find(String id) {
+    public Category find(@NonNull String id) {
         return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
-    public void update(String id, UpdateCategoryCommand command) {
+    public Category update(@NonNull String id, @NonNull UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
-        if (command.parentId() == null || command.parentId().isEmpty()) {
-            category.update(null, command.name(), command.type());
-        } else {
-            Category parent = categoryRepository.getReferenceById(command.parentId());
-            category.update(parent, command.name(), command.type());
-        }
-        categoryRepository.save(category);
+        String parentId = command.parentId();
+        Category parent = Optional.ofNullable(parentId)
+                .filter(value -> !value.isEmpty())
+                .map(categoryRepository::getReferenceById)
+                .orElse(null);
+
+        category.update(parent, command.name(), command.type());
+        return categoryRepository.save(category);
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
     }
 }

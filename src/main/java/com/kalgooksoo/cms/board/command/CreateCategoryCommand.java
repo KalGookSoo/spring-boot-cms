@@ -6,13 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-/**
- * 카테고리 생성 커맨드
- *
- * @param parentId  상위 카테고리 식별자
- * @param name      이름
- * @param type      타입
- */
 @Schema(description = "카테고리 생성 커맨드")
 public record CreateCategoryCommand(
 

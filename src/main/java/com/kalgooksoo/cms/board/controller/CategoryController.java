@@ -4,11 +4,15 @@ import com.kalgooksoo.cms.board.command.CreateCategoryCommand;
 import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.service.CategoryService;
+import com.kalgooksoo.cms.exception.DeleteCategoryException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +28,8 @@ import java.util.NoSuchElementException;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CategoryService categoryService;
 
@@ -90,6 +96,8 @@ public class CategoryController {
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
+            @ModelAttribute UpdateCategoryCommand command,
+            BindingResult bindingResult,
             Model model
     ) {
         // Query
@@ -100,7 +108,7 @@ public class CategoryController {
                 .orElseThrow(NoSuchElementException::new);
         removeCategoryAndItsChildren(categories, category);
         String parentId = category.getParent() != null ? category.getParent().getId() : null;
-        UpdateCategoryCommand command = new UpdateCategoryCommand(parentId, category.getName(), category.getType());
+        command = bindingResult.hasErrors() ? command : new UpdateCategoryCommand(parentId, category.getName(), category.getType());
 
         // Model
         model.addAttribute("categories", categories);
@@ -122,7 +130,7 @@ public class CategoryController {
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return getEdit(id, model);
+            return getEdit(id, command, bindingResult, model);
         }
 
         // Command
@@ -140,15 +148,33 @@ public class CategoryController {
     public String delete(
             @PathVariable String id,
             RedirectAttributes redirectAttributes
-    ) {
+    ) throws DeleteCategoryException {
         // Command
-        categoryService.delete(id);
+        try {
+            categoryService.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DeleteCategoryException(e.getMessage(), id);
+        }
 
         // Model
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
 
         // View
         return "redirect:/categories/list";
+    }
+
+    @ExceptionHandler(DeleteCategoryException.class)
+    public String handleCategoryConstraintException(
+            DeleteCategoryException e,
+            RedirectAttributes redirectAttributes
+    ) {
+        logger.error(e.getMessage());
+
+        // Model
+        redirectAttributes.addFlashAttribute("message", getMessage("error.constraint.violation", null));
+
+        // View
+        return "redirect:/categories/" + e.getCategoryId() + "/edit";
     }
 
     void removeCategoryAndItsChildren(List<Category> categories, Category category) {

@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -15,9 +16,6 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
-/**
- * 첨부파일
- */
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
@@ -25,6 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tb_attachment")
+@Comment("첨부파일")
 @DynamicInsert
 @DynamicUpdate
 public class Attachment extends BaseEntity {
@@ -33,26 +32,18 @@ public class Attachment extends BaseEntity {
     private final Set<Article> articles = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "attachments")
-    private final Set<Comment> comments = new LinkedHashSet<>();
+    private final Set<Reply> replies = new LinkedHashSet<>();
 
-    /**
-     * 이름
-     */
+    @Comment("이름")
     private String name;
 
-    /**
-     * 경로명
-     */
+    @Comment("경로명")
     private String pathName;
 
-    /**
-     * MIME 타입
-     */
+    @Comment("MIME 타입")
     private String mimeType;
 
-    /**
-     * 크기
-     */
+    @Comment("크기")
     private long size;
 
     public static Attachment create(String name, String pathName, String mimeType, long size) {

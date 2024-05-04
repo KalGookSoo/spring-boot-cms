@@ -20,9 +20,9 @@ public abstract class PageVO {
     @Schema(description = "페이지 당 출력할 레코드 수", defaultValue = "10")
     private int size = 10;
 
-    @Parameter(description = "정렬할 필드", schema = @Schema(defaultValue = "createdAt"))
-    @Schema(description = "정렬할 필드", defaultValue = "createdAt")
-    private String sort = "createdAt";
+    @Parameter(description = "정렬할 필드", schema = @Schema(defaultValue = "createdDate"))
+    @Schema(description = "정렬할 필드", defaultValue = "createdDate")
+    private String sort = "createdDate";
 
     @Parameter(description = "정렬 방향", schema = @Schema(defaultValue = "desc"))
     @Schema(description = "정렬 방향", defaultValue = "desc")

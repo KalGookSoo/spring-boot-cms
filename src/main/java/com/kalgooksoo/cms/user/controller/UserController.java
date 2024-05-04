@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @Operation(summary = "수정 화면", description = "수정 화면")
-    @PreAuthorize("authentication.principal.id == #id")
+    @PreAuthorize("authentication.principal.id == #id or hasRole('ADMIN')")
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
@@ -164,8 +164,6 @@ public class UserController {
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            bindingResult.rejectValue("originPassword", "validation.user.password.not.equal");
-            bindingResult.rejectValue("newPassword", "validation.user.password.not.equal");
             return "users/edit_password";
         }
 

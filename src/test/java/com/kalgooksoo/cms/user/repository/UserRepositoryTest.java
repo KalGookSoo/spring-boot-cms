@@ -101,7 +101,7 @@ class UserRepositoryTest {
         userRepository.save(user2);
         userRepository.save(user3);
 
-        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+        Sort sort = Sort.by(Sort.Order.desc("createdDate"));
         PageRequest pageable = PageRequest.of(0, 10, sort);
 
         // When
@@ -133,7 +133,7 @@ class UserRepositoryTest {
         userRepository.save(user2);
         userRepository.save(user3);
 
-        Sort sort = Sort.by(Sort.Order.desc("createdAt"));
+        Sort sort = Sort.by(Sort.Order.desc("createdDate"));
         PageRequest pageable = PageRequest.of(0, 10, sort);
 
         UserSearch search = new UserSearch();

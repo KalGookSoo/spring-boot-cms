@@ -37,7 +37,7 @@
             <main class="flex-grow-1 p-3">
 
                 <form name="form" th:action="@{'/users/' + ${id}}" th:method="put" th:object="${command}">
-                    <div class="form-group">
+                    <div class="form-group d-none">
                         <label for="id" th:text="#{entity.user.id}"></label>
                         <input id="id" class="form-control-plaintext" th:value="${user.id}" readonly>
                     </div>
@@ -77,12 +77,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.user.createdAt}"></label>
-                        <input type="datetime-local" class="form-control-plaintext" th:value="${user.createdAt?.withNano(0)}" readonly>
+                        <label th:text="#{entity.user.createdDate}"></label>
+                        <input type="datetime-local" class="form-control-plaintext" th:value="${user.createdDate?.withNano(0)}" readonly>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.user.modifiedAt}"></label>
-                        <input type="datetime-local" class="form-control-plaintext" th:value="${user.modifiedAt?.withNano(0)}" readonly>
+                        <label th:text="#{entity.user.lastModifiedDate}"></label>
+                        <input type="datetime-local" class="form-control-plaintext" th:value="${user.lastModifiedDate?.withNano(0)}" readonly>
                     </div>
                     <div class="form-group">
                         <label th:text="#{entity.user.expiredAt}"></label>
