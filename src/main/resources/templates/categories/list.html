@@ -34,35 +34,55 @@
 
     <header th:replace="~{header :: header}"></header>
 
-    <div class="d-flex">
+    <main class="d-flex">
 
         <aside th:replace="~{aside :: aside}"></aside>
 
-        <main class="flex-grow-1 p-3">
+        <div class="flex-grow-1 p-3">
 
             <div class="d-flex justify-content-end p-3 mb-3 rounded">
                 <a class="btn btn-primary mx-2" th:href="@{/categories/new}" th:text="#{label.create}"></a>
             </div>
 
-            <!--/*
-            <div id="tree" class="tui-tree-wrap"></div>
-            */-->
-
-            <div th:fragment="tree(categories)">
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="category : ${categories}">
-                        <a th:href="@{/articles/list(categoryId=${category.id})}" th:text="${category.name}"></a>
-                        <a th:href="@{'/categories/' + ${category.id} + '/edit'}" class="btn"><span class="fa fa-pencil"></span></a>
-                        <div th:if="${!#lists.isEmpty(category.children)}" th:replace=":: tree(${category.children})"></div>
-                    </li>
-                </ul>
+            <div>
+                <button type="button" class="btn btn-outline-primary expand-all"><i class="fas fa-plus"></i></button>
+                <button type="button" class="btn btn-outline-primary collapse-all"><i class="fas fa-minus"></i></button>
             </div>
 
-        </main>
+            <div class="list-group" th:fragment="tree(categories)">
+                <details class="list-group-item" th:each="category : ${categories}">
+                    <summary>
+                        <a th:href="@{/articles/list(categoryId=${category.id})}" th:text="${category.name}"></a>
+                        <a class="btn" th:href="@{'/categories/' + ${category.id} + '/edit'}"><span class="fa fa-pencil"></span></a>
+                    </summary>
+                    <div th:if="${!#lists.isEmpty(category.children)}" th:replace=":: tree(${category.children})"></div>
+                </details>
+            </div>
 
-    </div>
+        </div>
+
+    </main>
 
     <footer th:replace="~{footer :: footer}"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const $categoryTree = document.querySelectorAll(`.list-group details`);
+
+            document.addEventListener('click', e => {
+
+                const $expandAllButton = e.target.closest(`.expand-all`);
+                if ($expandAllButton) {
+                    [...$categoryTree].forEach(detail => detail.open = true);
+                }
+
+                const $collapseAllButton = e.target.closest(`.collapse-all`);
+                if ($collapseAllButton) {
+                    [...$categoryTree].forEach(detail => detail.open = false);
+                }
+            });
+        });
+    </script>
 
     </body>
 </html>
