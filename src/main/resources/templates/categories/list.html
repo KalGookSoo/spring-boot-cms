@@ -55,7 +55,7 @@
                         <a th:href="@{/articles/list(categoryId=${category.id})}" th:text="${category.name}"></a>
                         <a class="btn" th:href="@{'/categories/' + ${category.id} + '/edit'}"><span class="fa fa-pencil"></span></a>
                     </summary>
-                    <div th:if="${!#lists.isEmpty(category.children)}" th:replace=":: tree(${category.children})"></div>
+                    <div th:if="${!#lists.isEmpty(category.children)}" th:replace="~{:: tree(${category.children})}"></div>
                 </details>
             </div>
 
