@@ -57,13 +57,16 @@ public class CategoryController {
     @GetMapping("/new")
     public String getNew(
             @ModelAttribute("command") CreateCategoryCommand command,
+            BindingResult bindingResult,
             Model model
     ) {
         // Query
         List<Category> categories = categoryService.findAll();
+        command = bindingResult.hasErrors() ? command : new CreateCategoryCommand(null, null, null);
 
         // Model
         model.addAttribute("categories", categories);
+        model.addAttribute("command", command);
 
         // View
         return "categories/new";
@@ -74,12 +77,12 @@ public class CategoryController {
     public String create(
             @ModelAttribute("command") @Valid CreateCategoryCommand command,
             BindingResult bindingResult,
-            Model model,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            Model model
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return getNew(command, model);
+            return getNew(command, bindingResult, model);
         }
 
         // Command
@@ -96,7 +99,7 @@ public class CategoryController {
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
-            @ModelAttribute UpdateCategoryCommand command,
+            @ModelAttribute("command") UpdateCategoryCommand command,
             BindingResult bindingResult,
             Model model
     ) {

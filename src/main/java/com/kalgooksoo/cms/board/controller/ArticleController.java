@@ -54,11 +54,14 @@ public class ArticleController {
     @GetMapping("/new")
     public String getNew(
             @ModelAttribute("command") CreateArticleCommand command,
+            BindingResult bindingResult,
             Model model
     ) {
         // Query
+        command = bindingResult.hasErrors() ? command : new CreateArticleCommand(command.getCategoryId());
 
         // Model
+        model.addAttribute("command", command);
 
         // View
         return "articles/new";
@@ -88,7 +91,7 @@ public class ArticleController {
     ) {
         // Validation
         if (bindingResult.hasErrors()) {
-            return getNew(command, model);
+            return getNew(command, bindingResult, model);
         }
 
         // Command
@@ -98,7 +101,7 @@ public class ArticleController {
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.create", null));
 
         // View
-        return "redirect:/articles/list?categoryId=" + command.categoryId();
+        return "redirect:/articles/list?categoryId=" + command.getCategoryId();
     }
 
     @GetMapping("/{id}/edit")

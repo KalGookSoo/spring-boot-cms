@@ -29,8 +29,8 @@ public class DefaultArticleService implements ArticleService {
 
     @Override
     public Article create(@NonNull CreateArticleCommand command) {
-        Category category = categoryRepository.getReferenceById(command.categoryId());
-        Article article = Article.create(command.title(), command.content());
+        Category category = categoryRepository.getReferenceById(command.getCategoryId());
+        Article article = Article.create(command.getTitle(), command.getContent());
         category.addArticle(article);
         categoryRepository.save(category);
         return article;
