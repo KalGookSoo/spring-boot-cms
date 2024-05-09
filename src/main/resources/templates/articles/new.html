@@ -54,8 +54,11 @@
 
                 <div class="form-group mb-3">
                     <label class="form-label attachment-popup" th:text="#{entity.attachments}"></label>
+                    <button type="button" class="btn btn-outline-primary attachment-popup">Upload/Download File</button>
+                    <!--/*
                     <input type="file" name="multipartFile" class="form-control">
                     <input type="file" name="multipartFiles" class="d-none" multiple/>
+                    */-->
                 </div>
 
                 <div class="form-group mb-3">
@@ -98,8 +101,9 @@
             document.form.addEventListener('click', e => {
                 const $popupOpener = e.target.closest(`.attachment-popup`);
                 if ($popupOpener) {
-                    createDialog();
+                    attachmentPopup('Attachment handler', );
                 }
+
             });
         });
     </script>
