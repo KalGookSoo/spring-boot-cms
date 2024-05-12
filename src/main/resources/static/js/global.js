@@ -29,11 +29,19 @@ const createDialog = (title, body) => {
 
 const attachmentPopup = () => {
     const body = `
-        <form>
-            <table id="users" class="table table-hover border">    
+        <form class="file-uploader">
+            <div>
+                <button type="button" class="btn btn-primary mt-2 btn-add"></button>
+                <button type="button" class="btn btn-primary mt-2 btn-remove"></button>
+                <button type="button" class="btn btn-primary mt-2 btn-save"></button>
+            </div>
+            <table class="table table-hover border">    
                 <thead>
-                    <tr></tr>
-                    <tr>#</tr>
+                    <tr>
+                        <th>#</th>
+                        <th>name</th>
+                        <th>size</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -43,5 +51,5 @@ const attachmentPopup = () => {
             </table>
         </form>
     `;
-    createDialog('Attachment', 'This is the attachment popup');
+    createDialog('Attachment', body);
 }
