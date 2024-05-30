@@ -14,8 +14,7 @@ import org.springframework.lang.NonNull;
 public interface UserService {
 
     /**
-     * 계정 생성
-     *
+     * 일반 계정 생성
      * @param command 계정 생성 커맨드
      * @return 생성된 계정
      */
@@ -23,7 +22,6 @@ public interface UserService {
 
     /**
      * 관리자 계정 생성
-     *
      * @param command 계정 생성 커맨드
      * @return 생성된 계정
      */
@@ -31,16 +29,14 @@ public interface UserService {
 
     /**
      * 계정 수정
-     *
      * @param id      계정 식별자
-     * @param command 수정 명령
+     * @param command 계정 수정 명령
      * @return 수정된 계정
      */
     User update(@NonNull String id, @NonNull UpdateUserCommand command);
 
     /**
      * 계정 식별자로 계정 조회
-     *
      * @param id 계정 식별자
      * @return 계정
      */
@@ -48,7 +44,6 @@ public interface UserService {
 
     /**
      * 계정 목록 조회
-     *
      * @param pageable 페이지 정보
      * @return 계정 목록
      */
@@ -56,7 +51,6 @@ public interface UserService {
 
     /**
      * 계정 목록 조회
-     *
      * @param search   검색 조건
      * @param pageable 페이지 정보
      * @return 계정 목록
@@ -65,14 +59,12 @@ public interface UserService {
 
     /**
      * 계정 삭제
-     *
      * @param id 계정 식별자
      */
     void delete(@NonNull String id);
 
     /**
      * 패스워드 변경
-     *
      * @param id             계정 식별자
      * @param originPassword 기존 패스워드
      * @param newPassword    새로운 패스워드

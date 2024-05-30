@@ -15,9 +15,13 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
+/**
+ * 권한
+ */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(of = {"id"})
+@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_authority")
@@ -43,6 +47,12 @@ public class Authority implements Serializable {
         this.users.add(user);
     }
 
+    /**
+     * 권한 정적 팩토리 메서드
+     * @param name 이름
+     * @param user 계정
+     * @return 권한
+     */
     public static Authority create(String name, User user) {
         if (!name.startsWith("ROLE_")) {
             throw new IllegalArgumentException("name must start with 'ROLE_'\n name: " + name);

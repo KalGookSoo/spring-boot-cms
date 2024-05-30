@@ -5,8 +5,6 @@ import com.kalgooksoo.cms.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.user.entity.Authority;
 import com.kalgooksoo.cms.user.entity.User;
 import com.kalgooksoo.cms.user.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,7 +25,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Set;
 
-@Tag(name = "UserController", description = "계정 컨트롤러")
+/**
+ * 계정 컨트롤러
+ */
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -37,12 +37,12 @@ public class UserController {
 
     private final MessageSource messageSource;
 
-    @SuppressWarnings("SameParameterValue")
-    private String getMessage(String code, Object[] args) {
-        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
-    }
-
-    @Operation(summary = "계정 목록 화면", description = "계정 목록 화면")
+    /**
+     * 계정 목록 화면을 반환합니다.
+     * @param pageable 페이지네이션 요청 정보
+     * @param model    모델
+     * @return 계정 목록 화면
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public String getList(
@@ -59,7 +59,12 @@ public class UserController {
         return "users/list";
     }
 
-    @Operation(summary = "수정 화면", description = "수정 화면")
+    /**
+     * 계정 수정 화면을 반환합니다.
+     * @param id    계정 식별자
+     * @param model 모델
+     * @return 계정 수정 화면
+     */
     @PreAuthorize("authentication.principal.id == #id or hasRole('ADMIN')")
     @GetMapping("/{id}/edit")
     public String getEdit(
@@ -87,7 +92,15 @@ public class UserController {
         return "users/edit";
     }
 
-    @Operation(summary = "수정", description = "수정")
+    /**
+     * 계정 수정 처리합니다.
+     * @param id                 계정 식별자
+     * @param command            계정 수정 커맨드
+     * @param bindingResult      검증 결과
+     * @param model              모델
+     * @param redirectAttributes 리다이렉트 속성
+     * @return 계정 수정 화면
+     */
     @PreAuthorize("authentication.principal.id == #id")
     @PutMapping("/{id}")
     public String update(
@@ -106,13 +119,21 @@ public class UserController {
         userService.update(id, command);
 
         // Model
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
+        String message = messageSource.getMessage("command.success.update", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("message", message);
 
         // View
         return "redirect:/users/" + id + "/edit";
     }
 
-    @Operation(summary = "삭제", description = "삭제")
+    /**
+     * 계정 삭제 처리합니다.
+     * @param id                 계정 식별자
+     * @param request            요청
+     * @param response           응답
+     * @param redirectAttributes 리다이렉트 속성
+     * @return 메인 화면
+     */
     @PreAuthorize("authentication.principal.id == #id")
     @DeleteMapping("/{id}")
     public String delete(
@@ -131,11 +152,17 @@ public class UserController {
         new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
 
         // Model
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.delete", null));
+        String message = messageSource.getMessage("command.success.delete", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/";
     }
 
-    @Operation(summary = "패스워드 수정 화면", description = "패스워드 수정 화면")
+    /**
+     * 계정 패스워드 수정 화면을 반환합니다.
+     * @param id    계정 식별자
+     * @param model 모델
+     * @return 계정 패스워드 수정 화면
+     */
     @PreAuthorize("authentication.principal.id == #id")
     @GetMapping("/{id}/edit-password")
     public String getEditPassword(
@@ -152,8 +179,14 @@ public class UserController {
         return "users/edit_password";
     }
 
-
-    @Operation(summary = "패스워드 수정", description = "패스워드 수정")
+    /**
+     * 계정 패스워드 수정 처리합니다.
+     * @param id                 계정 식별자
+     * @param command            계정 패스워드 수정 커맨드
+     * @param bindingResult      검증 결과
+     * @param redirectAttributes 리다이렉트 속성
+     * @return 계정 패스워드 수정 화면
+     */
     @PreAuthorize("authentication.principal.id == #id")
     @PutMapping("/{id}/password")
     public String updatePassword(
@@ -177,7 +210,8 @@ public class UserController {
         }
 
         // Model
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
+        String message = messageSource.getMessage("command.success.update", null, LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("message", message);
 
         // View
         return "redirect:/users/" + id + "/edit-password";

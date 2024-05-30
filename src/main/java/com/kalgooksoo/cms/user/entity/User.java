@@ -94,6 +94,15 @@ public class User implements Serializable {
     @Comment("패스워드 만료 일시")
     private LocalDateTime credentialsExpiredAt;
 
+    /**
+     * 계정을 생성합니다.
+     * @param username      계정명
+     * @param password      패스워드
+     * @param name          이름
+     * @param email         이메일
+     * @param contactNumber 연락처
+     * @return 계정
+     */
     public static User create(String username, String password, String name, Email email, ContactNumber contactNumber) {
         User user = new User();
         user.username = username;
@@ -105,12 +114,22 @@ public class User implements Serializable {
         return user;
     }
 
+    /**
+     * 계정을 수정합니다.
+     * @param name          이름
+     * @param email         이메일
+     * @param contactNumber 연락처
+     */
     public void update(String name, Email email, ContactNumber contactNumber) {
         this.name = name;
         this.email = email;
         this.contactNumber = contactNumber;
     }
 
+    /**
+     * 패스워드를 변경합니다.
+     * @param password 패스워드
+     */
     public void changePassword(String password) {
         Assert.notNull(password, "패스워드는 NULL이 될 수 없습니다.");
         this.password = password;
@@ -150,24 +169,43 @@ public class User implements Serializable {
         return credentialsExpiredAt == null || credentialsExpiredAt.isAfter(LocalDateTime.now());
     }
 
+    /**
+     * 권한을 추가합니다.
+     * @param authority 권한
+     */
     public void addAuthority(Authority authority) {
         authorities.add(authority);
         authority.getUsers().add(this);
     }
 
+    /**
+     * 권한을 제거합니다.
+     * @param authority 권한
+     */
     public void removeAuthority(Authority authority) {
         authorities.remove(authority);
         authority.getUsers().remove(this);
     }
 
+    /**
+     * 권한을 모두 제거합니다.
+     */
     public void removeAuthorities() {
         authorities.clear();
     }
 
+    /**
+     * 이메일 접근자
+     * @return 이메일
+     */
     public Email getEmail() {
         return Optional.ofNullable(email).orElseGet(Email::new);
     }
 
+    /**
+     * 연락처 접근자
+     * @return 연락처
+     */
     public ContactNumber getContactNumber() {
         return Optional.ofNullable(contactNumber).orElseGet(ContactNumber::new);
     }

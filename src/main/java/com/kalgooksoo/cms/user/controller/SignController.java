@@ -3,8 +3,6 @@ package com.kalgooksoo.cms.user.controller;
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.SignInCommand;
 import com.kalgooksoo.cms.user.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -33,8 +31,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-@Tag(name = "SignController", description = "계정 생성 및 인증을 수행하는 컨트롤러")
+/**
+ * 계정 인증 컨트롤러
+ */
 @Controller
 @RequiredArgsConstructor
 public class SignController {
@@ -49,12 +48,11 @@ public class SignController {
 
     private final MessageSource messageSource;
 
-    @SuppressWarnings("SameParameterValue")
-    private String getMessage(String code, Object[] args) {
-        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
-    }
-
-    @Operation(summary = "계정 인증 화면", description = "계정 인증 화면으로 이동합니다")
+    /**
+     * 계정 인증 화면을 반환합니다.
+     * @param command 계정 인증 커맨드
+     * @return 계정 인증 화면
+     */
     @GetMapping("/sign-in")
     public String signIn(
             @ModelAttribute("command") SignInCommand command
@@ -66,7 +64,15 @@ public class SignController {
         return "sign_in";
     }
 
-    @Operation(summary = "계정 인증", description = "계정을 인증합니다")
+    /**
+     * 계정 인증 처리합니다.
+     * @param command            계정 인증 커맨드
+     * @param bindingResult      검증 결과
+     * @param redirectAttributes 리다이렉트 속성
+     * @param request            요청
+     * @param response           응답
+     * @return 메인 화면
+     */
     @PostMapping("/sign-in")
     public String signIn(
             @ModelAttribute("command") @Valid SignInCommand command,
@@ -109,12 +115,11 @@ public class SignController {
 
     }
 
-    private Authentication authenticate(String username, String password) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-    }
-
-    @Operation(summary = "계정 생성 화면", description = "계정 생성 화면으로 이동합니다")
+    /**
+     * 계정 생성 화면을 반환합니다.
+     * @param command 계정 생성 커맨드
+     * @return 계정 생성 화면
+     */
     @GetMapping("/sign-up")
     public String signUp(
             @ModelAttribute("command") CreateUserCommand command
@@ -122,7 +127,13 @@ public class SignController {
         return "sign_up";
     }
 
-    @Operation(summary = "계정 생성", description = "계정을 생성합니다")
+    /**
+     * 계정 생성 처리합니다.
+     * @param command            계정 생성 커맨드
+     * @param bindingResult      검증 결과
+     * @param redirectAttributes 리다이렉트 속성
+     * @return 계정 인증 화면
+     */
     @PostMapping("/sign-up")
     public String signUp(
             @ModelAttribute("command") @Valid CreateUserCommand command,
@@ -138,11 +149,17 @@ public class SignController {
             bindingResult.rejectValue("username", "validation.user.username.exists");
             return "sign_up";
         }
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.create", null));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale()));
         return "redirect:/sign-in";
     }
 
-    @Operation(summary = "계정 인증 해제", description = "계정 인증을 해제합니다")
+    /**
+     * 계정 인증 해제 처리합니다.
+     * @param request            요청
+     * @param response           응답
+     * @param redirectAttributes 리다이렉트 속성
+     * @return 계정 인증 화면
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/sign-out")
     public String signOut(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
@@ -152,8 +169,13 @@ public class SignController {
         // Delete remember-me cookie
         new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
 
-        redirectAttributes.addFlashAttribute("message", getMessage("command.success.sign.out", null));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.sign.out", null, LocaleContextHolder.getLocale()));
         return "redirect:/sign-in";
+    }
+
+    private Authentication authenticate(String username, String password) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     }
 
 }
