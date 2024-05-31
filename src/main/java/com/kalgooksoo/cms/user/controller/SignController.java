@@ -58,10 +58,7 @@ public class SignController {
             @ModelAttribute("command") SignInCommand command
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            return "redirect:/";
-        }
-        return "sign_in";
+        return authentication instanceof AnonymousAuthenticationToken ? "sign_in" : "redirect:/";
     }
 
     /**
