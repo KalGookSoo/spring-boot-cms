@@ -147,4 +147,16 @@ class SignControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/sign-in"));
     }
 
+    @Test
+    @DisplayName("계정 인증 해제 처리합니다. 성공 시 302 응답코드를 반환합니다.")
+    @WithMockUser
+    void signOutShouldReturnFound() throws Exception {
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.post("/sign-out")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/sign-in"));
+    }
+
 }
