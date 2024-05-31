@@ -1,12 +1,15 @@
 package com.kalgooksoo.cms.user.controller;
 
+import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 계정 인증 컨트롤러 테스트
+ *
  * @see SignController
  */
 @Transactional
@@ -28,7 +32,7 @@ class SignControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("계정 인증 화면 요청합니다. 인증되지 않았다면 계정 인증 화면을 반환합니다.")
+    @DisplayName("계정 인증 화면을 요청합니다. 인증되지 않았다면 계정 인증 화면을 반환합니다.")
     @WithAnonymousUser
     void signInShouldReturnSignInView() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/sign-in"))
@@ -38,12 +42,65 @@ class SignControllerTest {
     }
 
     @Test
-    @DisplayName("계정 인증 화면 요청합니다. 이미 인증되었다면 메인 화면을 반환합니다.")
+    @DisplayName("계정 인증 화면을 요청합니다. 이미 인증 성공 시 302 응답코드를 반환합니다.")
     @WithMockUser(roles = "USER")
     void signInShouldReturnMainView() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/sign-in"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+                .andExpect(MockMvcResultMatchers.status().isFound());
+    }
+
+    @Test
+    @DisplayName("계정 생성 화면을 요청합니다. 계정 생성 화면을 반환 합니다.")
+    void signUpShouldReturnSignUpView() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/sign-up"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().attributeExists("command"))
+                .andExpect(MockMvcResultMatchers.view().name("sign_up"));
+    }
+
+    @Test
+    @DisplayName("계정 생성 처리합니다. 값 검증 실패 시 errors 속성과 함께 계정 생성 화면을 반환합니다.")
+    void signUpShouldReturnSignUpViewWithErrors() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand("tester", "1234", "테스터1", null, null, null, null, null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/sign-up")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("username", createUserCommand.username())
+                        .param("password", createUserCommand.password())
+                        .param("name", createUserCommand.name())
+                        .param("emailId", createUserCommand.emailId())
+                        .param("emailDomain", createUserCommand.emailDomain())
+                        .param("firstContactNumber", createUserCommand.firstContactNumber())
+                        .param("middleContactNumber", createUserCommand.middleContactNumber())
+                        .param("lastContactNumber", createUserCommand.lastContactNumber()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.model().hasErrors())
+                .andExpect(MockMvcResultMatchers.view().name("sign_up"));
+    }
+
+    @Test
+    @DisplayName("계정 생성 처리합니다. 생성 성공 시 302 응답코드를 반환합니다.")
+    void signUpShouldReturnFound() throws Exception {
+        CreateUserCommand createUserCommand = new CreateUserCommand("tester", "12341234", "테스터1", "tester@test.com", "test.com", "010", "1234", "5678");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/sign-up")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("username", createUserCommand.username())
+                        .param("password", createUserCommand.password())
+                        .param("name", createUserCommand.name())
+                        .param("emailId", createUserCommand.emailId())
+                        .param("emailDomain", createUserCommand.emailDomain())
+                        .param("firstContactNumber", createUserCommand.firstContactNumber())
+                        .param("middleContactNumber", createUserCommand.middleContactNumber())
+                        .param("lastContactNumber", createUserCommand.lastContactNumber()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/sign-in"));
     }
 
 }
