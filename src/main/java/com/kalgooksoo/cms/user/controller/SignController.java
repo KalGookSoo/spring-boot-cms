@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 /**
  * 계정 인증 컨트롤러
@@ -58,7 +62,7 @@ public class SignController {
             @ModelAttribute("command") SignInCommand command
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication instanceof AnonymousAuthenticationToken ? "sign_in" : "redirect:/";
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken ? "sign_in" : "redirect:/";
     }
 
     /**
@@ -84,32 +88,19 @@ public class SignController {
         }
 
         // Authenticate
-        Authentication authentication;
-        try {
-            authentication = authenticate(command.username(), command.password());
-        } catch (AuthenticationException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        Authentication authentication = authenticateUser(command.username(), command.password(), redirectAttributes);
+        if (authentication == null) {
             return "redirect:/sign-in";
         }
 
         // Set SecurityContext & HttpSession
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-        HttpSession httpSession = request.getSession(true);
-        httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+        setSecurityContext(authentication, request);
 
         // Remember me
-        rememberMeServices.loginSuccess(request, response, authentication);
+        rememberSuccessfulSignIn(request, response, authentication);
 
         // Redirect
-        SavedRequest savedRequest = (SavedRequest) httpSession.getAttribute(SPRING_SECURITY_SAVED_REQUEST);
-        if (savedRequest == null) {
-            return "redirect:/";
-        }
-        String redirectUrl = savedRequest.getRedirectUrl();
-        httpSession.removeAttribute(SPRING_SECURITY_SAVED_REQUEST);
-        return "redirect:" + redirectUrl;
-
+        return redirectAuthenticatedUser(request);
     }
 
     /**
@@ -170,9 +161,43 @@ public class SignController {
         return "redirect:/sign-in";
     }
 
-    private Authentication authenticate(String username, String password) {
+    @Nullable
+    private Authentication authenticateUser(@NonNull String username, @NonNull String password, @NonNull RedirectAttributes redirectAttributes) {
+        Authentication authentication;
+        try {
+            authentication = authenticate(username, password);
+        } catch (AuthenticationException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return null;
+        }
+        return authentication;
+    }
+
+    private Authentication authenticate(@NonNull String username, @NonNull String password) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+    }
+
+    private void setSecurityContext(@NonNull Authentication authentication, @NonNull HttpServletRequest request) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+        HttpSession httpSession = request.getSession(true);
+        httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+    }
+
+    private void rememberSuccessfulSignIn(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Authentication authentication) {
+        rememberMeServices.loginSuccess(request, response, authentication);
+    }
+
+    private String redirectAuthenticatedUser(@NonNull HttpServletRequest request) {
+        HttpSession httpSession = request.getSession(true);
+        SavedRequest savedRequest = (SavedRequest) httpSession.getAttribute(SPRING_SECURITY_SAVED_REQUEST);
+        if (savedRequest == null) {
+            return "redirect:/";
+        }
+        String redirectUrl = savedRequest.getRedirectUrl();
+        httpSession.removeAttribute(SPRING_SECURITY_SAVED_REQUEST);
+        return "redirect:" + redirectUrl;
     }
 
 }
