@@ -1,8 +1,10 @@
 package com.kalgooksoo.cms.user.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
-import org.springframework.util.Assert;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -39,9 +41,6 @@ public class ContactNumber implements Serializable {
      * @param last   연락처 마지막 자리
      */
     public ContactNumber(String first, String middle, String last) {
-        Assert.notNull(first, "first must not be null");
-        Assert.notNull(middle, "middle must not be null");
-        Assert.notNull(last, "last must not be null");
         this.first = first;
         this.middle = middle;
         this.last = last;

@@ -2,8 +2,10 @@ package com.kalgooksoo.cms.user.entity;
 
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
-import org.springframework.util.Assert;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -37,8 +39,6 @@ public class Email implements Serializable {
      * @param domain 이메일 도메인
      */
     public Email(String id, String domain) {
-        Assert.notNull(id, "Email id must not be null");
-        Assert.notNull(domain, "Email domain must not be null");
         this.id = id;
         this.domain = domain;
     }
