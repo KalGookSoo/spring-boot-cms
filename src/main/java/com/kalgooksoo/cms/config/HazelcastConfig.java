@@ -7,10 +7,12 @@ import com.hazelcast.config.TcpIpConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.*;
 
 @Configuration
+@Profile("prod")
 public class HazelcastConfig {
 
     private final String profiles;
