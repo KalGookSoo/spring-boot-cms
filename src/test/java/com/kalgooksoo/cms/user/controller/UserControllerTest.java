@@ -32,7 +32,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("계정 목록 화면을 요청합니다. 인증되지 않았다면 계정 목록 화면을 반환합니다.")
+    @DisplayName("계정 목록 화면을 요청합니다. 관리자 권한으로 접근 시 계정 목록 화면을 반환합니다.")
     void getListShouldReturnListView() throws Exception {
         // Given
         User user = User.create("admin", "12341234", null, null, null);
