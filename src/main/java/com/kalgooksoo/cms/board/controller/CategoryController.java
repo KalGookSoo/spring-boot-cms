@@ -20,8 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Collection;
 
 @Tag(name = "CategoryController", description = "카테고리 컨트롤러")
 @Controller
@@ -44,7 +43,7 @@ public class CategoryController {
     @GetMapping("/list")
     public String getCategories(Model model) {
         // Query
-        List<Category> categories = categoryService.findAllByParentIsNull();
+        Collection<Category> categories = categoryService.findAllNested();
 
         // Model
         model.addAttribute("categories", categories);
@@ -61,7 +60,7 @@ public class CategoryController {
             Model model
     ) {
         // Query
-        List<Category> categories = categoryService.findAll();
+        Collection<Category> categories = categoryService.findAll();
         command = bindingResult.hasErrors() ? command : new CreateCategoryCommand(null, null, null);
 
         // Model
@@ -104,11 +103,10 @@ public class CategoryController {
             Model model
     ) {
         // Query
-        List<Category> categories = categoryService.findAll();
-        Category category = categories.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+        Collection<Category> categories = categoryService.findAll();
+
+        // 부모 노드를 변경하려면
+        Category category = categoryService.find(id);
         removeCategoryAndItsChildren(categories, category);
         String parentId = category.getParent() != null ? category.getParent().getId() : null;
         command = bindingResult.hasErrors() ? command : new UpdateCategoryCommand(parentId, category.getName(), category.getType());
@@ -180,7 +178,7 @@ public class CategoryController {
         return "redirect:/categories/" + e.getCategoryId() + "/edit";
     }
 
-    void removeCategoryAndItsChildren(List<Category> categories, Category category) {
+    void removeCategoryAndItsChildren(Collection<Category> categories, Category category) {
         categories.remove(category);
         for (Category subCategory : category.getChildren()) {
             removeCategoryAndItsChildren(categories, subCategory);

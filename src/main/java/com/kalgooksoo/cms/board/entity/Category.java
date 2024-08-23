@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.board.entity;
 
+import com.kalgooksoo.cms.board.Hierarchical;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 @DynamicUpdate
 @Comment("카테고리")
-public class Category extends BaseEntity {
+public class Category extends BaseEntity implements Hierarchical<Category> {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
@@ -62,6 +63,16 @@ public class Category extends BaseEntity {
     public void removeArticle(Article article) {
         articles.remove(article);
         article.setCategory(null);
+    }
+
+    @Override
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
+
+    @Override
+    public void moveTo(Category parent) {
+        this.parent = parent;
     }
 
 }
