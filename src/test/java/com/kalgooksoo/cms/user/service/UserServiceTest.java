@@ -93,10 +93,10 @@ class UserServiceTest {
         User createdUser = userService.createUser(createUserCommand);
 
         // Then
-        LocalDateTime expectedExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
-        LocalDateTime expectedCredentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
-        assertEquals(expectedExpiredAt, createdUser.getExpiredAt());
-        assertEquals(expectedCredentialsExpiredAt, createdUser.getCredentialsExpiredAt());
+        LocalDateTime expectedExpiredDate = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
+        LocalDateTime expectedCredentialsExpiredDate = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
+        assertEquals(expectedExpiredDate, createdUser.getExpiredDate());
+        assertEquals(expectedCredentialsExpiredDate, createdUser.getCredentialsExpiredDate());
     }
 
     @Test

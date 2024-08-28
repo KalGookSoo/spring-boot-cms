@@ -86,13 +86,13 @@ public class User implements Serializable {
     private LocalDateTime lastModifiedDate;
 
     @Comment("만료 일시")
-    private LocalDateTime expiredAt;
+    private LocalDateTime expiredDate;
 
     @Comment("잠금 일시")
-    private LocalDateTime lockedAt;
+    private LocalDateTime lockedDate;
 
     @Comment("패스워드 만료 일시")
-    private LocalDateTime credentialsExpiredAt;
+    private LocalDateTime credentialsExpiredDate;
 
     /**
      * 계정을 생성합니다.
@@ -133,7 +133,7 @@ public class User implements Serializable {
     public void changePassword(String password) {
         Assert.notNull(password, "패스워드는 NULL이 될 수 없습니다.");
         this.password = password;
-        this.credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
+        this.credentialsExpiredDate = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
     }
 
     /**
@@ -141,8 +141,8 @@ public class User implements Serializable {
      * 패스워드 만료 일시는 생성일(00:00)로부터 180일 후 까지로 설정합니다.
      */
     private void initializeAccountPolicy() {
-        expiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
-        credentialsExpiredAt = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
+        expiredDate = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusYears(2L);
+        credentialsExpiredDate = LocalDate.now().atTime(LocalTime.MIDNIGHT).plusDays(180L);
     }
 
     /**
@@ -150,7 +150,7 @@ public class User implements Serializable {
      * @return 계정이 만료되지 않았는지 여부
      */
     public boolean isAccountNonExpired() {
-        return expiredAt == null || expiredAt.isAfter(LocalDateTime.now());
+        return expiredDate == null || expiredDate.isAfter(LocalDateTime.now());
     }
 
     /**
@@ -158,7 +158,7 @@ public class User implements Serializable {
      * @return 계정이 잠겨있지 않은지 여부
      */
     public boolean isAccountNonLocked() {
-        return lockedAt == null || lockedAt.isBefore(LocalDateTime.now());
+        return lockedDate == null || lockedDate.isBefore(LocalDateTime.now());
     }
 
     /**
@@ -166,7 +166,7 @@ public class User implements Serializable {
      * @return 계정의 패스워드가 만료되지 않았는지 여부
      */
     public boolean isCredentialsNonExpired() {
-        return credentialsExpiredAt == null || credentialsExpiredAt.isAfter(LocalDateTime.now());
+        return credentialsExpiredDate == null || credentialsExpiredDate.isAfter(LocalDateTime.now());
     }
 
     /**
