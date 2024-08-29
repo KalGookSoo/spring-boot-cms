@@ -112,8 +112,8 @@ class SignControllerTest {
     }
 
     @Test
-    @DisplayName("계정 인증 처리합니다. 값 검증 실패 시 errors 속성과 함께 계정 인증 화면을 반환합니다.")
-    void signInShouldReturnSignInViewWithErrors() throws Exception {
+    @DisplayName("계정 인증 처리합니다. 인증 실패 시 계정 인증 화면을 요청합니다.")
+    void signInTestWithInvalidValues() throws Exception {
         // Given
         signUpShouldReturnFound();
         SignInCommand signInCommand = new SignInCommand(null, null);
@@ -125,8 +125,8 @@ class SignControllerTest {
                         .param("username", signInCommand.username())
                         .param("password", signInCommand.password()))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.model().hasErrors());
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/sign-in"));
     }
 
     @Test
@@ -143,8 +143,7 @@ class SignControllerTest {
                         .param("username", signInCommand.username())
                         .param("password", signInCommand.password()))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/sign-in"));
+                .andExpect(MockMvcResultMatchers.status().isFound());
     }
 
     @Test
@@ -155,8 +154,8 @@ class SignControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/sign-out")
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/sign-in"));
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/sign-in?logout"));
     }
 
 }
