@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -31,6 +32,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "tb_user")
+@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
 @Comment("계정")
