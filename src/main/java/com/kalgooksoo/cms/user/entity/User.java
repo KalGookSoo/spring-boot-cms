@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -25,7 +26,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = "id")
 @SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
@@ -209,5 +210,9 @@ public class User implements Serializable {
     public ContactNumber getContactNumber() {
         return Optional.ofNullable(contactNumber).orElseGet(ContactNumber::new);
     }
+
+//    @Version
+//    @Setter(PROTECTED)
+//    private String version;
 
 }

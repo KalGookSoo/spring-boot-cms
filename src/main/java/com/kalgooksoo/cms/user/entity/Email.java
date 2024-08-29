@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -17,21 +18,12 @@ import static lombok.AccessLevel.PROTECTED;
 @Embeddable
 @Getter
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor(access = PROTECTED)
 public class Email implements Serializable {
 
     private String id;
 
     private String domain;
-
-    /**
-     * 이메일 표현식을 반환합니다.
-     * @return 이메일 표현식
-     */
-    public String getValue() {
-        return id + "@" + domain;
-    }
 
     /**
      * 이메일 생성자
@@ -41,6 +33,11 @@ public class Email implements Serializable {
     public Email(String id, String domain) {
         this.id = id;
         this.domain = domain;
+    }
+
+    @Override
+    public String toString() {
+        return Optional.ofNullable(id).orElse("") + "@" + Optional.ofNullable(domain).orElse("");
     }
 
 }

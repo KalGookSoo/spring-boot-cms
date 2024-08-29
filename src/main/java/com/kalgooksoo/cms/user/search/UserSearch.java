@@ -35,11 +35,6 @@ public class UserSearch extends PageVO {
     }
 
     @JsonIgnore
-    public boolean isEmptyEmail() {
-        return email == null || email.getValue().isEmpty();
-    }
-
-    @JsonIgnore
     public boolean isEmptyContactNumber() {
         return contactNumber == null || contactNumber.getValue().isEmpty();
     }

@@ -43,6 +43,14 @@ public interface UserService {
     User findById(@NonNull String id);
 
     /**
+     * 계정명으로 계정 조회
+     * @param username 계정명
+     * @return 계정
+     */
+    User findByUsername(@NonNull String username);
+
+
+    /**
      * 계정 목록 조회
      * @param pageable 페이지 정보
      * @return 계정 목록

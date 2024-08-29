@@ -115,8 +115,11 @@ class UserServiceTest {
 
         // Then
         assertEquals(command.name(), updatedUser.getName());
-        assertEquals(command.emailId() + "@" + command.emailDomain(), updatedUser.getEmail().getValue());
-        assertEquals(command.firstContactNumber() + "-" + command.middleContactNumber() + "-" + command.lastContactNumber(), updatedUser.getContactNumber().getValue());
+        assertEquals(command.emailId(), updatedUser.getEmail().getId());
+        assertEquals(command.emailDomain(), updatedUser.getEmail().getDomain());
+        assertEquals(command.firstContactNumber(), updatedUser.getContactNumber().getFirst());
+        assertEquals(command.middleContactNumber(), updatedUser.getContactNumber().getMiddle());
+        assertEquals(command.lastContactNumber(), updatedUser.getContactNumber().getLast());
     }
 
     @Test

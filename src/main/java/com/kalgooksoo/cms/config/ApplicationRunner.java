@@ -8,8 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.NonNull;
+
+import java.util.NoSuchElementException;
 
 @Configuration
 public class ApplicationRunner implements CommandLineRunner, ApplicationListener<ApplicationStartedEvent> {
@@ -29,33 +30,15 @@ public class ApplicationRunner implements CommandLineRunner, ApplicationListener
 
     @Override
     public void run(String... args) {
-        createAdmin();
-        createUser();
+        createUserCommand("admin", "관리자", true);
+        createUserCommand("tester", "테스터", false);
     }
 
-    private void createUser() {
-        CreateUserCommand createUserCommand = new CreateUserCommand(
-                "tester",
+    private void createUserCommand(String username, String name, boolean isAdministrator) {
+        CreateUserCommand command = new CreateUserCommand(
+                username,
                 "12341234",
-                "테스터",
-                "miro3721",
-                "gmail.com",
-                "010",
-                "1234",
-                "5678"
-        );
-        try {
-            userService.createUser(createUserCommand);
-        } catch (DataIntegrityViolationException e) {
-            logger.info("계정이 이미 존재합니다");
-        }
-    }
-
-    private void createAdmin() {
-        CreateUserCommand createAdminCommand = new CreateUserCommand(
-                "admin",
-                "12341234",
-                "관리자",
+                name,
                 "ga.miro3721",
                 "gmail.com",
                 "010",
@@ -63,9 +46,13 @@ public class ApplicationRunner implements CommandLineRunner, ApplicationListener
                 "5678"
         );
         try {
-            userService.createAdmin(createAdminCommand);
-        } catch (DataIntegrityViolationException e) {
-            logger.info("계정이 이미 존재합니다");
+            userService.findByUsername(command.username());
+        } catch (NoSuchElementException e) {
+            if (isAdministrator) {
+                userService.createAdmin(command);
+                return;
+            }
+            userService.createUser(command);
         }
     }
 

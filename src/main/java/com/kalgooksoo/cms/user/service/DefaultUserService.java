@@ -11,6 +11,7 @@ import com.kalgooksoo.cms.user.search.UserSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,15 @@ public class DefaultUserService implements UserService {
     @Override
     public User findById(@NonNull String id) {
         return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    /**
+     * @see UserService#findByUsername(String)
+     */
+    @Override
+    public User findByUsername(@NonNull String username) {
+        Specification<User> specification = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("username"), username);
+        return userRepository.findOne(specification).orElseThrow(NoSuchElementException::new);
     }
 
     /**
