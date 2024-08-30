@@ -1,26 +1,29 @@
-//rootProject.name = 'spring-boot-cms'
+//file:noinspection GroovyAssignabilityCheck
 
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
+//    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 java {
     sourceCompatibility = '17'
 }
 
-
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+//apply from: 'asciidoctor.gradle'
 
 group = 'com.kalgooksoo'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
+    maven {
+        url 'https://repo.spring.io/milestone'
+    }
     flatDir {
         dirs 'src/main/resources/lib'
     }
@@ -44,20 +47,6 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.7.3'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.egovframe.rte:org.egovframe.rte.bat.core-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.access-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.cmmn-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.crypto-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.excel-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.filehandling-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.idgnr-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.logging-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.property-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.security-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.fdl.string-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.psl.dataaccess-4.1.0'
-    implementation 'org.egovframe.rte:org.egovframe.rte.ptl.mvc-4.1.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
