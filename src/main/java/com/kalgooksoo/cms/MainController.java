@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.NoSuchElementException;
 
 /**
- * 인덱스 컨트롤러
+ * 메인 컨트롤러
  */
 @Controller
-public class IndexController {
+public class MainController {
 
     /**
      * 메인 화면을 반환합니다.
