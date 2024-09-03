@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'com.hazelcast:hazelcast:5.3.6'
     implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.apache.tika:tika-core:2.9.2'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
