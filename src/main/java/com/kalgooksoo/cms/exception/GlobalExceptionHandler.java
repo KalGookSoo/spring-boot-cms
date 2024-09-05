@@ -11,11 +11,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.NoSuchElementException;
 
+/**
+ * 전역 예외 핸들러
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 요청이 잘못된 경우
+     * @param e IllegalArgumentException
+     * @return 400 에러 화면
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(IllegalArgumentException e) {
@@ -23,6 +31,11 @@ public class GlobalExceptionHandler {
         return "error/400";
     }
 
+    /**
+     * 해당 자원을 찾을 수 없는 경우
+     * @param e NoSuchElementException
+     * @return 404 에러 화면
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public String handleNoSuchElementException(NoSuchElementException e) {
@@ -52,6 +65,11 @@ public class GlobalExceptionHandler {
         return "redirect:/sign-in";
     }
 
+    /**
+     * 핸들링할 수 없는 오류가 발생한 경우
+     * @param e RuntimeException
+     * @return 500 에러 화면
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(RuntimeException e) {

@@ -49,6 +49,12 @@
                         <input id="title" class="form-control" th:field="*{title}">
                         <span class="d-block invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}"></span>
                     </div>
+
+                    <div class="form-group mb-3 attachments">
+                        <span></span>
+                        <button type="button" class="btn btn-danger remove"><i class="bi bi-trash-fill"></i></button>
+                    </div>
+
                     <div class="form-group mb-3">
                         <label for="content" th:text="#{entity.article.content}"></label>
                         <div id="editor"></div>

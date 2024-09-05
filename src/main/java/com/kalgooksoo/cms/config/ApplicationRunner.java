@@ -27,7 +27,7 @@ public class ApplicationRunner implements CommandLineRunner, ApplicationListener
 
     @Override
     public void onApplicationEvent(@NonNull ApplicationStartedEvent event) {
-        logger.info("Application started");
+        logger.info("\n\nApplication started\n\n");
     }
 
     @Override

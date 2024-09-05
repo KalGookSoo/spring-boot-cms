@@ -36,14 +36,14 @@ public class DefaultCategoryService implements CategoryService {
                 .orElse(null);
         Category category = Category.create(parent, command.name(), command.type());
         Category saved = categoryRepository.save(category);
-//        findAll().add(saved);
+        categories.add(saved);
         return saved;
     }
 
     @Transactional(readOnly = true)
     @Override
     public Collection<Category> findAllNested() {
-        Collection<Category> categories = findAll();
+//        Collection<Category> categories = findAll();
         Map<Category, List<Category>> collect = categories.stream()
                 .filter(Category::hasParent)
                 .collect(Collectors.groupingBy(Category::getParent));
@@ -54,7 +54,8 @@ public class DefaultCategoryService implements CategoryService {
                 .toList();
     }
 
-//    @Cacheable("categories")
+    //    @Cacheable("categories")
+    @Transactional(readOnly = true)
     @Override
     public Collection<Category> findAll() {
 //        return categories;
@@ -81,7 +82,7 @@ public class DefaultCategoryService implements CategoryService {
 
         category.update(parent, command.name(), command.type());
         Category saved = categoryRepository.save(category);
-//        findAll().add(saved);
+        categories.add(saved);
         return saved;
     }
 

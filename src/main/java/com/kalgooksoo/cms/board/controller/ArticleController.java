@@ -8,8 +8,6 @@ import com.kalgooksoo.cms.board.service.ArticleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -24,8 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/articles")
 @RequiredArgsConstructor
 public class ArticleController {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ArticleService articleService;
 
@@ -145,7 +141,7 @@ public class ArticleController {
         redirectAttributes.addFlashAttribute("message", getMessage("command.success.update", null));
 
         // View
-        return "redirect:/articles/" + id + "/edit";
+        return String.format("redirect:/articles/%s/edit", id);
     }
 
     @DeleteMapping("/{id}")
