@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,7 +44,7 @@ public class DefaultArticleService implements ArticleService {
             CategoryRepository categoryRepository,
             ArticleRepository articleRepository
     ) {
-        this.filepath = System.getProperty("user.dir") + filepath;
+        this.filepath = filepath;
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
     }
@@ -52,6 +54,7 @@ public class DefaultArticleService implements ArticleService {
         return articleRepository.searchAll(search);
     }
 
+    @Transactional
     @Override
     public Article create(@NonNull CreateArticleCommand command) {
         Category category = categoryRepository.getReferenceById(command.getCategoryId());
@@ -66,7 +69,8 @@ public class DefaultArticleService implements ArticleService {
                 String mimeType = tika.detect(multipartFile.getInputStream());
                 Attachment attachment = Attachment.create(multipartFile.getOriginalFilename(), filepath, mimeType, multipartFile.getSize());
                 article.addAttachment(attachment);
-                String pathname = filepath + File.separator + LocalDateTime.now() + "_" + multipartFile.getOriginalFilename();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                String pathname = filepath + File.separator + LocalDateTime.now().format(dateTimeFormatter) + "_" + multipartFile.getOriginalFilename();
                 FileIOService.write(pathname, multipartFile.getBytes());
 
             } catch (IOException e) {
@@ -79,6 +83,7 @@ public class DefaultArticleService implements ArticleService {
         return article;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Article find(@NonNull String id) {
         return articleRepository.findById(id).orElseThrow(NoSuchElementException::new);
@@ -93,6 +98,7 @@ public class DefaultArticleService implements ArticleService {
         return article;
     }
 
+    @Transactional
     @Override
     public String delete(@NonNull String id) {
         Article article = articleRepository.getReferenceById(id);

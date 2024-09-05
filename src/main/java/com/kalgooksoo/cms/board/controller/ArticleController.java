@@ -77,6 +77,7 @@ public class ArticleController {
 
         // Model
         model.addAttribute("article", article);
+        model.addAttribute("attachments", article.getAttachments());
 
         // View
         return "articles/view";
@@ -117,6 +118,7 @@ public class ArticleController {
 
         // Model
         model.addAttribute("article", article);
+        model.addAttribute("attachments", article.getAttachments());
         model.addAttribute("command", command);
 
         // View

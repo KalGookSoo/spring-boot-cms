@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class DefaultCategoryService implements CategoryService {
         return saved;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<Category> findAllNested() {
         Collection<Category> categories = findAll();
@@ -83,6 +85,7 @@ public class DefaultCategoryService implements CategoryService {
         return saved;
     }
 
+    @Transactional
     @Override
     public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);

@@ -22,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -47,8 +50,8 @@ class ArticleServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 생성 - ")
-    void createArticle() {
+    @DisplayName("게시글 생성 테스트")
+    void create() {
         // Given
         CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.PUBLIC);
         Category createdCategory = categoryService.create(createCategoryCommand);
@@ -68,6 +71,23 @@ class ArticleServiceTest {
         // Then
         Assertions.assertNotNull(article.getId());
         Assertions.assertNotNull(article.getAttachments().iterator().next().getId());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 테스트")
+    void delete() {
+        // Given
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.PUBLIC);
+        Category createdCategory = categoryService.create(createCategoryCommand);
+        entityManager.flush();
+        entityManager.clear();
+
+        // When
+        categoryService.delete(createdCategory.getId());
+        entityManager.flush();
+
+        // Then
+        assertThrows(NoSuchElementException.class, () -> categoryService.find(createdCategory.getId()));
     }
 
 }
