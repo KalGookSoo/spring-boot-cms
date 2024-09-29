@@ -9,66 +9,19 @@
 
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+     <link rel="stylesheet" th:href="@{/css/attachment.css}" />
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
     <!-- JS -->
     <script th:src="@{/js/bootstrap.js}"></script>
     <script th:src="@{/js/global.js}"></script>
+    <script th:src="@{/js/AttachmentManager.js}"></script>
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
     <style>
         header, aside, main, footer {
             border: 1px dashed red;
             box-sizing: border-box;
-        }
-
-
-        :root {
-            --colorPrimaryNormal: #00b3bb;
-            --colorPrimaryDark: #00979f;
-            --colorPrimaryGlare: #00cdd7;
-            --colorPrimaryHalf: #80d9dd;
-            --colorPrimaryQuarter: #bfecee;
-            --colorPrimaryEighth: #dff5f7;
-            --colorPrimaryPale: #f3f5f7;
-            --colorPrimarySeparator: #f3f5f7;
-            --colorPrimaryOutline: #dff5f7;
-            --colorButtonNormal: #00b3bb;
-            --colorButtonHover: #00cdd7;
-            --colorLinkNormal: #00979f;
-            --colorLinkHover: #00cdd7;
-        }
-
-        .upload-drop-zone {
-            color: #0f3c4b;
-            background-color: var(--colorPrimaryPale, #c8dadf);
-            outline: 2px dashed var(--colorPrimaryHalf, #c1ddef);
-            outline-offset: -12px;
-            transition:
-                    outline-offset 0.2s ease-out,
-                    outline-color 0.3s ease-in-out,
-                    background-color 0.2s ease-out;
-        }
-        .upload-drop-zone.highlight {
-            outline-offset: -4px;
-            outline-color: var(--colorPrimaryNormal, #0576bd);
-            background-color: var(--colorPrimaryEighth, #c8dadf);
-        }
-        .upload-svg {
-            fill: var(--colorPrimaryNormal, #0576bd);
-        }
-        .btn-upload {
-            color: #fff;
-            background-color: var(--colorPrimaryNormal);
-        }
-        .btn-upload:hover,
-        .btn-upload:focus {
-            color: #fff;
-            background-color: var(--colorPrimaryGlare);
-        }
-        .upload_img {
-            width: calc(33.333% - (2rem / 3));
-            object-fit: contain;
         }
     </style>
 
@@ -126,7 +79,9 @@
     </div>
 
     <footer th:replace="~{footer :: footer}"></footer>
+    <section id="file">
 
+    </section>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -136,7 +91,7 @@
                 </div>
                 <div class="modal-body">
                     <h1 class="h4 text-center mb-3">Drag &amp; drop file upload example</h1>
-                    <form>
+                    <form name="attachmentForm">
                         <fieldset class="upload-drop-zone text-center mb-3 p-4">
                             <legend class="visually-hidden">Image uploader</legend>
                             <svg class="upload-svg" width="60" height="60" aria-hidden="true">
@@ -144,11 +99,32 @@
                             </svg>
                             <p class="small my-2">Drag &amp; Drop logo image(s) inside dashed region<br><i>or</i></p>
                             <!-- TODO 첨부파일 목록 -->
+<!--
                             <input id="upload-image-logo" data-post-name="image-logo"
                                    data-post-url="https://someplace.com/image/uploads/logos/"
                                    class="position-absolute invisible" type="file">
                             <label class="btn btn-upload mb-3" for="upload-image-logo">Choose file(s)</label>
-                            <div class="upload-gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+-->
+                            <input type="file" id="multipartFiles" name="multipartFiles" class="position-absolute invisible" multiple>
+                            <label for="multipartFiles" class="btn btn-upload mb-3">Choose file(s)</label>
+                        </fieldset>
+                        <fieldset class="upload-drop-zone text-center mb-3 p-4">
+                            <legend>첨부파일 목록</legend>
+                            <table class="table table-hover border">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Size</th>
+                                    <th>-</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colspan="100%" class="text-center"></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </fieldset>
                     </form>
                     <svg style="display:none">
@@ -161,7 +137,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-upload">Save changes</button>
                 </div>
             </div>
         </div>
@@ -186,6 +162,12 @@
                 e.target.elements.content.value = editor.getHTML();
             });
 
+            document.addEventListener('click', e => {
+                if (e.target.closest(`button.btn-upload`)) {
+                    debugger;
+                    const multipartFiles = document.attachmentForm.multipartFiles;
+                }
+            });
         });
     </script>
 
@@ -215,16 +197,15 @@
 
             const getInputAndGalleryRefs = element => {
                 const zone = element.closest('.upload-drop-zone') || false;
-                const gallery = zone.querySelector('.upload-gallery') || false;
+
                 const input = zone.querySelector('input[type="file"]') || false;
-                return {input: input, gallery: gallery};
+                return {input: input};
             }
 
             const handleDrop = event => {
                 const dataRefs = getInputAndGalleryRefs(event.target);
                 dataRefs.files = event.dataTransfer.files;
                 handleFiles(dataRefs);
-                debugger;
             }
 
             const uploadDropZone = document.querySelector('.upload-drop-zone');
@@ -253,71 +234,22 @@
                 handleFiles(dataRefs);
             }, false);
 
-            function previewFiles(dataRefs) {
-                if (!dataRefs.gallery) {
-                    return;
-                }
-                for (const file of dataRefs.files) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onloadend = function() {
-                        let img = document.createElement('img');
-                        img.className = 'upload_img mt-2';
-                        img.setAttribute('alt', file.name);
-                        img.src = reader.result;
-                        dataRefs.gallery.appendChild(img);
-                    }
-                }
-            }
-
-            // Based on: https://flaviocopes.com/how-to-upload-files-fetch/
-            const imageUpload = dataRefs => {
-
-                // Multiple source routes, so double check validity
-                if (!dataRefs.files || !dataRefs.input) return;
-
-                const url = dataRefs.input.dataset.postUrl;
-                if (!url) return;
-
-                const name = dataRefs.input.dataset.postName;
-                if (!name) return;
-
-                const formData = new FormData();
-                formData.append(name, dataRefs.files);
-
-                const requestEntity = {
-                    method: 'POST',
-                    body: formData
-                };
-                debugger;
-                fetch(url, requestEntity)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('posted: ', data);
-                        if (data.success) {
-                            previewFiles(dataRefs);
-                        } else {
-                            console.log(`URL: ${url} / NAME: ${name}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('errored: ', error);
-                    });
-            }
-
-
             // Handle selected and dropped files
             const handleFiles = dataRefs => {
-                debugger;
-                const files = [...dataRefs.files];
+                if (!dataRefs.files.length) return;
+                const tbody = document.querySelector(`.modal table tbody`);
+                const createRowTemplate = (file, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${file.name}</td>
+                    <td>${file.size}</td>
+                    <td><button class="btn btn-danger" data-id="${index + 1}">🗑</button></td>
+                </tr>
+                `;
 
-                // TODO 파일 필터링
-
-                if (!files.length) return;
-                dataRefs.files = files;
-
-                // previewFiles(dataRefs);
-                // imageUpload(dataRefs);
+                [...dataRefs.files].forEach((file, index) => {
+                    tbody.insertAdjacentHTML('beforeend', createRowTemplate(file, index));
+                });
             }
         });
     </script>
