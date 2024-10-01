@@ -5,17 +5,30 @@ import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
+import com.kalgooksoo.core.file.FileIOService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 
 @Tag(name = "ArticleController", description = "게시글 컨트롤러")
 @Controller
@@ -157,5 +170,25 @@ public class ArticleController {
 
         // View
         return "redirect:/articles/list?categoryId=" + categoryId;
+    }
+
+    @ResponseBody
+    @GetMapping("/download")
+    public ResponseEntity<InputStreamSource> getAttachments(@RequestParam String name) throws IOException {
+        String filePath = "C:/Users/miro3.DESKTOP-1LFF30M/upload/" + name;
+        File file = new File(filePath);
+        String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8);
+        InputStreamResource resource = FileIOService.download(file.getPath());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()))
+                .body(resource);
+    }
+
+    @ExceptionHandler(NoSuchFileException.class)
+    public ResponseEntity<String> handleNoSuchFileException(NoSuchFileException e) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
     }
 }
