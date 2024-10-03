@@ -19,12 +19,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -60,12 +62,17 @@ class ArticleServiceTest {
         command.setTitle("title");
         command.setContent("content");
         List<MultipartFile> multipartFiles = new ArrayList<>();
-        MultipartFile multipartFile1 = new MockMultipartFile("name", "연차현황.png", "image/png", "Some image data".getBytes());
+        MultipartFile multipartFile1 = new MockMultipartFile("name", "연차현황.txt", "text/plain", "dummy".getBytes());
         multipartFiles.add(multipartFile1);
         command.setMultipartFiles(multipartFiles);
 
         // When
-        Article article = articleService.create(command);
+        Article article = null;
+        try {
+            article = articleService.create(command);
+        } catch (IOException e) {
+            fail();
+        }
         entityManager.flush();
 
         // Then

@@ -10,9 +10,11 @@ import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -34,6 +36,9 @@ public class Attachment extends BaseEntity {
     @ManyToMany(mappedBy = "attachments")
     private final Set<Reply> replies = new LinkedHashSet<>();
 
+    @Comment("원본이름")
+    private String originalName;
+
     @Comment("이름")
     private String name;
 
@@ -46,13 +51,22 @@ public class Attachment extends BaseEntity {
     @Comment("크기")
     private long size;
 
-    public static Attachment create(String name, String pathName, String mimeType, long size) {
+    public static Attachment create(String pathName, MultipartFile multipartFile) {
         Attachment attachment = new Attachment();
-        attachment.name = name;
+        attachment.originalName = multipartFile.getOriginalFilename();
+        attachment.name = generateName(attachment.name);
         attachment.pathName = pathName;
-        attachment.mimeType = mimeType;
-        attachment.size = size;
+        attachment.mimeType = multipartFile.getContentType();
+        attachment.size = multipartFile.getSize();
         return attachment;
+    }
+
+    private static String generateName(String originName) {
+        return String.format("%s_%s", UUID.randomUUID(), originName);
+    }
+
+    public String getAbsolutePath() {
+        return pathName + "/" + name;
     }
 
 }

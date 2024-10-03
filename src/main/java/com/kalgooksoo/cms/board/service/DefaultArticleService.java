@@ -10,8 +10,6 @@ import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.core.file.FileIOService;
 import org.apache.tika.Tika;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
@@ -19,17 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class DefaultArticleService implements ArticleService {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String filepath;
 
@@ -56,7 +49,7 @@ public class DefaultArticleService implements ArticleService {
 
     @Transactional
     @Override
-    public Article create(@NonNull CreateArticleCommand command) {
+    public Article create(@NonNull CreateArticleCommand command) throws IOException {
         Category category = categoryRepository.getReferenceById(command.getCategoryId());
         Article article = Article.create(command.getTitle(), command.getContent());
 
@@ -65,18 +58,10 @@ public class DefaultArticleService implements ArticleService {
                 .filter(file -> !file.isEmpty())
                 .toList();
         for (MultipartFile multipartFile : multipartFiles) {
-            try {
-                String mimeType = tika.detect(multipartFile.getInputStream());
-                Attachment attachment = Attachment.create(multipartFile.getOriginalFilename(), filepath, mimeType, multipartFile.getSize());
-                article.addAttachment(attachment);
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-                String pathname = filepath + File.separator + LocalDateTime.now().format(dateTimeFormatter) + "_" + multipartFile.getOriginalFilename();
-                FileIOService.write(pathname, multipartFile.getBytes());
-
-            } catch (IOException e) {
-                logger.error(e.getLocalizedMessage());
-                throw new IllegalArgumentException(e.getLocalizedMessage());
-            }
+            detectMimeType(multipartFile);
+            Attachment attachment = Attachment.create(filepath, multipartFile);
+            article.addAttachment(attachment);
+            writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
         }
         category.addArticle(article);
         categoryRepository.save(category);
@@ -92,7 +77,7 @@ public class DefaultArticleService implements ArticleService {
     @Override
     public Article update(@NonNull String id, @NonNull UpdateArticleCommand command) {
         Article article = articleRepository.getReferenceById(id);
-        article.update(command.title(), command.content());
+        article.update(command.getTitle(), command.getContent());
         Category category = article.getCategory();
         categoryRepository.save(category);
         return article;
@@ -108,4 +93,41 @@ public class DefaultArticleService implements ArticleService {
         return categoryId;
 
     }
+
+    @Transactional
+    @Override
+    public Article addAttachments(@NonNull String id, @NonNull List<MultipartFile> multipartFiles) throws IOException {
+        if (multipartFiles.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        Article article = articleRepository.getReferenceById(id);
+        for (MultipartFile multipartFile : multipartFiles) {
+            detectMimeType(multipartFile);
+            Attachment attachment = Attachment.create(filepath, multipartFile);
+            article.addAttachment(attachment);
+            writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
+        }
+        articleRepository.save(article);
+        return article;
+    }
+
+    private void detectMimeType(MultipartFile multipartFile) throws IOException {
+        String mimeType = tika.detect(multipartFile.getInputStream());
+        if (!mimeType.equals(multipartFile.getContentType())) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Detected MIME type does not match the provided content type.").append(System.lineSeparator())
+                    .append("Detected MIME Type: ").append(mimeType).append(System.lineSeparator())
+                    .append("Attached Content Type: ").append(multipartFile.getContentType()).append(System.lineSeparator());
+            throw new IllegalArgumentException(sb.toString());
+        }
+    }
+
+    private static void writeFile(String pathname, byte[] bytes) {
+        try {
+            FileIOService.write(pathname, bytes);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
 }

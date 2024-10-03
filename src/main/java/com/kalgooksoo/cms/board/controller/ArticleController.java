@@ -3,6 +3,7 @@ package com.kalgooksoo.cms.board.controller;
 import com.kalgooksoo.cms.board.command.CreateArticleCommand;
 import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
+import com.kalgooksoo.cms.board.entity.Attachment;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
 import com.kalgooksoo.core.file.FileIOService;
@@ -11,8 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,13 +21,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Tag(name = "ArticleController", description = "게시글 컨트롤러")
 @Controller
@@ -98,7 +101,7 @@ public class ArticleController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model
-    ) {
+    ) throws IOException {
         // Validation
         if (bindingResult.hasErrors()) {
             return getNew(command, bindingResult, model);
@@ -172,19 +175,38 @@ public class ArticleController {
         return "redirect:/articles/list?categoryId=" + categoryId;
     }
 
+
     @ResponseBody
-    @GetMapping("/download")
-    public ResponseEntity<InputStreamSource> getAttachments(@RequestParam String name) throws IOException {
-        String filePath = "C:/Users/miro3.DESKTOP-1LFF30M/upload/" + name;
-        File file = new File(filePath);
-        String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8);
-        InputStreamResource resource = FileIOService.download(file.getPath());
+    @PostMapping(
+            value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Article> upload(List<MultipartFile> multipartFiles) throws IOException {
+
+        return ResponseEntity.ok(null);
+    }
+
+    @ResponseBody
+    @GetMapping("/{id}/attachments/{attachmentId}")
+    public ResponseEntity<InputStream> getAttachments(
+            @PathVariable String id,
+            @PathVariable String attachmentId
+    ) throws IOException {
+        Article article = articleService.find(id);
+        Attachment attachment = article.getAttachments()
+                .stream()
+                .filter(e -> attachmentId.equals(e.getId()))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+        String fileName = URLEncoder.encode(attachment.getOriginalName(), StandardCharsets.UTF_8);
+        ByteArrayInputStream stream = FileIOService.read(attachment.getAbsolutePath());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()))
-                .body(resource);
+                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(attachment.getSize()))
+                .body(stream);
     }
 
     @ExceptionHandler(NoSuchFileException.class)

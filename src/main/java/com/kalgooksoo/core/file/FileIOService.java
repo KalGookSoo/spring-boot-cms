@@ -1,11 +1,13 @@
 package com.kalgooksoo.core.file;
 
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.util.FileCopyUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -14,36 +16,39 @@ import java.nio.file.Paths;
 public interface FileIOService {
 
     /**
-     * 파일을 저장합니다.
+     * 파일 쓰기
      *
-     * @param pathname     저장할 파일명
-     * @param data         저장할 파일의 데이터(byte 배열)
-     * @throws IOException 파일 저장 중에 I/O 오류가 발생한 경우
+     * @param absolutePath 절대경로
+     * @param data         파일 데이터
+     * @throws IOException 입출력 예외
      */
-    static void write(final String pathname, final byte[] data) throws IOException {
-        File file = new File(pathname);
+    static void write(String absolutePath, byte[] data) throws IOException {
+        File file = new File(absolutePath);
         FileCopyUtils.copy(data, file);
     }
 
     /**
-     * 해당 경로의 파일을 다운로드하여 반환합니다.
+     * 파일 읽기
      *
-     * @param filePath     다운로드할 파일의 경로
-     * @return             다운로드한 파일을 나타내는 InputStreamResource
-     * @throws IOException 파일을 읽는 동안 I/O 오류가 발생한 경우
+     * @param absolutePath 절대경로
+     * @return 파일 데이터
+     * @throws IOException 입출력 예외
      */
-    static InputStreamResource download(final String filePath) throws IOException {
-        return new InputStreamResource(Files.newInputStream(Paths.get(filePath)));
+    static ByteArrayInputStream read(String absolutePath) throws IOException {
+        Path path = Paths.get(absolutePath);
+        InputStream inputStream = Files.newInputStream(path);
+        byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+        return new ByteArrayInputStream(bytes);
     }
 
     /**
-     * 해당 파일을 물리적으로 삭제합니다.
+     * 파일 삭제
      *
-     * @param pathname 삭제할 파일의 경로
-     * @return         삭제 성공유무
+     * @param absolutePath 절대경로
+     * @return 삭제 성공 여부
      */
-    static boolean delete(final String pathname) {
-        File file = new File(pathname);
+    static boolean delete(String absolutePath) {
+        File file = new File(absolutePath);
         return file.delete();
     }
 
