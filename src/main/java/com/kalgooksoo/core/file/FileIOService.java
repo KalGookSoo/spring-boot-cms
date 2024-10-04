@@ -22,8 +22,12 @@ public interface FileIOService {
      * @param data         파일 데이터
      * @throws IOException 입출력 예외
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void write(String absolutePath, byte[] data) throws IOException {
         File file = new File(absolutePath);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
         FileCopyUtils.copy(data, file);
     }
 
