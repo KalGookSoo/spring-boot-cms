@@ -8,6 +8,7 @@ import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
 import com.kalgooksoo.core.file.FileIOService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
@@ -178,20 +180,24 @@ public class ArticleController {
 
     @ResponseBody
     @PostMapping(
-            value = "/upload",
+            value = "/{id}/attachments/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Article> upload(List<MultipartFile> multipartFiles) throws IOException {
-
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Article> upload(
+            @PathVariable String id,
+            List<MultipartFile> multipartFiles
+    ) throws IOException {
+        Article article = articleService.addAttachments(id, multipartFiles);
+        return ResponseEntity.ok(article);
     }
 
-    @ResponseBody
-    @GetMapping("/{id}/attachments/{attachmentId}")
-    public ResponseEntity<InputStream> getAttachments(
+    @GetMapping("/{id}/attachments/{attachmentId}/download")
+    public void getAttachments(
             @PathVariable String id,
-            @PathVariable String attachmentId
+            @PathVariable String attachmentId,
+            @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
+            HttpServletResponse response
     ) throws IOException {
         Article article = articleService.find(id);
         Attachment attachment = article.getAttachments()
@@ -202,11 +208,32 @@ public class ArticleController {
         String fileName = URLEncoder.encode(attachment.getOriginalName(), StandardCharsets.UTF_8);
         ByteArrayInputStream stream = FileIOService.read(attachment.getAbsolutePath());
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(attachment.getSize()))
-                .body(stream);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, getContentDisposition(userAgent, fileName));
+        OutputStream outputStream = response.getOutputStream();
+        FileCopyUtils.copy(stream, outputStream);
+    }
+
+    private String getContentDisposition(String userAgent, String fileName) {
+        String disposition = "attachment;filename=";
+        if (userAgent.contains("MSIE")) {
+            int i = userAgent.indexOf('M', 2);
+            String IEV = userAgent.substring(i + 5, i + 8);
+            disposition = IEV.equalsIgnoreCase("5.5") ? "filename=" : disposition;
+        }
+        return disposition + fileName;
+    }
+
+    @ResponseBody
+    @DeleteMapping("/{id}/attachments/{attachmentId}")
+    public ResponseEntity<Article> deleteAttachment(
+            @PathVariable String id,
+            @PathVariable String attachmentId
+    ) {
+        Article article = articleService.removeAttachment(id, attachmentId);
+        return ResponseEntity.ok(article);
     }
 
     @ExceptionHandler(NoSuchFileException.class)

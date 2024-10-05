@@ -25,4 +25,6 @@ public interface ArticleService {
 
     Article addAttachments(@NonNull String id, @NonNull List<MultipartFile> multipartFiles) throws IOException;
 
+    Article removeAttachment(@NonNull String id, @NonNull String attachmentId);
+
 }

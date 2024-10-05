@@ -9,7 +9,6 @@ import com.kalgooksoo.cms.board.repository.ArticleRepository;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.core.file.FileIOService;
-import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
@@ -29,8 +28,6 @@ public class DefaultArticleService implements ArticleService {
     private final CategoryRepository categoryRepository;
 
     private final ArticleRepository articleRepository;
-
-    private final Tika tika = new Tika();
 
     public DefaultArticleService(
             @Value("${com.kalgooksoo.cms.filepath}") String filepath,
@@ -58,7 +55,6 @@ public class DefaultArticleService implements ArticleService {
                 .filter(file -> !file.isEmpty())
                 .toList();
         for (MultipartFile multipartFile : multipartFiles) {
-            detectMimeType(multipartFile);
             Attachment attachment = Attachment.create(filepath, multipartFile);
             article.addAttachment(attachment);
             writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
@@ -102,24 +98,19 @@ public class DefaultArticleService implements ArticleService {
         }
         Article article = articleRepository.getReferenceById(id);
         for (MultipartFile multipartFile : multipartFiles) {
-            detectMimeType(multipartFile);
             Attachment attachment = Attachment.create(filepath, multipartFile);
             article.addAttachment(attachment);
             writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
         }
-        articleRepository.save(article);
-        return article;
+        return articleRepository.save(article);
     }
 
-    private void detectMimeType(MultipartFile multipartFile) throws IOException {
-        String mimeType = tika.detect(multipartFile.getInputStream());
-        if (!mimeType.equals(multipartFile.getContentType())) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Detected MIME type does not match the provided content type.").append(System.lineSeparator())
-                    .append("Detected MIME Type: ").append(mimeType).append(System.lineSeparator())
-                    .append("Attached Content Type: ").append(multipartFile.getContentType()).append(System.lineSeparator());
-            throw new IllegalArgumentException(sb.toString());
-        }
+    @Transactional
+    @Override
+    public Article removeAttachment(@NonNull String id, @NonNull String attachmentId) {
+        Article article = articleRepository.getReferenceById(id);
+        article.getAttachments().removeIf(attachment -> attachment.getId().equals(attachmentId));
+        return articleRepository.save(article);
     }
 
     private static void writeFile(String pathname, byte[] bytes) {

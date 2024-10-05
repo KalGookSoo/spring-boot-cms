@@ -54,7 +54,7 @@ public class Attachment extends BaseEntity {
     public static Attachment create(String pathName, MultipartFile multipartFile) {
         Attachment attachment = new Attachment();
         attachment.originalName = multipartFile.getOriginalFilename();
-        attachment.name = generateName(attachment.name);
+        attachment.name = generateName(attachment.originalName);
         attachment.pathName = pathName;
         attachment.mimeType = multipartFile.getContentType();
         attachment.size = multipartFile.getSize();

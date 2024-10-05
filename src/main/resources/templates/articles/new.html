@@ -42,6 +42,7 @@
         <main class="flex-grow-1 p-3">
 
             <form name="form" enctype="multipart/form-data" th:action="@{/articles}" th:method="post" th:object="${command}">
+                <input type="file" name="multipartFiles" multiple>
                 <div class="form-group mb-3 d-none">
                     <label for="categoryId" th:text="#{entity.category.id}"></label>
                     <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
@@ -137,7 +138,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-upload">Save changes</button>
+                    <button type="button" class="btn btn-attach">Save changes</button>
                 </div>
             </div>
         </div>
@@ -158,14 +159,16 @@
             });
 
             document.form.addEventListener('submit', e => {
-                debugger;
                 e.target.elements.content.value = editor.getHTML();
             });
 
             document.addEventListener('click', e => {
-                if (e.target.closest(`button.btn-upload`)) {
-                    debugger;
-                    const multipartFiles = document.attachmentForm.multipartFiles;
+                if (e.target.closest(`button.btn-attach`)) {
+                    const transfer = new DataTransfer();
+                    [...document.form.multipartFiles.files, ...document.attachmentForm.multipartFiles.files]
+                        .forEach(file => transfer.items.add(file));
+                    document.form.multipartFiles.files = transfer.files;
+
                 }
             });
         });
@@ -238,6 +241,7 @@
             const handleFiles = dataRefs => {
                 if (!dataRefs.files.length) return;
                 const tbody = document.querySelector(`.modal table tbody`);
+
                 const createRowTemplate = (file, index) => `
                 <tr>
                     <td>${index + 1}</td>
@@ -247,8 +251,9 @@
                 </tr>
                 `;
 
+                const offset = tbody.querySelectorAll('tr').length;
                 [...dataRefs.files].forEach((file, index) => {
-                    tbody.insertAdjacentHTML('beforeend', createRowTemplate(file, index));
+                    tbody.insertAdjacentHTML('beforeend', createRowTemplate(file, offset + index));
                 });
             }
         });

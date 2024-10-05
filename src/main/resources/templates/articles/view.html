@@ -49,6 +49,17 @@
             <div th:utext="${article.content}"></div>
         </div>
 
+        <div class="form-group mb-3" th:each="attachment : ${attachments}">
+            <p th:text="|#{entity.attachment} #{label.list}|"></p>
+            <label th:text="#{entity.name}"></label>
+            <div th:text="${attachment.originalName}"></div>
+            <label th:text="#{entity.id}"></label>
+            <div th:text="${attachment.id}"></div>
+            <label th:text="#{entity.attachment.size}"></label>
+            <div th:text="${attachment.size}"></div>
+            <a target="_blank" th:text="#{label.download}" th:href="@{'/articles/' + ${id} + '/attachments/' + ${attachment.id} + '/download'}"></a>
+        </div>
+
         <div class="d-flex justify-content-center p-3 mb-3 rounded">
             <a class="btn btn-primary" th:href="@{'/articles/' + ${article.id} + '/edit'}" th:text="#{label.update}"></a>
         </div>
