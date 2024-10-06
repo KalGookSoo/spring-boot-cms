@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import java.util.Collection;
 
 public interface CategoryService {
+    void refresh();
     Category create(@NonNull CreateCategoryCommand command);
     Collection<Category> findAllNested();
     Collection<Category> findAll();

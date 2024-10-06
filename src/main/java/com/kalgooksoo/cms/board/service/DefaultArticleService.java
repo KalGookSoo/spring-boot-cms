@@ -6,6 +6,7 @@ import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Attachment;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.repository.ArticleRepository;
+import com.kalgooksoo.cms.board.repository.AttachmentRepository;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.core.file.FileIOService;
@@ -29,14 +30,18 @@ public class DefaultArticleService implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    private final AttachmentRepository attachmentRepository;
+
     public DefaultArticleService(
             @Value("${com.kalgooksoo.cms.filepath}") String filepath,
             CategoryRepository categoryRepository,
-            ArticleRepository articleRepository
+            ArticleRepository articleRepository,
+            AttachmentRepository attachmentRepository
     ) {
         this.filepath = filepath;
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
+        this.attachmentRepository = attachmentRepository;
     }
 
     @Override
@@ -49,13 +54,9 @@ public class DefaultArticleService implements ArticleService {
     public Article create(@NonNull CreateArticleCommand command) throws IOException {
         Category category = categoryRepository.getReferenceById(command.getCategoryId());
         Article article = Article.create(command.getTitle(), command.getContent());
-
-        List<MultipartFile> multipartFiles = command.getMultipartFiles()
-                .stream()
-                .filter(file -> !file.isEmpty())
-                .toList();
-        for (MultipartFile multipartFile : multipartFiles) {
+        for (MultipartFile multipartFile : command.getMultipartFiles()) {
             Attachment attachment = Attachment.create(filepath, multipartFile);
+            attachmentRepository.save(attachment);
             article.addAttachment(attachment);
             writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
         }

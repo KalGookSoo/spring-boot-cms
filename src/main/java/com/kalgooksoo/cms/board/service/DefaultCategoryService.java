@@ -17,14 +17,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultCategoryService implements CategoryService {
 
-    private final Collection<Category> categories = new LinkedHashSet<>();
-
     private final CategoryRepository categoryRepository;
 
+    @Override
     @PostConstruct
-    public void init() {
-        List<Category> categories = categoryRepository.findAll();
-        this.categories.addAll(categories);
+    public void refresh() {
+
     }
 
     @Override
@@ -35,16 +33,15 @@ public class DefaultCategoryService implements CategoryService {
                 .map(categoryRepository::getReferenceById)
                 .orElse(null);
         Category category = Category.create(parent, command.name(), command.type());
-        Category saved = categoryRepository.save(category);
-        categories.add(saved);
-        return saved;
+        return categoryRepository.save(category);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Collection<Category> findAllNested() {
-//        Collection<Category> categories = findAll();
-        Map<Category, List<Category>> collect = categories.stream()
+        Collection<Category> categories = findAll();
+        Map<Category, List<Category>> collect = categories
+                .stream()
                 .filter(Category::hasParent)
                 .collect(Collectors.groupingBy(Category::getParent));
 
@@ -58,17 +55,12 @@ public class DefaultCategoryService implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public Collection<Category> findAll() {
-//        return categories;
         return categoryRepository.findAll();
     }
 
     @Override
     public Category find(@NonNull String id) {
         return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
-//        return categories.stream()
-//                .filter(category -> id.equals(category.getId()))
-//                .findFirst()
-//                .orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -81,9 +73,7 @@ public class DefaultCategoryService implements CategoryService {
                 .orElse(null);
 
         category.update(parent, command.name(), command.type());
-        Category saved = categoryRepository.save(category);
-        categories.add(saved);
-        return saved;
+        return categoryRepository.save(category);
     }
 
     @Transactional
