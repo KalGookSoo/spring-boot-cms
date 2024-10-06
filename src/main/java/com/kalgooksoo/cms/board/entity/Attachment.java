@@ -21,7 +21,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_attachment")
