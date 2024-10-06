@@ -107,4 +107,49 @@ class CategoryServiceTest {
         assertThrows(NoSuchElementException.class, () -> categoryService.find(createdCategory.getId()));
     }
 
+    @SuppressWarnings("NonAsciiCharacters")
+    void initiate() {
+        Category 정보공개 = categoryService.create(new CreateCategoryCommand(null, "정보공개", CategoryType.PUBLIC));
+        Category 정보공개제도_안내 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "정보공개제도 안내", CategoryType.PUBLIC));
+        Category 개요 = categoryService.create(new CreateCategoryCommand(정보공개제도_안내.getId(), "개요", CategoryType.PUBLIC));
+        Category 처리절차 = categoryService.create(new CreateCategoryCommand(정보공개제도_안내.getId(), "처리절차", CategoryType.PUBLIC));
+        Category 공개방법 = categoryService.create(new CreateCategoryCommand(정보공개제도_안내.getId(), "공개방법", CategoryType.PUBLIC));
+        Category 불복구제절차 = categoryService.create(new CreateCategoryCommand(정보공개제도_안내.getId(), "불복구제절차", CategoryType.PUBLIC));
+        Category 비공개_대상_정보 = categoryService.create(new CreateCategoryCommand(정보공개제도_안내.getId(), "비공개 대상 정보", CategoryType.PUBLIC));
+        Category 경영공시 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "경영공시", CategoryType.PUBLIC));
+        Category 통합공시 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "통합공시", CategoryType.PUBLIC));
+        Category 자체공시 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "자체공시", CategoryType.PUBLIC));
+        Category 경영공시_소개 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "경영공시 소개", CategoryType.PUBLIC));
+        Category 경영공시_담당자 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "경영공시 담당자", CategoryType.PUBLIC));
+        Category 자주묻는_질문 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "자주묻는 질문", CategoryType.PUBLIC));
+        Category 경영공시_개선센터 = categoryService.create(new CreateCategoryCommand(경영공시.getId(), "경영공시 개선센터", CategoryType.PUBLIC));
+        Category 정보목록 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "정보목록", CategoryType.PUBLIC));
+        Category 사전정보공표 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "사전정보공표", CategoryType.PUBLIC));
+        Category 사업실명제 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "사업실명제", CategoryType.PUBLIC));
+        Category 공공데이터 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "공공데이터", CategoryType.PUBLIC));
+        Category 공공데이터_이용안내 = categoryService.create(new CreateCategoryCommand(공공데이터.getId(), "공공데이터 이용안내", CategoryType.PUBLIC));
+        Category 공공데이터_활용안내 = categoryService.create(new CreateCategoryCommand(공공데이터.getId(), "공공데이터 활용안내", CategoryType.PUBLIC));
+        Category 공공데이터_개방목록 = categoryService.create(new CreateCategoryCommand(공공데이터.getId(), "공공데이터 개방목록", CategoryType.PUBLIC));
+        Category 공공데이터_의견제안 = categoryService.create(new CreateCategoryCommand(공공데이터.getId(), "공공데이터 의견제안", CategoryType.PUBLIC));
+        Category 정보공개청구 = categoryService.create(new CreateCategoryCommand(정보공개.getId(), "정보공개청구", CategoryType.PUBLIC));
+
+        Category 국민참여 = categoryService.create(new CreateCategoryCommand(null, "국민참여", CategoryType.PUBLIC));
+        Category 국민소통 = categoryService.create(new CreateCategoryCommand(국민참여.getId(), "국민소통", CategoryType.PUBLIC));
+        Category 정책제안 = categoryService.create(new CreateCategoryCommand(국민소통.getId(), "정책제안", CategoryType.PUBLIC));
+        Category 설문참여 = categoryService.create(new CreateCategoryCommand(국민소통.getId(), "설문참여", CategoryType.PUBLIC));
+        Category 공모참여 = categoryService.create(new CreateCategoryCommand(국민소통.getId(), "공모참여", CategoryType.PUBLIC));
+        Category 국민심사 = categoryService.create(new CreateCategoryCommand(국민소통.getId(), "국민심사", CategoryType.PUBLIC));
+        Category 프로그램운영제안 = categoryService.create(new CreateCategoryCommand(국민소통.getId(), "프로그램운영제안", CategoryType.PUBLIC));
+
+
+        Category 알림홍보 = categoryService.create(new CreateCategoryCommand(null, "알림·홍보", CategoryType.PUBLIC));
+        Category 사업안내 = categoryService.create(new CreateCategoryCommand(null, "사업안내", CategoryType.PUBLIC));
+        Category 열린경영 = categoryService.create(new CreateCategoryCommand(null, "열린경영", CategoryType.PUBLIC));
+        Category 기관소개 = categoryService.create(new CreateCategoryCommand(null, "기관소개", CategoryType.PUBLIC));
+//        Category createdParentCategory = categoryService.create(createParentCategoryCommand);
+//        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(createdParentCategory.getId(), "부모카테고리", CategoryType.PUBLIC);
+
+//        Category createdCategory = categoryService.create(createCategoryCommand);
+    }
+
 }
