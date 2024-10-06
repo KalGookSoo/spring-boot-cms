@@ -51,7 +51,7 @@
                 <details class="list-group-item" th:each="category : ${categories}">
                     <summary>
                         <a th:href="@{/articles/list(categoryId=${category.id})}" th:text="${category.name}"></a>
-                        <a class="btn" th:href="@{'/categories/' + ${category.id} + '/edit'}"><span class="fa fa-pencil"></span></a>
+                        <a class="btn" th:href="@{'/categories/' + ${category.id} + '/edit'}" th:text="#{label.update}"></a>
                     </summary>
                     <div th:if="${!#lists.isEmpty(category.children)}" th:replace="~{:: tree(${category.children})}"></div>
                 </details>

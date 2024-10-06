@@ -49,6 +49,58 @@
             <div th:utext="${article.content}"></div>
         </div>
 
+        <a class="btn btn-primary" target="_blank" th:if="${!attachments.isEmpty()}" th:href="@{'/articles/{id}/attachments/download-zip'(id=${article.id})}" th:text="#{label.download}"></a>
+        <table id="attachments" class="table table-hover border">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th class="d-none" th:text="#{entity.id}"></th>
+                <th th:text="#{entity.name}"></th>
+                <th th:text="#{entity.attachment.size}"></th>
+                <th th:text="#{entity.createdBy}"></th>
+                <th th:text="#{entity.createdDate}"></th>
+                <th th:text="#{entity.lastModifiedBy}"></th>
+                <th th:text="#{entity.lastModifiedDate}"></th>
+                <th th:text="#{label.download}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${attachments.isEmpty()}">
+                <td colspan="100%" class="text-center" th:text="#{search.result.empty}"></td>
+            </tr>
+            <tr th:if="${!attachments.isEmpty()}" th:each="attachment, status : ${attachments}">
+                <td>
+                    <input type="number" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
+                </td>
+                <td class="d-none">
+                    <input type="text" class="form-control-plaintext" name="id" th:value="${attachment.id}" readonly>
+                </td>
+                <td>
+                    <input type="text" class="form-control-plaintext" name="originalName" th:value="${attachment.originalName}" readonly>
+                </td>
+                <td>
+                    <input type="text" class="form-control-plaintext" name="size" th:value="${attachment.size}" readonly>
+                </td>
+                <td>
+                    <input type="text" class="form-control-plaintext" name="createdBy" th:value="${article.createdBy}" readonly>
+                </td>
+                <td>
+                    <input type="datetime-local" class="form-control-plaintext" name="createdDate" th:value="${article.createdDate?.withNano(0)}" readonly>
+                </td>
+                <td>
+                    <input type="text" class="form-control-plaintext" name="lastModifiedBy" th:value="${article.lastModifiedBy}" readonly>
+                </td>
+                <td>
+                    <input type="datetime-local" class="form-control-plaintext" name="lastModifiedDate" th:value="${article.lastModifiedDate?.withNano(0)}" readonly>
+                </td>
+                <td>
+                    <a class="btn btn-primary" target="_blank" th:href="@{'/articles/{id}/attachments/{attachmentId}/download'(id=${article.id}, attachmentId=${attachment.id})}" th:text="#{label.download}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+<!--
         <div class="form-group mb-3" th:each="attachment : ${attachments}">
             <p th:text="|#{entity.attachment} #{label.list}|"></p>
             <label th:text="#{entity.name}"></label>
@@ -59,8 +111,10 @@
             <div th:text="${attachment.size}"></div>
             <a target="_blank" th:text="#{label.download}" th:href="@{'/articles/' + ${id} + '/attachments/' + ${attachment.id} + '/download'}"></a>
         </div>
+-->
 
         <div class="d-flex justify-content-center p-3 mb-3 rounded">
+            <a class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${category.id})}" th:text="#{label.list}"></a>
             <a class="btn btn-primary" th:href="@{'/articles/' + ${article.id} + '/edit'}" th:text="#{label.update}"></a>
         </div>
 

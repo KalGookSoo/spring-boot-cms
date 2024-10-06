@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Tag(name = "ArticleController", description = "게시글 컨트롤러")
 @Controller
@@ -90,6 +94,7 @@ public class ArticleController {
         Article article = articleService.find(id);
 
         // Model
+        model.addAttribute("category", article.getCategory());
         model.addAttribute("article", article);
         model.addAttribute("attachments", article.getAttachments());
 
@@ -206,14 +211,42 @@ public class ArticleController {
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
         String fileName = URLEncoder.encode(attachment.getOriginalName(), StandardCharsets.UTF_8);
-        ByteArrayInputStream stream = FileIOService.read(attachment.getAbsolutePath());
+        ByteArrayInputStream inputStream = FileIOService.read(attachment.getAbsolutePath());
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, getContentDisposition(userAgent, fileName));
         OutputStream outputStream = response.getOutputStream();
-        FileCopyUtils.copy(stream, outputStream);
+        FileCopyUtils.copy(inputStream, outputStream);
+    }
+
+    @GetMapping("/{id}/attachments/download-zip")
+    public void getAttachments(
+            @PathVariable String id,
+            @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
+            HttpServletResponse response
+    ) throws IOException {
+        Article article = articleService.find(id);
+        Set<Attachment> attachments = article.getAttachments();
+        if (attachments.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        String fileName = URLEncoder.encode(article.getTitle(), StandardCharsets.UTF_8);
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/zip");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, getContentDisposition(userAgent, fileName) + ".zip");
+
+        try (ZipOutputStream outputStream = new ZipOutputStream(response.getOutputStream())) {
+            for (Attachment attachment : attachments) {
+                ZipEntry entry = new ZipEntry(attachment.getOriginalName());
+                outputStream.putNextEntry(entry);
+                ByteArrayInputStream inputStream = FileIOService.read(attachment.getAbsolutePath());
+                StreamUtils.copy(inputStream, outputStream);
+                outputStream.closeEntry();
+            }
+        }
+
     }
 
     private String getContentDisposition(String userAgent, String fileName) {

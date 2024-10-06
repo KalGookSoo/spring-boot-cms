@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +38,14 @@ public class CategoryController {
     @SuppressWarnings("SameParameterValue")
     private String getMessage(String code, Object[] args) {
         return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseBody
+    @GetMapping("/refresh")
+    public ResponseEntity<Collection<Category>> refresh() {
+        categoryService.refresh();
+        return ResponseEntity.ok(categoryService.findAllNested());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
