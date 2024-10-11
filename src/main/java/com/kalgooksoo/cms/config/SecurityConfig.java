@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.config;
 
+import com.kalgooksoo.cms.security.repository.RememberMeTokenRepository;
 import com.kalgooksoo.cms.security.service.JpaPersistentTokenRepository;
 import com.kalgooksoo.cms.user.repository.UserPrincipalRepository;
 import com.kalgooksoo.cms.user.service.DefaultUserDetailsService;
@@ -52,7 +53,7 @@ public class SecurityConfig {
 
     private final UserPrincipalRepository userPrincipalRepository;
 
-    private final JpaPersistentTokenRepository jpaPersistentTokenRepository;
+    private final RememberMeTokenRepository tokenRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -66,7 +67,7 @@ public class SecurityConfig {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        return jpaPersistentTokenRepository;
+        return new JpaPersistentTokenRepository(tokenRepository);
     }
 
     @Bean
