@@ -1,9 +1,9 @@
 package com.kalgooksoo.cms.board.service;
 
-import com.kalgooksoo.cms.board.command.CreateCategoryCommand;
-import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
-import com.kalgooksoo.cms.board.entity.Category;
-import com.kalgooksoo.cms.board.repository.CategoryRepository;
+import com.kalgooksoo.cms.board.command.CreateMenuCommand;
+import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
+import com.kalgooksoo.cms.board.entity.Menu;
+import com.kalgooksoo.cms.board.repository.MenuRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,26 +19,26 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultCategoryService implements CategoryService {
+public class DefaultMenuService implements MenuService {
 
-    private LocalDateTime refreshTime;
+    private LocalDateTime refreshTime = LocalDateTime.now();
 
-    private final List<Category> categories = new ArrayList<>();
+    private final List<Menu> menus = new ArrayList<>();
 
-    private final CategoryRepository categoryRepository;
+    private final MenuRepository categoryRepository;
 
     @PostConstruct
     public void init() {
         refresh();
     }
 
-    @Cacheable("categories")
+    @Cacheable("menus")
     @Transactional(readOnly = true)
     @Override
     public void refresh() {
-        this.categories.clear();
-        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"));
-        this.categories.addAll(categories);
+        this.menus.clear();
+        List<Menu> menus = categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"));
+        this.menus.addAll(menus);
         refreshTime = LocalDateTime.now();
     }
 
@@ -48,24 +48,26 @@ public class DefaultCategoryService implements CategoryService {
     }
 
     @Override
-    public Category create(@NonNull CreateCategoryCommand command) {
-        Category category = Category.create(command);
+    public Menu create(@NonNull CreateMenuCommand command) {
+        Menu category = Menu.create(command);
         return categoryRepository.save(category);
     }
 
+    @Cacheable("menus")
+    @Transactional(readOnly = true)
     @Override
-    public List<Category> findAll() {
-        return categories;
+    public List<Menu> findAll() {
+        return categoryRepository.findAll();
     }
 
     @Override
-    public Category find(@NonNull String id) {
+    public Menu find(@NonNull String id) {
         return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
-    public Category update(@NonNull String id, @NonNull UpdateCategoryCommand command) {
-        Category category = categoryRepository.getReferenceById(id);
+    public Menu update(@NonNull String id, @NonNull UpdateMenuCommand command) {
+        Menu category = categoryRepository.getReferenceById(id);
         category.update(command);
         return categoryRepository.save(category);
     }
@@ -75,5 +77,4 @@ public class DefaultCategoryService implements CategoryService {
     public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
     }
-
 }

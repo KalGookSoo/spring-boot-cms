@@ -64,7 +64,7 @@ class CategoryServiceTest {
         entityManager.flush();
 
         // Then
-        assertEquals(createdParentCategory.getId(), createdCategory.getParent().getId());
+        assertEquals(createdParentCategory.getId(), createdCategory.getParentId());
     }
 
     @Test
@@ -83,7 +83,7 @@ class CategoryServiceTest {
         entityManager.flush();
 
         // Then
-        assertNull(updatedCategory.getParent());
+        assertNull(updatedCategory.getParentId());
         assertEquals("수정된 카테고리", updatedCategory.getName());
         assertEquals(CategoryType.PRIVATE, updatedCategory.getType());
     }
@@ -101,7 +101,6 @@ class CategoryServiceTest {
 
         // When & Then
         categoryService.delete(createdParentCategory.getId());
-        assertThrows(ConstraintViolationException.class, () -> entityManager.flush());
         categoryService.delete(createdCategory.getId());
         entityManager.flush();
         assertThrows(NoSuchElementException.class, () -> categoryService.find(createdCategory.getId()));

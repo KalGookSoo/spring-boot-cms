@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.board.controller;
 
+import com.kalgooksoo.cms.board.HierarchicalFactory;
 import com.kalgooksoo.cms.board.command.CreateCategoryCommand;
 import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Category;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
+import java.util.List;
 
 @Tag(name = "CategoryController", description = "카테고리 컨트롤러")
 @Controller
@@ -45,17 +47,18 @@ public class CategoryController {
     @GetMapping("/refresh")
     public ResponseEntity<Collection<Category>> refresh() {
         categoryService.refresh();
-        return ResponseEntity.ok(categoryService.findAllNested());
+        List<Category> categories = categoryService.findAll();
+        return ResponseEntity.ok(HierarchicalFactory.build(categories));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public String getCategories(Model model) {
         // Query
-        Collection<Category> categories = categoryService.findAllNested();
+        List<Category> categories = categoryService.findAll();
 
         // Model
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", HierarchicalFactory.build(categories));
 
         // View
         return "categories/list";
@@ -117,8 +120,7 @@ public class CategoryController {
         // 부모 노드를 변경하려면
         Category category = categoryService.find(id);
         removeCategoryAndItsChildren(categories, category);
-        String parentId = category.getParent() != null ? category.getParent().getId() : null;
-        command = bindingResult.hasErrors() ? command : new UpdateCategoryCommand(parentId, category.getName(), category.getType());
+        command = bindingResult.hasErrors() ? command : new UpdateCategoryCommand(category.getParentId(), category.getName(), category.getType());
 
         // Model
         model.addAttribute("categories", categories);

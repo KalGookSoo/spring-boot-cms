@@ -1,6 +1,8 @@
 package com.kalgooksoo.cms.board.entity;
 
 import com.kalgooksoo.cms.board.Hierarchical;
+import com.kalgooksoo.cms.board.command.CreateCategoryCommand;
+import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,14 +23,14 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 @DynamicUpdate
 @Comment("카테고리")
-public class Category extends BaseEntity implements Hierarchical<Category> {
+public class Category extends BaseEntity implements Hierarchical<Category, String> {
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @Comment("부모 식별자")
-    private Category parent;
+    @Column(name = "parent_id")
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    private String parentId;
 
-    @OneToMany(mappedBy = "parent")
+    @Transient
     private List<Category> children = new ArrayList<>();
 
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -41,18 +43,18 @@ public class Category extends BaseEntity implements Hierarchical<Category> {
     @Comment("타입")
     private CategoryType type;
 
-    public static Category create(Category parent, String name, CategoryType type) {
+    public static Category create(CreateCategoryCommand command) {
         Category category = new Category();
-        category.parent = parent;
-        category.name = name;
-        category.type = type;
+        category.parentId = command.parentId();
+        category.name = command.name();
+        category.type = command.type();
         return category;
     }
 
-    public void update(Category parent, String name, CategoryType type) {
-        this.parent = parent;
-        this.name = name;
-        this.type = type;
+    public void update(UpdateCategoryCommand command) {
+        this.parentId = command.parentId();
+        this.name = command.name();
+        this.type = command.type();
     }
 
     public void addArticle(Article article) {
@@ -60,19 +62,9 @@ public class Category extends BaseEntity implements Hierarchical<Category> {
         article.setCategory(this);
     }
 
-    public void removeArticle(Article article) {
-        articles.remove(article);
-        article.setCategory(null);
-    }
-
     @Override
     public void setChildren(List<Category> children) {
         this.children = children;
-    }
-
-    @Override
-    public void moveTo(Category parent) {
-        this.parent = parent;
     }
 
 }
