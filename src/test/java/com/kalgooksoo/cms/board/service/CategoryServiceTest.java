@@ -5,7 +5,6 @@ import com.kalgooksoo.cms.board.command.UpdateCategoryCommand;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.entity.CategoryType;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

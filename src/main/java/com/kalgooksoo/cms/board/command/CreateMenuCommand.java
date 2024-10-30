@@ -21,7 +21,12 @@ public record CreateMenuCommand(
         @Parameter(description = "URI", required = true)
         @Schema(description = "URI", example = "/menus/list")
         @NotNull
-        String uri
+        String uri,
+
+        @Parameter(description = "순번", required = true)
+        @Schema(description = "순번", example = "1")
+        @NotNull
+        Integer sequence
 
 ) {
 

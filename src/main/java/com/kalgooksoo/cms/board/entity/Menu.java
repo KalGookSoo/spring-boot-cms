@@ -34,7 +34,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
     @Comment("URI")
     private String uri;
 
-    @Comment("순서")
+    @Comment("순번")
     private Integer sequence;
 
     @Comment("부모 식별자")
@@ -58,6 +58,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
         menu.parentId = command.parentId();
         menu.name = command.name();
         menu.uri = command.uri();
+        menu.sequence = command.sequence();
         return menu;
     }
 
@@ -65,6 +66,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
         this.parentId = command.parentId();
         this.name = command.name();
         this.uri = command.uri();
+        this.sequence = command.sequence();
     }
 
     @Override
