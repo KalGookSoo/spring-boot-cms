@@ -72,7 +72,7 @@ class MenuServiceTest {
         // Given
         CreateMenuCommand createParentMenuCommand = new CreateMenuCommand(null, "메뉴", "/", 1);
         Menu createdParentMenu = menuService.create(createParentMenuCommand);
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand(null, "메뉴", "/", 1);
+        CreateMenuCommand createMenuCommand = new CreateMenuCommand(createdParentMenu.getId(), "메뉴", "/", 1);
         Menu createdMenu = menuService.create(createMenuCommand);
         entityManager.flush();
         UpdateMenuCommand updateMenuCommand = new UpdateMenuCommand(null, "수정된 메뉴", "/api", 2);
