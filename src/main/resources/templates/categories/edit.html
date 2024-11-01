@@ -61,19 +61,19 @@
                         <span class="d-block invalid-feedback" th:errors="*{type}" th:if="${#fields.hasErrors('type')}"></span>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.category.createdBy}"></label>
+                        <label th:text="#{entity.createdBy}"></label>
                         <input type="text" class="form-control-plaintext" th:value="${category.createdBy}" readonly>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.category.createdDate}"></label>
+                        <label th:text="#{entity.createdDate}"></label>
                         <input type="datetime-local" class="form-control-plaintext" th:value="${category.createdDate?.withNano(0)}" readonly>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.category.lastModifiedBy}"></label>
+                        <label th:text="#{entity.lastModifiedBy}"></label>
                         <input type="text" class="form-control-plaintext" th:value="${category.lastModifiedBy}" readonly>
                     </div>
                     <div class="form-group">
-                        <label th:text="#{entity.category.lastModifiedDate}"></label>
+                        <label th:text="#{entity.lastModifiedDate}"></label>
                         <input type="datetime-local" class="form-control-plaintext" th:value="${category.lastModifiedDate?.withNano(0)}" readonly>
                     </div>
 
