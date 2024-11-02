@@ -20,6 +20,11 @@
             border: 1px dashed red;
             box-sizing: border-box;
         }
+
+        dialog {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 
     <script th:if="${message}" th:inline="javascript">
@@ -38,7 +43,7 @@
 
         <div class="d-flex flex-column flex-lg-row">
 
-            <!-- 메뉴 트리 영역 -->
+            <!-- 트리 영역 -->
             <div class="flex-grow-1 p-3 border border-primary rounded">
                 <div class="d-flex justify-content-end p-3 mb-3 rounded">
                     <button name="createButton" type="button" class="btn btn-primary mx-2" th:text="#{label.create}"></button>
@@ -68,28 +73,29 @@
 
             <!-- 폼 영역 -->
             <div class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
-                <form name="form" th:action="@{/api/menus}" th:method="post">
+                <form name="updateForm">
+                    <input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <!--<div class="form-group d-none">-->
                     <div class="form-group">
                         <label for="parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
-                        <input id="parentId" class="form-control" readonly>
+                        <input id="parentId" name="parentId" class="form-control" readonly>
                     </div>
                     <!--<div class="form-group d-none">-->
                     <div class="form-group">
                         <label for="id" th:text="|#{entity.menu} #{entity.id}|"></label>
-                        <input id="id" class="form-control" readonly>
+                        <input id="id" name="id" class="form-control" readonly>
                     </div>
                     <div class="form-group">
                         <label for="name" th:text="#{entity.name}"></label>
-                        <input id="name" class="form-control">
+                        <input id="name" name="name" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="uri" th:text="#{entity.menu.uri}"></label>
-                        <input id="uri" class="form-control">
+                        <input id="uri" name="uri" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="sequence" th:text="#{entity.menu.sequence}"></label>
-                        <input id="sequence" class="form-control">
+                        <input id="sequence" name="sequence" class="form-control">
                     </div>
                     <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
                     <button type="button" name="deleteButton" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
@@ -106,36 +112,36 @@
         const contextPath = /* [[@{/}]] */'';
 
         document.addEventListener('DOMContentLoaded', () => {
-            const $menuTree = document.querySelectorAll(`.list-group details`);
-            const $menuButtons = document.querySelectorAll(`.list-group details summary button`);
+            const $tree = document.querySelectorAll(`.list-group details`);
+            const $nodeButtons = document.querySelectorAll(`.list-group details summary button`);
 
             document.addEventListener('click', e => {
 
                 const $expandAllButton = e.target.closest(`.expand-all`);
                 if ($expandAllButton) {
-                    [...$menuTree].forEach(detail => detail.open = true);
+                    [...$tree].forEach(detail => detail.open = true);
                 }
 
                 const $collapseAllButton = e.target.closest(`.collapse-all`);
                 if ($collapseAllButton) {
-                    [...$menuTree].forEach(detail => detail.open = false);
+                    [...$tree].forEach(detail => detail.open = false);
                 }
 
-                const $menuButton = e.target.closest(`details summary button`)
-                if ($menuButton) {
+                const $nodeButton = e.target.closest(`details summary button`)
+                if ($nodeButton) {
 
                     // Mark
-                    [...$menuButtons].filter(button => button.className.includes('btn-primary'))
+                    [...$nodeButtons].filter(button => button.className.includes('btn-primary'))
                         .forEach(button => button.classList.remove('btn-primary'));
-                    $menuButton.classList.add('btn-primary');
+                    $nodeButton.classList.add('btn-primary');
 
                     // Map
-                    Object.keys($menuButton.dataset)
-                        .forEach(key => document.form.elements[key].value = $menuButton.dataset[key] || null);
-                    document.form.elements.deleteButton.dataset.id = $menuButton.dataset.id;
+                    Object.keys($nodeButton.dataset)
+                        .forEach(key => document.updateForm.elements[key].value = $nodeButton.dataset[key] || null);
+                    document.updateForm.elements.deleteButton.dataset.id = $nodeButton.dataset.id;
                 }
 
-                const $deleteButton = e.target.closest(`.btn-danger`);
+                const $deleteButton = e.target.closest(`[name="deleteButton"]`);
                 if ($deleteButton) {
                     debugger;
                     fetch(`${contextPath}/api/menus/${$deleteButton.dataset.id}`, {method: 'delete'})
@@ -147,39 +153,37 @@
 
                 const $createButton = e.target.closest(`[name="createButton"]`);
                 if ($createButton) {
-                    const $selectedMenuButton = [...$menuButtons].find(button => button.className.includes('btn-primary'));
+                    const $selectedNode = [...$nodeButtons].find(button => button.className.includes('btn-primary'));
                     debugger;
                 }
             });
 
-            document.addEventListener('submit', e => {
-                if (e.target.name === 'form') {
-                    debugger;
-                    e.preventDefault();
-
-                    const payload = {
-                        parentId: e.target.elements.parentId.value,
-                        id: e.target.elements.id.value,
-                        name: e.target.elements.name.value,
-                        uri: e.target.elements.uri.value,
-                        sequence: e.target.elements.sequence.value
-                    };
-
-                    const url = !payload.id ? `${contextPath}/api/menus` : `${contextPath}/api/menus/${payload.id}`;
-                    const method = !payload.id ? 'post' : 'put';
-                    const httpEntity = {
-                        method: method,
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    };
-
-                    fetch(url, httpEntity)
-                        .then(response => response.ok ? response.text() : response.json().then(text => Promise.reject(text)))
-                        .then(message => alert(message))
-                        .catch(message => alert(message));
+            document.updateForm.addEventListener('submit', e => {
+                e.preventDefault();
+                if (!e.target.elements.id) {
+                    return;
                 }
+                debugger;
+                const payload = {
+                    parentId: e.target.elements.parentId.value,
+                    id: e.target.elements.id.value,
+                    name: e.target.elements.name.value,
+                    uri: e.target.elements.uri.value,
+                    sequence: e.target.elements.sequence.value
+                };
+
+                const httpEntity = {
+                    method: 'put',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                };
+
+                fetch(`${contextPath}/api/menus/${payload.id}`, httpEntity)
+                    .then(response => response.ok ? response.text() : response.json().then(text => Promise.reject(text)))
+                    .then(message => alert(message))
+                    .catch(message => alert(message));
             });
         });
     </script>

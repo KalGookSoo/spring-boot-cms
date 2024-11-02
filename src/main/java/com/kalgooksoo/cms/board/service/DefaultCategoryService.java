@@ -50,7 +50,9 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public Category create(@NonNull CreateCategoryCommand command) {
         Category category = Category.create(command);
-        return categoryRepository.save(category);
+        Category saved = categoryRepository.save(category);
+        refresh();
+        return saved;
     }
 
     @Override
@@ -67,7 +69,9 @@ public class DefaultCategoryService implements CategoryService {
     public Category update(@NonNull String id, @NonNull UpdateCategoryCommand command) {
         Category category = categoryRepository.getReferenceById(id);
         category.update(command);
-        return categoryRepository.save(category);
+        Category saved = categoryRepository.save(category);
+        refresh();
+        return saved;
     }
 
     @Transactional

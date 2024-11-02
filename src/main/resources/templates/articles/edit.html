@@ -77,7 +77,7 @@
 
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', () => {
-                document.form.addEventListener('submit', e => {
+                document.updateForm.addEventListener('submit', e => {
                     if (!!e.submitter.dataset.role && e.submitter.dataset.role === 'delete') {
                         e.target['_method'].value = 'delete';
                     }
@@ -98,7 +98,7 @@
                     usageStatistics: false
                 });
 
-                document.form.addEventListener('submit', e => {
+                document.updateForm.addEventListener('submit', e => {
                     e.target.elements.content.value = editor.getHTML();
                 });
             });

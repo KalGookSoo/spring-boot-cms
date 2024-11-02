@@ -6,14 +6,14 @@
         <h3>Sidebar</h3>
         <!-- Add your menu items here -->
         <ul>
-            <li sec:authorize="isAuthenticated()">
-                <a th:href="@{'/users/' + ${#authentication.principal.id} + '/edit'}" th:text="#{label.my.page}"></a>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/users/list}" th:text="|#{entity.user} #{label.list}|"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/users/list}" th:text="#{entity.users}"></a>
+                <a th:href="@{/categories/list}" th:text="|#{entity.category} #{label.list}|"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/categories/list}" th:text="#{entity.categories}"></a>
+                <a th:href="@{/menus/list}" th:text="|#{entity.menu} #{label.list}|"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{/swagger-ui/index.html}">swagger-ui</a>

@@ -2,7 +2,6 @@ package com.kalgooksoo.cms.board.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;

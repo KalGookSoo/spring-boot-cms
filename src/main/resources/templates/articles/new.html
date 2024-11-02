@@ -158,16 +158,16 @@
                 usageStatistics: false
             });
 
-            document.form.addEventListener('submit', e => {
+            document.updateForm.addEventListener('submit', e => {
                 e.target.elements.content.value = editor.getHTML();
             });
 
             document.addEventListener('click', e => {
                 if (e.target.closest(`button.btn-attach`)) {
                     const transfer = new DataTransfer();
-                    [...document.form.multipartFiles.files, ...document.attachmentForm.multipartFiles.files]
+                    [...document.updateForm.multipartFiles.files, ...document.attachmentForm.multipartFiles.files]
                         .forEach(file => transfer.items.add(file));
-                    document.form.multipartFiles.files = transfer.files;
+                    document.updateForm.multipartFiles.files = transfer.files;
 
                 }
             });

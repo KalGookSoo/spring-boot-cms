@@ -1,10 +1,13 @@
 package com.kalgooksoo.core.validation;
 
-import org.springframework.context.MessageSourceResolvable;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.validation.FieldError;
 
-import java.util.Objects;
-
+@EqualsAndHashCode
+@ToString
+@Getter
 public final class ValidationError {
     private final String code;
     private final String message;
@@ -18,44 +21,4 @@ public final class ValidationError {
         this.rejectedValue = error.getRejectedValue();
     }
 
-    public String code() {
-        return code;
-    }
-
-    public String message() {
-        return message;
-    }
-
-    public String field() {
-        return field;
-    }
-
-    public Object rejectedValue() {
-        return rejectedValue;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (ValidationError) obj;
-        return Objects.equals(this.code, that.code) &&
-                Objects.equals(this.message, that.message) &&
-                Objects.equals(this.field, that.field) &&
-                Objects.equals(this.rejectedValue, that.rejectedValue);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, message, field, rejectedValue);
-    }
-
-    @Override
-    public String toString() {
-        return "ValidationError[" +
-                "code=" + code + ", " +
-                "message=" + message + ", " +
-                "field=" + field + ", " +
-                "rejectedValue=" + rejectedValue + ']';
-    }
 }

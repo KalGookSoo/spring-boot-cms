@@ -50,7 +50,9 @@ public class DefaultMenuService implements MenuService {
     @Override
     public Menu create(@NonNull CreateMenuCommand command) {
         Menu category = Menu.create(command);
-        return categoryRepository.save(category);
+        Menu saved = categoryRepository.save(category);
+        refresh();
+        return saved;
     }
 
     @Cacheable("menus")
@@ -69,7 +71,9 @@ public class DefaultMenuService implements MenuService {
     public Menu update(@NonNull String id, @NonNull UpdateMenuCommand command) {
         Menu category = categoryRepository.getReferenceById(id);
         category.update(command);
-        return categoryRepository.save(category);
+        Menu saved = categoryRepository.save(category);
+        refresh();
+        return saved;
     }
 
     @Transactional

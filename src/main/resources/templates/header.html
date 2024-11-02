@@ -7,6 +7,7 @@
             <div>
                 <div sec:authorize="isAuthenticated()">
                     <span th:text="#{message.welcome(${#authentication.principal.username})}"></span>
+                    <span><a sec:authorize="isAuthenticated()" th:href="@{'/users/' + ${#authentication.principal.id} + '/edit'}" th:text="#{label.my.page}"></a></span>
                     <form class="d-inline-block" th:action="@{/sign-out}" th:method="post">
                         <button type="submit" class="btn btn-danger" th:text="#{label.sign.out}"></button>
                     </form>
