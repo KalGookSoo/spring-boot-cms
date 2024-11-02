@@ -33,276 +33,276 @@
 
 </head>
 
-    <body>
+<body>
 
-        <header th:replace="~{header :: header}"></header>
+    <header th:replace="~{header :: header}"></header>
 
-        <main class="d-flex">
+    <main class="d-flex">
 
-            <aside th:replace="~{aside :: aside}"></aside>
+        <aside th:replace="~{aside :: aside}"></aside>
 
-            <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-column flex-lg-row">
 
-                <!-- 카테고리 트리 영역 -->
-                <div class="flex-grow-1 p-3 border border-primary rounded">
-                    <div class="d-flex justify-content-end p-3 mb-3 rounded">
-                        <button name="createButton" type="button" class="btn btn-primary mx-2" th:text="#{label.create}"></button>
-                    </div>
-
-                    <div>
-                        <button type="button" class="btn btn-outline-primary expand-all">Expand all</button>
-                        <button type="button" class="btn btn-outline-primary collapse-all">Collapse all</button>
-                    </div>
-
-                    <div class="list-group" th:fragment="tree(categories)">
-                        <details class="list-group-item" th:each="category : ${categories}">
-                            <summary>
-                                <button type="button" class="btn"
-                                        th:text="${category.name}"
-                                        th:data-parent-id="${category.parentId}"
-                                        th:data-id="${category.id}"
-                                        th:data-name="${category.name}"
-                                        th:data-type="${category.type}"
-                                        th:data-created-by="${category.createdBy}"
-                                        th:data-created-date="${category.createdDate?.withNano(0)}"
-                                        th:data-last-modified-by="${category.lastModifiedBy}"
-                                        th:data-last-modified-date="${category.lastModifiedDate?.withNano(0)}"
-                                ></button>
-                            </summary>
-                            <div th:if="${!#lists.isEmpty(category.children)}" th:replace="~{:: tree(${category.children})}"></div>
-                        </details>
-                    </div>
+            <!-- 카테고리 트리 영역 -->
+            <div class="flex-grow-1 p-3 border border-primary rounded">
+                <div class="d-flex justify-content-end p-3 mb-3 rounded">
+                    <button name="createButton" type="button" class="btn btn-primary mx-2" th:text="#{label.create}"></button>
                 </div>
 
-                <!-- 폼 영역 -->
-                <div class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
-                    <form name="updateForm" th:action="@{/api/categories}">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <div class="form-group">
-                            <label for="parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
-                            <input id="parentId" type="text" name="parentId" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="id" th:text="|#{entity.category} #{entity.id}|"></label>
-                            <input id="id" type="text" name="id" class="form-control" readonly>
-                            <span class="d-block invalid-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="name" th:text="#{entity.name}"></label>
-                            <input id="name" type="text" name="name" class="form-control">
-                            <span class="d-block invalid-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="type" th:text="#{entity.category.type}"></label>
-                            <select name="type" id="type" class="form-select" >
-                                <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
-                            </select>
-                            <span class="d-block invalid-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="createdBy" th:text="#{entity.createdBy}"></label>
-                            <input id="createdBy" type="text" name="createdBy" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="createdDate" th:text="#{entity.createdDate}"></label>
-                            <input id="createdDate" type="datetime-local" name="createdDate" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastModifiedBy" th:text="#{entity.lastModifiedBy}"></label>
-                            <input id="lastModifiedBy" type="text" name="lastModifiedBy" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastModifiedDate" th:text="#{entity.lastModifiedDate}"></label>
-                            <input id="lastModifiedDate" type="datetime-local" name="lastModifiedDate" class="form-control" readonly>
-                        </div>
-                        <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                        <button type="button" name="deleteButton" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
-                    </form>
+                <div>
+                    <button type="button" class="btn btn-outline-primary expand-all">Expand all</button>
+                    <button type="button" class="btn btn-outline-primary collapse-all">Collapse all</button>
                 </div>
 
+                <div class="list-group" th:fragment="tree(categories)">
+                    <details class="list-group-item" th:each="category : ${categories}">
+                        <summary>
+                            <button type="button" class="btn"
+                                    th:text="${category.name}"
+                                    th:data-parent-id="${category.parentId}"
+                                    th:data-id="${category.id}"
+                                    th:data-name="${category.name}"
+                                    th:data-type="${category.type}"
+                                    th:data-created-by="${category.createdBy}"
+                                    th:data-created-date="${category.createdDate?.withNano(0)}"
+                                    th:data-last-modified-by="${category.lastModifiedBy}"
+                                    th:data-last-modified-date="${category.lastModifiedDate?.withNano(0)}"
+                            ></button>
+                        </summary>
+                        <div th:if="${!#lists.isEmpty(category.children)}" th:replace="~{:: tree(${category.children})}"></div>
+                    </details>
+                </div>
             </div>
 
-            <dialog>
-                <form name="createForm" th:action="@{/api/categories}">
+            <!-- 폼 영역 -->
+            <div class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
+                <form name="updateForm" th:action="@{/api/categories}">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <!--<div class="form-group d-none">-->
                     <div class="form-group">
-                        <label for="_parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
-                        <input id="_parentId" name="parentId" class="form-control" readonly>
+                        <label for="parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
+                        <input id="parentId" type="text" name="parentId" class="form-control" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="_name" th:text="#{entity.name}"></label>
-                        <input id="_name" name="name" class="form-control">
+                        <label for="id" th:text="|#{entity.category} #{entity.id}|"></label>
+                        <input id="id" type="text" name="id" class="form-control" readonly>
                         <span class="d-block invalid-feedback"></span>
                     </div>
                     <div class="form-group">
-                        <label for="_type" th:text="#{entity.category.type}"></label>
-                        <select id="_type" name="type" class="form-select">
+                        <label for="name" th:text="#{entity.name}"></label>
+                        <input id="name" type="text" name="name" class="form-control">
+                        <span class="d-block invalid-feedback"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="type" th:text="#{entity.category.type}"></label>
+                        <select name="type" id="type" class="form-select" >
                             <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
                         </select>
                         <span class="d-block invalid-feedback"></span>
                     </div>
+                    <div class="form-group">
+                        <label for="createdBy" th:text="#{entity.createdBy}"></label>
+                        <input id="createdBy" type="text" name="createdBy" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="createdDate" th:text="#{entity.createdDate}"></label>
+                        <input id="createdDate" type="datetime-local" name="createdDate" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastModifiedBy" th:text="#{entity.lastModifiedBy}"></label>
+                        <input id="lastModifiedBy" type="text" name="lastModifiedBy" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastModifiedDate" th:text="#{entity.lastModifiedDate}"></label>
+                        <input id="lastModifiedDate" type="datetime-local" name="lastModifiedDate" class="form-control" readonly>
+                    </div>
                     <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                    <button type="button" name="cancelButton" class="btn btn-danger mx-2" th:text="#{label.cancel}"></button>
+                    <button type="button" name="deleteButton" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
                 </form>
-            </dialog>
+            </div>
 
-        </main>
+        </div>
 
-        <footer th:replace="~{footer :: footer}"></footer>
+        <dialog>
+            <form name="createForm" th:action="@{/api/categories}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <!--<div class="form-group d-none">-->
+                <div class="form-group">
+                    <label for="_parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
+                    <input id="_parentId" name="parentId" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="_name" th:text="#{entity.name}"></label>
+                    <input id="_name" name="name" class="form-control">
+                    <span class="d-block invalid-feedback"></span>
+                </div>
+                <div class="form-group">
+                    <label for="_type" th:text="#{entity.category.type}"></label>
+                    <select id="_type" name="type" class="form-select">
+                        <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
+                    </select>
+                    <span class="d-block invalid-feedback"></span>
+                </div>
+                <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
+                <button type="button" name="cancelButton" class="btn btn-danger mx-2" th:text="#{label.cancel}"></button>
+            </form>
+        </dialog>
 
-        <script th:inline="javascript">
-            const contextPath = /* [[@{/}]] */'';
+    </main>
 
-            document.addEventListener('DOMContentLoaded', e => {
-                const _document = e.target;
-                const $tree = document.querySelectorAll(`.list-group details`);
-                const $nodeButtons = document.querySelectorAll(`.list-group details summary button`);
-                const $dialog = document.querySelector('dialog');
+    <footer th:replace="~{footer :: footer}"></footer>
 
-                _document.addEventListener('click', e => {
+    <script th:inline="javascript">
+        const contextPath = /* [[@{/}]] */'';
 
-                    const $expandAllButton = e.target.closest(`.expand-all`);
-                    if ($expandAllButton) {
-                        [...$tree].forEach(detail => detail.open = true);
-                    }
+        document.addEventListener('DOMContentLoaded', e => {
+            const _document = e.target;
+            const $tree = document.querySelectorAll(`.list-group details`);
+            const $nodeButtons = document.querySelectorAll(`.list-group details summary button`);
+            const $dialog = document.querySelector('dialog');
 
-                    const $collapseAllButton = e.target.closest(`.collapse-all`);
-                    if ($collapseAllButton) {
-                        [...$tree].forEach(detail => detail.open = false);
-                    }
+            _document.addEventListener('click', e => {
 
-                    const $nodeButton = e.target.closest(`details summary button`)
-                    if ($nodeButton) {
+                const $expandAllButton = e.target.closest(`.expand-all`);
+                if ($expandAllButton) {
+                    [...$tree].forEach(detail => detail.open = true);
+                }
 
-                        // Mark
-                        [...$nodeButtons].filter(button => button.className.includes('btn-primary'))
-                            .forEach(button => button.classList.remove('btn-primary'));
-                        $nodeButton.classList.add('btn-primary');
+                const $collapseAllButton = e.target.closest(`.collapse-all`);
+                if ($collapseAllButton) {
+                    [...$tree].forEach(detail => detail.open = false);
+                }
 
-                        // Map
-                        Object.keys($nodeButton.dataset)
-                            .forEach(key => _document.updateForm.elements[key].value = $nodeButton.dataset[key] || null);
-                        _document.updateForm.elements.deleteButton.dataset.id = $nodeButton.dataset.id;
-                    }
+                const $nodeButton = e.target.closest(`details summary button`)
+                if ($nodeButton) {
 
-                    const $deleteButton = e.target.closest(`[name="deleteButton"]`);
-                    if ($deleteButton) {
-                        if (!$deleteButton.dataset.id) {
-                            return;
-                        }
+                    // Mark
+                    [...$nodeButtons].filter(button => button.className.includes('btn-primary'))
+                        .forEach(button => button.classList.remove('btn-primary'));
+                    $nodeButton.classList.add('btn-primary');
 
-                        const httpEntity = {
-                            method: 'delete',
-                            headers: {
-                                'content-type': 'application/json',
-                                'X-XSRF-TOKEN': _document.updateForm._csrf.value
-                            }
-                        };
+                    // Map
+                    Object.keys($nodeButton.dataset)
+                        .forEach(key => _document.updateForm.elements[key].value = $nodeButton.dataset[key] || null);
+                    _document.updateForm.elements.deleteButton.dataset.id = $nodeButton.dataset.id;
+                }
 
-                        fetch(`${contextPath}/api/categories/${$deleteButton.dataset.id}`, httpEntity)
-                            .then(async response => {
-                                const responseBody = await response.text();
-                                if (response.ok) {
-                                    alert(responseBody);
-                                    location.reload();
-                                } else {
-                                    return Promise.reject(responseBody);
-                                }
-                            })
-                            .catch(message => alert(message));
-                    }
-
-                    const $createButton = e.target.closest(`[name="createButton"]`);
-                    if ($createButton) {
-                        const $selectedNode = [...$nodeButtons].find(button => button.className.includes('btn-primary'));
-                        // noinspection UnnecessaryLocalVariableJS
-                        const parentId = !$selectedNode ? null : $selectedNode.dataset.id;
-                        _document.createForm.elements.parentId.value = parentId;
-                        _document.createForm.elements.name.value = null;
-                        _document.createForm.elements.type.selectedIndex = 0;
-                        $dialog.showModal();
-                    }
-
-                });
-
-                _document.createForm.addEventListener('submit', e => {
-                    e.preventDefault();
-                    const payload = {
-                        parentId: e.target.elements.parentId.value || null,
-                        name: e.target.elements.name.value || null,
-                        type: e.target.elements.type.value || null
-                    };
-
-                    const httpEntity = {
-                        method: 'post',
-                        headers: {
-                            'content-type': 'application/json',
-                            'X-XSRF-TOKEN': e.target._csrf.value
-                        },
-                        body: JSON.stringify(payload)
-                    };
-
-                    fetch(`${contextPath}/api/categories`, httpEntity)
-                        .then(async response => {
-                            const responseBody = await response.text();
-                            if (response.status === 201) {
-                                alert(responseBody);
-                                location.reload();
-                            } else if (response.status === 400) {
-                                const errors = JSON.parse(responseBody).errors;
-                                errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
-                            } else {
-                                return Promise.reject(responseBody);
-                            }
-                        })
-                        .catch(message => alert(message));
-                });
-
-                $dialog.addEventListener('click', e => {
-                    const $cancelButton = e.target.closest(`[name="cancelButton"]`);
-                    $cancelButton && e.target.closest(`dialog`).close();
-                });
-
-                _document.updateForm.addEventListener('submit', e => {
-                    e.preventDefault();
-                    if (!e.target.elements.id.value) {
+                const $deleteButton = e.target.closest(`[name="deleteButton"]`);
+                if ($deleteButton) {
+                    if (!$deleteButton.dataset.id) {
                         return;
                     }
 
-                    const payload = {
-                        parentId: e.target.elements.parentId.value || null,
-                        id: e.target.elements.id.value || null,
-                        name: e.target.elements.name.value || null,
-                        type: e.target.elements.type.value || null
-                    };
-
                     const httpEntity = {
-                        method: 'put',
+                        method: 'delete',
                         headers: {
                             'content-type': 'application/json',
-                            'X-XSRF-TOKEN': e.target._csrf.value
-                        },
-                        body: JSON.stringify(payload)
+                            'X-XSRF-TOKEN': _document.updateForm._csrf.value
+                        }
                     };
 
-                    fetch(`${contextPath}/api/categories/${payload.id}`, httpEntity)
+                    fetch(`${contextPath}/api/categories/${$deleteButton.dataset.id}`, httpEntity)
                         .then(async response => {
                             const responseBody = await response.text();
-                            if (response.status === 202) {
+                            if (response.ok) {
                                 alert(responseBody);
                                 location.reload();
-                            } else if (response.status === 400) {
-                                const errors = JSON.parse(responseBody).errors;
-                                errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
                             } else {
                                 return Promise.reject(responseBody);
                             }
                         })
                         .catch(message => alert(message));
-                });
-            });
-        </script>
+                }
 
-    </body>
+                const $createButton = e.target.closest(`[name="createButton"]`);
+                if ($createButton) {
+                    const $selectedNode = [...$nodeButtons].find(button => button.className.includes('btn-primary'));
+                    // noinspection UnnecessaryLocalVariableJS
+                    const parentId = !$selectedNode ? null : $selectedNode.dataset.id;
+                    _document.createForm.elements.parentId.value = parentId;
+                    _document.createForm.elements.name.value = null;
+                    _document.createForm.elements.type.selectedIndex = 0;
+                    $dialog.showModal();
+                }
+
+            });
+
+            _document.createForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const payload = {
+                    parentId: e.target.elements.parentId.value || null,
+                    name: e.target.elements.name.value || null,
+                    type: e.target.elements.type.value || null
+                };
+
+                const httpEntity = {
+                    method: 'post',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-XSRF-TOKEN': e.target._csrf.value
+                    },
+                    body: JSON.stringify(payload)
+                };
+
+                fetch(`${contextPath}/api/categories`, httpEntity)
+                    .then(async response => {
+                        const responseBody = await response.text();
+                        if (response.status === 201) {
+                            alert(responseBody);
+                            location.reload();
+                        } else if (response.status === 400) {
+                            const errors = JSON.parse(responseBody).errors;
+                            errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
+                        } else {
+                            return Promise.reject(responseBody);
+                        }
+                    })
+                    .catch(message => alert(message));
+            });
+
+            $dialog.addEventListener('click', e => {
+                const $cancelButton = e.target.closest(`[name="cancelButton"]`);
+                $cancelButton && e.target.closest(`dialog`).close();
+            });
+
+            _document.updateForm.addEventListener('submit', e => {
+                e.preventDefault();
+                if (!e.target.elements.id.value) {
+                    return;
+                }
+
+                const payload = {
+                    parentId: e.target.elements.parentId.value || null,
+                    id: e.target.elements.id.value || null,
+                    name: e.target.elements.name.value || null,
+                    type: e.target.elements.type.value || null
+                };
+
+                const httpEntity = {
+                    method: 'put',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-XSRF-TOKEN': e.target._csrf.value
+                    },
+                    body: JSON.stringify(payload)
+                };
+
+                fetch(`${contextPath}/api/categories/${payload.id}`, httpEntity)
+                    .then(async response => {
+                        const responseBody = await response.text();
+                        if (response.status === 202) {
+                            alert(responseBody);
+                            location.reload();
+                        } else if (response.status === 400) {
+                            const errors = JSON.parse(responseBody).errors;
+                            errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
+                        } else {
+                            return Promise.reject(responseBody);
+                        }
+                    })
+                    .catch(message => alert(message));
+            });
+        });
+    </script>
+
+</body>
 </html>

@@ -78,7 +78,7 @@
             <!-- 폼 영역 -->
             <div class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
                 <form name="updateForm">
-                    <input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="form-group">
                         <label for="parentId" th:text="|#{entity.parent} #{entity.id}|"></label>
                         <input id="parentId" name="parentId" class="form-control" readonly>
@@ -237,7 +237,7 @@
                 if (!e.target.elements.id) {
                     return;
                 }
-                debugger;
+
                 const payload = {
                     parentId: e.target.elements.parentId.value || null,
                     id: e.target.elements.id.value || null,
