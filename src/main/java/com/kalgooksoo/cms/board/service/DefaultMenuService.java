@@ -80,5 +80,6 @@ public class DefaultMenuService implements MenuService {
     @Override
     public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
+        refresh();
     }
 }

@@ -78,6 +78,7 @@ public class DefaultCategoryService implements CategoryService {
     @Override
     public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
+        refresh();
     }
 
 }
