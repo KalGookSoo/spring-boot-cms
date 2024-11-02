@@ -5,7 +5,6 @@ import com.kalgooksoo.cms.board.command.CreateMenuCommand;
 import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
 import com.kalgooksoo.cms.board.entity.Menu;
 import com.kalgooksoo.cms.board.service.MenuService;
-import com.kalgooksoo.core.validation.ValidationError;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +13,10 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "MenuApiController", description = "메뉴 API 컨트롤러")
 @RestController
@@ -56,22 +53,11 @@ public class MenuApiController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseBody
     @GetMapping("/refresh")
     public ResponseEntity<Collection<Menu>> refresh() {
         menuService.refresh();
         List<Menu> categories = menuService.findAll();
         return ResponseEntity.ok(HierarchicalFactory.build(categories));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<ValidationError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        List<ValidationError> errors = e.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(ValidationError::new)
-                .toList();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", errors));
     }
 
 }

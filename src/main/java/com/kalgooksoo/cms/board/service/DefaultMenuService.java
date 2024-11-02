@@ -25,7 +25,7 @@ public class DefaultMenuService implements MenuService {
 
     private final List<Menu> menus = new ArrayList<>();
 
-    private final MenuRepository categoryRepository;
+    private final MenuRepository menuRepository;
 
     @PostConstruct
     public void init() {
@@ -37,7 +37,7 @@ public class DefaultMenuService implements MenuService {
     @Override
     public void refresh() {
         this.menus.clear();
-        List<Menu> menus = categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"));
+        List<Menu> menus = menuRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"));
         this.menus.addAll(menus);
         refreshTime = LocalDateTime.now();
     }
@@ -49,8 +49,8 @@ public class DefaultMenuService implements MenuService {
 
     @Override
     public Menu create(@NonNull CreateMenuCommand command) {
-        Menu category = Menu.create(command);
-        Menu saved = categoryRepository.save(category);
+        Menu menu = Menu.create(command);
+        Menu saved = menuRepository.save(menu);
         refresh();
         return saved;
     }
@@ -59,19 +59,19 @@ public class DefaultMenuService implements MenuService {
     @Transactional(readOnly = true)
     @Override
     public List<Menu> findAll() {
-        return categoryRepository.findAll();
+        return menuRepository.findAll();
     }
 
     @Override
     public Menu find(@NonNull String id) {
-        return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return menuRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
     public Menu update(@NonNull String id, @NonNull UpdateMenuCommand command) {
-        Menu category = categoryRepository.getReferenceById(id);
-        category.update(command);
-        Menu saved = categoryRepository.save(category);
+        Menu menu = menuRepository.getReferenceById(id);
+        menu.update(command);
+        Menu saved = menuRepository.save(menu);
         refresh();
         return saved;
     }
@@ -79,7 +79,7 @@ public class DefaultMenuService implements MenuService {
     @Transactional
     @Override
     public void delete(@NonNull String id) {
-        categoryRepository.deleteById(id);
+        menuRepository.deleteById(id);
         refresh();
     }
 }

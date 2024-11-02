@@ -5,7 +5,6 @@ import com.kalgooksoo.cms.board.entity.Menu;
 import com.kalgooksoo.cms.board.service.MenuService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +21,6 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    private final MessageSource messageSource;
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public String getMenus(Model model) {
@@ -31,6 +28,7 @@ public class MenuController {
         List<Menu> menus = menuService.findAll();
 
         // Model
+        model.addAttribute("refreshTime", menuService.getRefreshTime());
         model.addAttribute("menus", HierarchicalFactory.build(menus));
 
         // View

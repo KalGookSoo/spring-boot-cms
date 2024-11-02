@@ -1,14 +1,19 @@
 package com.kalgooksoo.cms.exception;
 
+import com.kalgooksoo.core.validation.ValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -75,6 +80,16 @@ public class GlobalExceptionHandler {
     public String handleRuntimeException(RuntimeException e) {
         logger.error(e.getMessage());
         return "error/500";
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<ValidationError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<ValidationError> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(ValidationError::new)
+                .toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", errors));
     }
 
 }

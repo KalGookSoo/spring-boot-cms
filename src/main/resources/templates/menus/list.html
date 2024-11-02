@@ -41,17 +41,19 @@
 
         <aside th:replace="~{aside :: aside}"></aside>
 
-        <div class="d-flex flex-column flex-lg-row">
+        <section class="d-flex flex-grow-1">
 
             <!-- 트리 영역 -->
-            <div class="flex-grow-1 p-3 border border-primary rounded">
-                <div class="d-flex justify-content-end p-3 mb-3 rounded">
-                    <button name="createButton" type="button" class="btn btn-primary mx-2" th:text="#{label.create}"></button>
+            <section class="flex-grow-1 p-3 border border-primary rounded">
+                <div class="d-flex justify-content-end align-items-center mb-3">
+                    <input type="datetime-local" class="form-control-plaintext" th:value="${refreshTime?.withNano(0)}" readonly>
+                    <button type="button" name="refresh" class="btn btn-outline-primary">🔄</button>
+                    <button type="button" name="create" class="btn btn-primary mx-2" th:text="#{label.create}"></button>
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-outline-primary expand-all">Expand all</button>
-                    <button type="button" class="btn btn-outline-primary collapse-all">Collapse all</button>
+                    <button type="button" name="expand" class="btn btn-outline-primary">➕</button>
+                    <button type="button" name="collapse" class="btn btn-outline-primary">➖</button>
                 </div>
 
                 <div class="list-group" th:fragment="tree(menus)">
@@ -73,10 +75,10 @@
                         <div th:if="${!#lists.isEmpty(menu.children)}" th:replace="~{:: tree(${menu.children})}"></div>
                     </details>
                 </div>
-            </div>
+            </section>
 
             <!-- 폼 영역 -->
-            <div class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
+            <section class="flex-grow-1 p-3 border border-secondary rounded mt-3 mt-lg-0 ml-lg-3">
                 <form name="updateForm">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="form-group">
@@ -120,11 +122,11 @@
                         <input id="lastModifiedDate" type="datetime-local" name="lastModifiedDate" class="form-control" readonly>
                     </div>
                     <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                    <button type="button" name="deleteButton" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
+                    <button type="button" name="delete" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
                 </form>
-            </div>
+            </section>
 
-        </div>
+        </section>
 
         <dialog>
             <form name="createForm" th:action="@{/api/categories}">
@@ -149,7 +151,7 @@
                     <span class="d-block invalid-feedback"></span>
                 </div>
                 <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                <button type="button" name="cancelButton" class="btn btn-danger mx-2" th:text="#{label.cancel}"></button>
+                <button type="button" name="cancel" class="btn btn-danger mx-2" th:text="#{label.cancel}"></button>
             </form>
         </dialog>
 
@@ -168,14 +170,27 @@
 
             _document.addEventListener('click', e => {
 
-                const $expandAllButton = e.target.closest(`.expand-all`);
-                if ($expandAllButton) {
+                const $expandButton = e.target.closest(`[name="expand"]`);
+                if ($expandButton) {
                     [...$tree].forEach(detail => detail.open = true);
                 }
 
-                const $collapseAllButton = e.target.closest(`.collapse-all`);
-                if ($collapseAllButton) {
+                const $collapseButton = e.target.closest(`[name="collapse"]`);
+                if ($collapseButton) {
                     [...$tree].forEach(detail => detail.open = false);
+                }
+                
+                const $refreshButton = e.target.closest(`[name="refresh"]`);
+                if ($refreshButton) {
+                    fetch(`${contextPath}/api/menus/refresh`)
+                        .then(async response => {
+                            const responseBody = await response.text();
+                            if (response.ok) {
+                                location.reload();
+                            } else {
+                                alert(responseBody);
+                            }
+                        });
                 }
 
                 const $nodeButton = e.target.closest(`details summary button`)
@@ -189,10 +204,10 @@
                     // Map
                     Object.keys($nodeButton.dataset)
                         .forEach(key => _document.updateForm.elements[key].value = $nodeButton.dataset[key] || null);
-                    _document.updateForm.elements.deleteButton.dataset.id = $nodeButton.dataset.id;
+                    _document.updateForm.elements.delete.dataset.id = $nodeButton.dataset.id;
                 }
 
-                const $deleteButton = e.target.closest(`[name="deleteButton"]`);
+                const $deleteButton = e.target.closest(`button[name="delete"]`);
                 if ($deleteButton) {
                     if (!$deleteButton.dataset.id) {
                         return;
@@ -213,23 +228,60 @@
                                 alert(responseBody);
                                 location.reload();
                             } else {
-                                return Promise.reject(responseBody);
+                                alert(responseBody);
                             }
-                        })
-                        .catch(message => alert(message));
+                        });
                 }
 
-                const $createButton = e.target.closest(`[name="createButton"]`);
+                const $createButton = e.target.closest(`button[name="create"]`);
                 if ($createButton) {
                     const $selectedNode = [...$nodeButtons].find(button => button.className.includes('btn-primary'));
                     // noinspection UnnecessaryLocalVariableJS
                     const parentId = !$selectedNode ? null : $selectedNode.dataset.id;
                     _document.createForm.elements.parentId.value = parentId;
                     _document.createForm.elements.name.value = null;
-                    _document.createForm.elements.name.uri = null;
-                    _document.createForm.elements.name.sequence = null;
+                    _document.createForm.elements.uri.value = null;
+                    _document.createForm.elements.sequence.value = null;
                     $dialog.showModal();
                 }
+            });
+
+            _document.createForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const payload = {
+                    parentId: e.target.elements.parentId.value || null,
+                    name: e.target.elements.name.value || null,
+                    uri: e.target.elements.uri.value || null,
+                    sequence: e.target.elements.sequence.value || null
+                };
+
+                const httpEntity = {
+                    method: 'post',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-XSRF-TOKEN': e.target._csrf.value
+                    },
+                    body: JSON.stringify(payload)
+                };
+
+                fetch(`${contextPath}/api/menus`, httpEntity)
+                    .then(async response => {
+                        const responseBody = await response.text();
+                        if (response.status === 201) {
+                            alert(responseBody);
+                            location.reload();
+                        } else if (response.status === 400) {
+                            const errors = JSON.parse(responseBody).errors;
+                            errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
+                        } else {
+                            alert(responseBody);
+                        }
+                    });
+            })
+
+            $dialog.addEventListener('click', e => {
+                const $cancelButton = e.target.closest(`button[name="cancel"]`);
+                $cancelButton && e.target.closest(`dialog`).close();
             });
 
             _document.updateForm.addEventListener('submit', e => {
@@ -265,10 +317,9 @@
                             const errors = JSON.parse(responseBody).errors;
                             errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
                         } else {
-                            return Promise.reject(responseBody);
+                            alert(responseBody);
                         }
-                    })
-                    .catch(message => alert(message));
+                    });
             });
         });
     </script>
