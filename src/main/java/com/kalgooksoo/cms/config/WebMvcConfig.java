@@ -9,7 +9,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -36,20 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper()));
         WebMvcConfigurer.super.configureMessageConverters(converters);
-    }
-
-    /**
-     * CORS 설정을 추가하는 메소드입니다.
-     * 이 메소드는 모든 경로에 대해 모든 출처, 메소드, 헤더를 허용하는 CORS 설정을 추가합니다.
-     *
-     * @param registry CORS 설정을 추가할 CorsRegistry입니다.
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("*")
-                .allowedHeaders("*");
     }
 
     /**
