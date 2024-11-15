@@ -19,10 +19,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,6 +30,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -91,9 +89,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.csrf(this::hanbdleCsrfPolicies);
+        http.cors(this::handleCorsPolicies);
+        http.authorizeHttpRequests(this::handleAuthorizeHttpRequests);
+        http.formLogin(this::handleFormLogin);
+        http.userDetailsService(userDetailsService());
+        http.logout(this::configureLogout);
+        http.rememberMe(this::handleRememberMe);
+        http.sessionManagement(this::handleSessionPolicies);
 
-        http.cors(cors -> cors.configurationSource(request -> {
+        return http.build();
+    }
+
+    private void hanbdleCsrfPolicies(CsrfConfigurer<HttpSecurity> config) {
+        config.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    }
+
+    private void handleCorsPolicies(CorsConfigurer<HttpSecurity> config) {
+        config.configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedOriginPatterns(Collections.singletonList("/**"));
             configuration.setAllowedOrigins(Collections.singletonList(request.getHeader(HttpHeaders.ORIGIN)));
@@ -101,14 +114,7 @@ public class SecurityConfig {
             configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE, "X-XSRF-TOKEN"));
             configuration.setAllowCredentials(true);
             return configuration;
-        }));
-
-        http.authorizeHttpRequests(this::handleAuthorizeHttpRequests);
-        http.formLogin(this::handleFormLogin);
-        http.userDetailsService(userDetailsService());
-        http.logout(this::configureLogout);
-        http.rememberMe(this::handleRememberMe);
-        return http.build();
+        });
     }
 
     @Bean
@@ -122,17 +128,21 @@ public class SecurityConfig {
         return services;
     }
 
-    private void handleAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    private void handleAuthorizeHttpRequests(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry config) {
         // TODO /swagger resources 관련 ROLE_ADMIN만 접근할 수 있도록 할 것
-        authorizationManagerRequestMatcherRegistry
-                .requestMatchers(new AntPathRequestMatcher("/managers/**")).hasAnyRole("MANAGER", "ADMIN")
+        config.requestMatchers(new AntPathRequestMatcher("/managers/**")).hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/admins/**")).hasRole("ADMIN")
                 .anyRequest()
                 .permitAll();
     }
-    private void handleFormLogin(FormLoginConfigurer<HttpSecurity> httpSecurityFormLoginConfigurer) {
-        httpSecurityFormLoginConfigurer
-                .loginPage(LOGIN_PAGE_PATH)
+
+    private void handleFormLogin(FormLoginConfigurer<HttpSecurity> config) {
+        config.loginPage(LOGIN_PAGE_PATH)
                 .usernameParameter(USERNAME_PARAM)
                 .passwordParameter(PASSWORD_PARAM)
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
@@ -144,21 +154,24 @@ public class SecurityConfig {
         response.sendRedirect(LOGIN_PAGE_PATH);
     }
 
-    private void configureLogout(LogoutConfigurer<HttpSecurity> httpSecurityLogoutConfigurer) {
-        httpSecurityLogoutConfigurer
-                .logoutUrl(LOGOUT_PATH)
-                .permitAll();
+    private void configureLogout(LogoutConfigurer<HttpSecurity> config) {
+        config.logoutUrl(LOGOUT_PATH).permitAll();
     }
 
     private void handleRememberMe(RememberMeConfigurer<HttpSecurity> httpSecurityRememberMeConfigurer) {
         String key = UUID.randomUUID().toString();
         int tokenValiditySeconds = 60 * 60 * 24;
-        httpSecurityRememberMeConfigurer
-                .key(key)
+        httpSecurityRememberMeConfigurer.key(key)
                 .rememberMeParameter("remember-me")
                 .userDetailsService(userDetailsService())
                 .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(tokenValiditySeconds);
+    }
+
+    private void handleSessionPolicies(SessionManagementConfigurer<HttpSecurity> config) {
+        config.maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl(LOGIN_PAGE_PATH);
     }
 
 }
