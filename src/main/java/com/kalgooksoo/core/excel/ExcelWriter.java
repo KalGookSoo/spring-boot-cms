@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class ExcelWriter {
+public class ExcelWriter {
 
-    private final Workbook workbook;
+    protected final Workbook workbook;
 
-    private final Map<String, Object> data;
+    protected final Map<String, Object> data;
 
-    private final HttpServletResponse response;
+    protected final HttpServletResponse response;
 
     public ExcelWriter(Workbook workbook, Map<String, Object> data, HttpServletResponse response) {
         this.workbook = workbook;
@@ -40,21 +40,21 @@ public final class ExcelWriter {
         createBodies(sheet, getBodies());
     }
 
-    private String getFilename() {
+    protected String getFilename() {
         return (String) data.get("filename");
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> getHeads() {
+    protected List<String> getHeads() {
         return (List<String>) data.get("head");
     }
 
     @SuppressWarnings("unchecked")
-    private List<List<String>> getBodies() {
+    protected List<List<String>> getBodies() {
         return (List<List<String>>) data.get("body");
     }
 
-    private void setFileName(HttpServletResponse response, String fileName) {
+    protected void setFileName(HttpServletResponse response, String fileName) {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + getFileExtension(fileName) + "\"");
     }
 
@@ -69,18 +69,18 @@ public final class ExcelWriter {
         return fileName;
     }
 
-    private void createHeads(Sheet sheet, List<String> headList) {
+    protected void createHeads(Sheet sheet, List<String> headList) {
         createRows(sheet, headList, 0);
     }
 
-    private void createBodies(Sheet sheet, List<List<String>> bodies) {
+    protected void createBodies(Sheet sheet, List<List<String>> bodies) {
         int rowSize = bodies.size();
         for (int i = 0; i < rowSize; i++) {
             createRows(sheet, bodies.get(i), i + 1);
         }
     }
 
-    private void createRows(Sheet sheet, List<String> cells, int rowNum) {
+    protected void createRows(Sheet sheet, List<String> cells, int rowNum) {
         int size = cells.size();
         Row row = sheet.createRow(rowNum);
         for (int i = 0; i < size; i++) {
@@ -96,7 +96,7 @@ public final class ExcelWriter {
         return excelData;
     }
 
-    private static List<String> createHeaderName(Class<?> header) {
+    protected static List<String> createHeaderName(Class<?> header) {
         List<String> headData = new ArrayList<>();
         for (Field field : header.getDeclaredFields()) {
             field.setAccessible(true);
@@ -108,7 +108,7 @@ public final class ExcelWriter {
         return headData;
     }
 
-    private static String createFileName(Class<?> file) {
+    protected static String createFileName(Class<?> file) {
         if (file.isAnnotationPresent(ExcelFileName.class)) {
             String fileName = file.getAnnotation(ExcelFileName.class).fileName();
             return StringUtils.isBlank(fileName) ? file.getSimpleName() : URLEncoder.encode(fileName, StandardCharsets.UTF_8);
@@ -116,7 +116,7 @@ public final class ExcelWriter {
         throw new RuntimeException("excel filename not exist");
     }
 
-    private static List<List<String>> createBodyData(List<? extends Exportable> dataList) {
+    protected static List<List<String>> createBodyData(List<? extends Exportable> dataList) {
         return dataList.stream().map(Exportable::mapToList).collect(Collectors.toList());
     }
 
