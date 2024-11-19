@@ -1,6 +1,9 @@
 package com.kalgooksoo.core.excel;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,19 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter(AccessLevel.PACKAGE)
 public class ExcelWriter {
 
-    protected final Workbook workbook;
+    private Workbook workbook;
 
-    protected final Map<String, Object> data;
+    private Map<String, Object> data;
 
-    protected final HttpServletResponse response;
-
-    public ExcelWriter(Workbook workbook, Map<String, Object> data, HttpServletResponse response) {
-        this.workbook = workbook;
-        this.data = data;
-        this.response = response;
-    }
+    private HttpServletResponse response;
 
     public void create() {
         setFileName(response, getFilename());

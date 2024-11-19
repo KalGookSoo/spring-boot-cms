@@ -8,8 +8,20 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 import java.util.Map;
 
 public class ExcelXlsxView extends AbstractXlsxView {
+
+    private final ExcelWriter excelWriter;
+
+    public ExcelXlsxView(ExcelWriter excelWriter) {
+        this.excelWriter = excelWriter;
+    }
+
+
     @Override
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        new ExcelWriter(workbook, model, response).create();
+        excelWriter.setWorkbook(workbook);
+        excelWriter.setData(model);
+        excelWriter.setResponse(response);
+        excelWriter.create();
     }
+
 }

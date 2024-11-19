@@ -50,7 +50,7 @@ public class MenuController {
 //        model.addAllAttributes(excelData);
 
         // View
-        return new ExcelXlsxView();
+        return new ExcelXlsxView(new ExcelWriter());
     }
 
 }
