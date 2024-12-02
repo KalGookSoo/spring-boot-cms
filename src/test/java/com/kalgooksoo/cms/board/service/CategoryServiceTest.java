@@ -63,7 +63,7 @@ class CategoryServiceTest {
         entityManager.flush();
 
         // Then
-        assertEquals(createdParentCategory.getId(), createdCategory.getParentId());
+        assertEquals(createdParentCategory, createdCategory.getParent());
     }
 
     @Test
@@ -82,7 +82,7 @@ class CategoryServiceTest {
         entityManager.flush();
 
         // Then
-        assertNull(updatedCategory.getParentId());
+        assertNull(updatedCategory.getParent());
         assertEquals("수정된 카테고리", updatedCategory.getName());
         assertEquals(CategoryType.PRIVATE, updatedCategory.getType());
     }

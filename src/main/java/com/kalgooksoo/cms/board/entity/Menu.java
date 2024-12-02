@@ -1,12 +1,16 @@
 package com.kalgooksoo.cms.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kalgooksoo.cms.board.Hierarchical;
 import com.kalgooksoo.cms.board.command.CreateMenuCommand;
 import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
 import com.kalgooksoo.cms.user.entity.Authority;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,13 +24,15 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = true)
+@ToString(exclude = {"parent", "children"})
 
 @Entity
 @Table(name = "tb_menu")
 @DynamicInsert
 @DynamicUpdate
 @Comment("메뉴")
-public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
+public class Menu extends BaseEntity implements Hierarchical<Menu> {
 
     @Comment("이름")
     private String name;
@@ -37,12 +43,14 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
     @Comment("순번")
     private Integer sequence;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Comment("부모 식별자")
-    @Column(name = "parent_id")
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    private String parentId;
+    @JsonBackReference
+    private Menu parent;
 
-    @Transient
+    @OneToMany(mappedBy = "parent")
+    @JsonManagedReference
     private List<Menu> children = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -55,7 +63,9 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
 
     public static Menu create(CreateMenuCommand command) {
         Menu menu = new Menu();
-        menu.parentId = command.parentId();
+        Menu parent = new Menu();
+        parent.setId(command.parentId());
+        menu.parent = parent;
         menu.name = command.name();
         menu.uri = command.uri();
         menu.sequence = command.sequence();
@@ -63,15 +73,17 @@ public class Menu extends BaseEntity implements Hierarchical<Menu, String> {
     }
 
     public void update(UpdateMenuCommand command) {
-        this.parentId = command.parentId();
+        Menu parent = new Menu();
+        parent.setId(command.parentId());
+        this.parent = parent;
         this.name = command.name();
         this.uri = command.uri();
         this.sequence = command.sequence();
     }
 
-    @Override
-    public void setChildren(List<Menu> children) {
-        this.children = children;
+    public void addChild(Menu child) {
+        children.add(child);
+        parent = this;
     }
 
 }

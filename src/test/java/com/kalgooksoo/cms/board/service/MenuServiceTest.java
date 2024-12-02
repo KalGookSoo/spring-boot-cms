@@ -63,7 +63,7 @@ class MenuServiceTest {
         entityManager.flush();
 
         // Then
-        assertEquals(createdParentMenu.getId(), createdMenu.getParentId());
+        assertEquals(createdParentMenu, createdMenu);
     }
 
     @Test
@@ -82,7 +82,7 @@ class MenuServiceTest {
         entityManager.flush();
 
         // Then
-        assertNull(updatedMenu.getParentId());
+        assertNull(updatedMenu.getParent());
         assertEquals("수정된 메뉴", updatedMenu.getName());
         assertEquals("/api", createdMenu.getUri());
         assertEquals(2, createdMenu.getSequence());
