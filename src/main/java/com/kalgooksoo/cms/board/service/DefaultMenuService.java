@@ -5,7 +5,6 @@ import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
 import com.kalgooksoo.cms.board.entity.Menu;
 import com.kalgooksoo.cms.board.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
