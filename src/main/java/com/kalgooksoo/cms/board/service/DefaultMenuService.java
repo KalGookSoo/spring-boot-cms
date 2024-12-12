@@ -4,7 +4,6 @@ import com.kalgooksoo.cms.board.command.CreateMenuCommand;
 import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
 import com.kalgooksoo.cms.board.entity.Menu;
 import com.kalgooksoo.cms.board.repository.MenuRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
@@ -12,8 +11,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,47 +18,21 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class DefaultMenuService implements MenuService {
 
-    private LocalDateTime refreshTime = LocalDateTime.now();
-
-    private final List<Menu> menus = new ArrayList<>();
-
     private final MenuRepository menuRepository;
-
-    @PostConstruct
-    public void init() {
-        refresh();
-    }
-
-    @Cacheable("menus")
-    @Transactional(readOnly = true)
-    @Override
-    public void refresh() {
-        this.menus.clear();
-        List<Menu> menus = menuRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"));
-        this.menus.addAll(menus);
-        refreshTime = LocalDateTime.now();
-    }
-
-    @Override
-    public LocalDateTime getRefreshTime() {
-        return refreshTime;
-    }
 
     @Transactional
     @Override
     public Menu create(@NonNull CreateMenuCommand command) {
         Menu parent = command.parentId() == null ? null : menuRepository.getReferenceById(command.parentId());
         Menu menu = Menu.create(command, parent);
-        Menu saved = menuRepository.save(menu);
-        refresh();
-        return saved;
+        return menuRepository.save(menu);
     }
 
-    @Cacheable("menus")
+//    @Cacheable("menus")
     @Transactional(readOnly = true)
     @Override
     public List<Menu> findAll() {
-        return menuRepository.findAll();
+        return menuRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"));
     }
 
     @Override
@@ -75,15 +46,12 @@ public class DefaultMenuService implements MenuService {
         Menu menu = menuRepository.getReferenceById(id);
         Menu parent = command.parentId() == null ? null : menuRepository.getReferenceById(command.parentId());
         menu.update(command, parent);
-        Menu saved = menuRepository.save(menu);
-        refresh();
-        return saved;
+        return menuRepository.save(menu);
     }
 
     @Transactional
     @Override
     public void delete(@NonNull String id) {
         menuRepository.deleteById(id);
-        refresh();
     }
 }

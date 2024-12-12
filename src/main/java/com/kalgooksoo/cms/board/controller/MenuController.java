@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "MenuController", description = "메뉴 컨트롤러")
 @Controller
@@ -32,7 +32,7 @@ public class MenuController {
         List<Menu> menus = menuService.findAll();
 
         // Model
-        model.addAttribute("refreshTime", menuService.getRefreshTime());
+        model.addAttribute("refreshTime", LocalDateTime.now());
         model.addAttribute("menus", HierarchicalFactory.build(menus));
 
         // View

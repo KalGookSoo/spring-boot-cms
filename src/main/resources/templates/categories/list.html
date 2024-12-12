@@ -61,7 +61,7 @@
                         <summary>
                             <button type="button" class="btn"
                                     th:text="${category.name}"
-                                    th:data-parent-id="${category.parentId}"
+                                    th:data-parent-id="${category.parent?.id}"
                                     th:data-id="${category.id}"
                                     th:data-name="${category.name}"
                                     th:data-type="${category.type}"

@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"parent", "children", "articles"})
 @ToString(exclude = {"parent", "children", "articles"})
 
 @Entity

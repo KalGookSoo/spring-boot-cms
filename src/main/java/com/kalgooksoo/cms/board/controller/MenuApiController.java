@@ -29,6 +29,13 @@ public class MenuApiController {
     private final MessageSource messageSource;
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<Collection<Menu>> get() {
+        List<Menu> menus = menuService.findAll();
+        return ResponseEntity.ok(HierarchicalFactory.build(menus));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<String> post(@RequestBody @Valid CreateMenuCommand command) {
         menuService.create(command);
@@ -50,14 +57,6 @@ public class MenuApiController {
         menuService.delete(id);
         String message = messageSource.getMessage("command.success.delete", null, LocaleContextHolder.getLocale());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/refresh")
-    public ResponseEntity<Collection<Menu>> refresh() {
-        menuService.refresh();
-        List<Menu> categories = menuService.findAll();
-        return ResponseEntity.ok(HierarchicalFactory.build(categories));
     }
 
 }

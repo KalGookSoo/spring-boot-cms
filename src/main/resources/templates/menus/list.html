@@ -61,7 +61,7 @@
                         <summary>
                             <button type="button" class="btn"
                                     th:text="${menu.name}"
-                                    th:data-parent-id="${menu.parent.id}"
+                                    th:data-parent-id="${menu.parent?.id}"
                                     th:data-id="${menu.id}"
                                     th:data-name="${menu.name}"
                                     th:data-uri="${menu.uri}"
