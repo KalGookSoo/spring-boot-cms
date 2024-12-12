@@ -61,10 +61,8 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
     )
     private final Set<Authority> authorities = new LinkedHashSet<>();
 
-    public static Menu create(CreateMenuCommand command) {
+    public static Menu create(CreateMenuCommand command, Menu parent) {
         Menu menu = new Menu();
-        Menu parent = new Menu();
-        parent.setId(command.parentId());
         menu.parent = parent;
         menu.name = command.name();
         menu.uri = command.uri();
@@ -72,9 +70,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
         return menu;
     }
 
-    public void update(UpdateMenuCommand command) {
-        Menu parent = new Menu();
-        parent.setId(command.parentId());
+    public void update(UpdateMenuCommand command, Menu parent) {
         this.parent = parent;
         this.name = command.name();
         this.uri = command.uri();

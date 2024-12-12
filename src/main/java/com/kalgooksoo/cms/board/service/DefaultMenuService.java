@@ -47,9 +47,11 @@ public class DefaultMenuService implements MenuService {
         return refreshTime;
     }
 
+    @Transactional
     @Override
     public Menu create(@NonNull CreateMenuCommand command) {
-        Menu menu = Menu.create(command);
+        Menu parent = command.parentId() == null ? null : menuRepository.getReferenceById(command.parentId());
+        Menu menu = Menu.create(command, parent);
         Menu saved = menuRepository.save(menu);
         refresh();
         return saved;
@@ -67,10 +69,12 @@ public class DefaultMenuService implements MenuService {
         return menuRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional
     @Override
     public Menu update(@NonNull String id, @NonNull UpdateMenuCommand command) {
         Menu menu = menuRepository.getReferenceById(id);
-        menu.update(command);
+        Menu parent = command.parentId() == null ? null : menuRepository.getReferenceById(command.parentId());
+        menu.update(command, parent);
         Menu saved = menuRepository.save(menu);
         refresh();
         return saved;
