@@ -1,12 +1,11 @@
 package com.kalgooksoo.cms.user.controller;
 
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.user.command.CreateUserCommand;
 import com.kalgooksoo.cms.user.command.SignInCommand;
 import com.kalgooksoo.cms.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +26,7 @@ public class SignController {
 
     private final UserService userService;
 
-    private final MessageSource messageSource;
+    private final CmsMessageSource messageSource;
 
     /**
      * 계정 인증 화면을 반환합니다.
@@ -76,7 +75,7 @@ public class SignController {
             bindingResult.rejectValue("username", "validation.user.username.exists");
             return "sign_up";
         }
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale()));
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create"));
         return "redirect:/sign-in";
     }
 

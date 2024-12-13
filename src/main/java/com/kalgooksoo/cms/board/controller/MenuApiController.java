@@ -5,11 +5,10 @@ import com.kalgooksoo.cms.board.command.CreateMenuCommand;
 import com.kalgooksoo.cms.board.command.UpdateMenuCommand;
 import com.kalgooksoo.cms.board.entity.Menu;
 import com.kalgooksoo.cms.board.service.MenuService;
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +25,7 @@ public class MenuApiController {
 
     private final MenuService menuService;
 
-    private final MessageSource messageSource;
+    private final CmsMessageSource messageSource;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -39,7 +38,7 @@ public class MenuApiController {
     @PostMapping
     public ResponseEntity<String> post(@RequestBody @Valid CreateMenuCommand command) {
         menuService.create(command);
-        String message = messageSource.getMessage("command.success.create", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.create");
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
@@ -47,7 +46,7 @@ public class MenuApiController {
     @PutMapping("/{id}")
     public ResponseEntity<String> put(@PathVariable String id, @RequestBody @Valid UpdateMenuCommand command) {
         menuService.update(id, command);
-        String message = messageSource.getMessage("command.success.update", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.update");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
     }
 
@@ -55,7 +54,7 @@ public class MenuApiController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
         menuService.delete(id);
-        String message = messageSource.getMessage("command.success.delete", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.delete");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
     }
 

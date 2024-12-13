@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.user.controller;
 
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.user.command.UpdateUserCommand;
 import com.kalgooksoo.cms.user.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.user.entity.Authority;
@@ -9,8 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -35,7 +34,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private final MessageSource messageSource;
+    private final CmsMessageSource messageSource;
 
     /**
      * 계정 목록 화면을 반환합니다.
@@ -119,7 +118,7 @@ public class UserController {
         userService.update(id, command);
 
         // Model
-        String message = messageSource.getMessage("command.success.update", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.update");
         redirectAttributes.addFlashAttribute("message", message);
 
         // View
@@ -152,7 +151,7 @@ public class UserController {
         new CookieClearingLogoutHandler("remember-me").logout(request, response, null);
 
         // Model
-        String message = messageSource.getMessage("command.success.delete", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.delete");
         redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/";
     }
@@ -210,7 +209,7 @@ public class UserController {
         }
 
         // Model
-        String message = messageSource.getMessage("command.success.update", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("command.success.update");
         redirectAttributes.addFlashAttribute("message", message);
 
         // View

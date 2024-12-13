@@ -1,7 +1,6 @@
 package com.kalgooksoo.cms.message;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MessageRestController {
 
-    private final MessageSource messageSource;
+    private final CmsMessageSource messageSource;
 
     @GetMapping("/messages")
     public ResponseEntity<Map<String, String>> getAllMessages() {
@@ -28,7 +27,7 @@ public class MessageRestController {
 
     @GetMapping("/messages/{code}")
     public ResponseEntity<String> getMessageByCode(@PathVariable String code, @RequestParam(required = false) String[] args) {
-        String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage(code, args);
         return ResponseEntity.ok(message);
     }
 

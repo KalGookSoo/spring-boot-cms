@@ -1,11 +1,10 @@
 package com.kalgooksoo.cms.exception;
 
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.core.validation.ValidationError;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final MessageSource messageSource;
+    private final CmsMessageSource messageSource;
 
     /**
      * 요청이 잘못된 경우
@@ -93,7 +92,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         logger.error(e.getMessage());
-        String message = messageSource.getMessage("error.constraint.violation", null, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("error.constraint.violation");
         return ResponseEntity.badRequest().body(message);
     }
 
