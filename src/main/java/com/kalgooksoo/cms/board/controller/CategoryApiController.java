@@ -29,6 +29,13 @@ public class CategoryApiController {
     private final MessageSource messageSource;
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<Collection<Category>> get() {
+        List<Category> categories = categoryService.findAll();
+        return ResponseEntity.ok(HierarchicalFactory.build(categories));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<String> post(@RequestBody @Valid CreateCategoryCommand command) {
         categoryService.create(command);
@@ -50,14 +57,6 @@ public class CategoryApiController {
         categoryService.delete(id);
         String message = messageSource.getMessage("command.success.delete", null, LocaleContextHolder.getLocale());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/refresh")
-    public ResponseEntity<Collection<Category>> refresh() {
-        categoryService.refresh();
-        List<Category> categories = categoryService.findAll();
-        return ResponseEntity.ok(HierarchicalFactory.build(categories));
     }
 
 }

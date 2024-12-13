@@ -17,18 +17,6 @@
     <!-- JS -->
     <script th:src="@{/js/bootstrap.js}"></script>
 
-    <style>
-        header, aside, main, footer {
-            border: 1px dashed red;
-            box-sizing: border-box;
-        }
-
-        dialog {
-            border: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-    </style>
-
     <script th:if="${message != null}" th:inline="javascript">
         alert(/*[[${message}]]*/'');
     </script>

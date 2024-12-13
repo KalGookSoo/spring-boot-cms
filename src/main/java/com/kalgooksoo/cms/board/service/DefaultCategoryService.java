@@ -21,64 +21,41 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class DefaultCategoryService implements CategoryService {
 
-    private LocalDateTime refreshTime;
-
-    private final List<Category> categories = new ArrayList<>();
-
     private final CategoryRepository categoryRepository;
 
-    @PostConstruct
-    public void init() {
-        refresh();
-    }
-
-    @Cacheable("categories")
-    @Transactional(readOnly = true)
-    @Override
-    public void refresh() {
-        this.categories.clear();
-        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"));
-        this.categories.addAll(categories);
-        refreshTime = LocalDateTime.now();
-    }
-
-    @Override
-    public LocalDateTime getRefreshTime() {
-        return refreshTime;
-    }
-
+    @Transactional
     @Override
     public Category create(@NonNull CreateCategoryCommand command) {
-        Category category = Category.create(command);
-        Category saved = categoryRepository.save(category);
-        refresh();
-        return saved;
+        Category parent = command.parentId() == null ? null : categoryRepository.getReferenceById(command.parentId());
+        Category category = Category.create(command, parent);
+        return categoryRepository.save(category);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Category> findAll() {
-        return categories;
+        return categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Category find(@NonNull String id) {
         return categoryRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional
     @Override
     public Category update(@NonNull String id, @NonNull UpdateCategoryCommand command) {
+        Category parent = command.parentId() == null ? null : categoryRepository.getReferenceById(command.parentId());
         Category category = categoryRepository.getReferenceById(id);
-        category.update(command);
-        Category saved = categoryRepository.save(category);
-        refresh();
-        return saved;
+        category.update(command, parent);
+        return categoryRepository.save(category);
     }
 
     @Transactional
     @Override
     public void delete(@NonNull String id) {
         categoryRepository.deleteById(id);
-        refresh();
     }
 
 }

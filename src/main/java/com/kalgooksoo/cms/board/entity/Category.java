@@ -51,19 +51,15 @@ public class Category extends BaseEntity implements Hierarchical<Category> {
     @JsonManagedReference
     private List<Category> children = new ArrayList<>();
 
-    public static Category create(CreateCategoryCommand command) {
+    public static Category create(CreateCategoryCommand command, Category parent) {
         Category category = new Category();
-        Category parent = new Category();
-        parent.setId(command.parentId());
         category.parent = parent;
         category.name = command.name();
         category.type = command.type();
         return category;
     }
 
-    public void update(UpdateCategoryCommand command) {
-        Category parent = new Category();
-        parent.setId(command.parentId());
+    public void update(UpdateCategoryCommand command, Category parent) {
         this.parent = parent;
         this.name = command.name();
         this.type = command.type();

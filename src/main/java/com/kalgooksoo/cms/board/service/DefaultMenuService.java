@@ -42,8 +42,8 @@ public class DefaultMenuService implements MenuService {
     @Transactional
     @Override
     public Menu update(@NonNull String id, @NonNull UpdateMenuCommand command) {
-        Menu menu = menuRepository.getReferenceById(id);
         Menu parent = command.parentId() == null ? null : menuRepository.getReferenceById(command.parentId());
+        Menu menu = menuRepository.getReferenceById(id);
         menu.update(command, parent);
         return menuRepository.save(menu);
     }

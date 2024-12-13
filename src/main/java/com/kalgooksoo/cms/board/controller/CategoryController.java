@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "CategoryController", description = "카테고리 컨트롤러")
@@ -28,7 +29,7 @@ public class CategoryController {
         List<Category> categories = categoryService.findAll();
 
         // Model
-        model.addAttribute("refreshTime", categoryService.getRefreshTime());
+        model.addAttribute("refreshTime", LocalDateTime.now());
         model.addAttribute("categories", HierarchicalFactory.build(categories));
 
         // View
