@@ -1,94 +1,24 @@
 <!DOCTYPE html>
 <!--suppress HtmlFormInputWithoutLabel -->
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      th:lang="${#locale.language}"
+>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title th:text="|#{entity.article} #{label.update}|"></title>
 
-        <title th:text="#{entity.article}"></title>
+        <link rel="stylesheet" th:href="@{/css/attachment.css}"/>
+        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
-        <!-- CSS -->
-        <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
-        <!-- JS -->
-        <script th:src="@{/js/bootstrap.js}"></script>
+        <script th:src="@{/js/AttachmentManager.js}"></script>
         <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
-        <style>
-            header, aside, main, footer {
-                border: 1px dashed red;
-                box-sizing: border-box;
-            }
-        </style>
-
-        <script th:if="${message}" th:inline="javascript">
-            alert([[${message}]]);
-        </script>
-
-    </head>
-
-    <body>
-
-        <header th:replace="~{header :: header}"></header>
-
-        <div class="d-flex">
-
-            <aside th:replace="~{aside :: aside}"></aside>
-
-            <main class="flex-grow-1 p-3">
-
-                <form name="form" th:action="@{'/articles/' + ${article.id}}" th:method="put" th:object="${command}">
-                    <div class="form-group mb-3 d-none">
-                        <label for="categoryId" th:text="#{entity.category.id}"></label>
-                        <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
-                        <span class="d-block invalid-feedback" th:errors="*{categoryId}" th:if="${#fields.hasErrors('categoryId')}"></span>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="title" th:text="#{entity.article.title}"></label>
-                        <input id="title" class="form-control" th:field="*{title}">
-                        <span class="d-block invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}"></span>
-                    </div>
-
-                    <div class="form-group mb-3 attachments">
-                        <span></span>
-                        <button type="button" class="btn btn-danger remove"><i class="bi bi-trash-fill"></i></button>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label for="content" th:text="#{entity.article.content}"></label>
-                        <div id="editor"></div>
-                        <textarea id="content" class="form-control d-none" th:field="*{content}"></textarea>
-                        <span class="d-block invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></span>
-                    </div>
-
-                    <div class="d-flex justify-content-center p-3 mb-3 rounded">
-                        <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                        <a type="button" class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
-                        <button type="submit" class="btn btn-danger mx-2" data-role="delete" th:text="#{label.delete}"></button>
-                    </div>
-                </form>
-
-            </main>
-
-        </div>
-
-        <footer th:replace="~{footer :: footer}"></footer>
-
         <script th:inline="javascript">
-            document.addEventListener('DOMContentLoaded', () => {
-                document.updateForm.addEventListener('submit', e => {
-                    if (!!e.submitter.dataset.role && e.submitter.dataset.role === 'delete') {
-                        e.target['_method'].value = 'delete';
-                    }
-                });
-            });
-        </script>
-
-        <script th:inline="javascript">
-            document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', e => {
                 const Editor = toastui.Editor;
-                const initialValue = [[${command.content}]] || '';
+                const initialValue = /*[[${command.content}]]*/'' || '';
                 const editor = new Editor({
                     el: document.getElementById('editor'),
                     height: 'auto',
@@ -98,11 +28,44 @@
                     usageStatistics: false
                 });
 
-                document.updateForm.addEventListener('submit', e => {
-                    e.target.elements.content.value = editor.getHTML();
+                document.form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const method = e.submitter.name === 'update' ? 'post' : 'delete';
+                    debugger;
                 });
             });
         </script>
+    </head>
 
+    <body layout:fragment="content">
+        <section class="flex-grow-1 p-3 border border-primary rounded">
+            <form name="form" th:action="@{'/articles/' + ${article.id}}" th:object="${command}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="file" name="multipartFiles" multiple>
+                <div class="form-group mb-3 d-none">
+                    <label for="categoryId" th:text="#{entity.category.id}"></label>
+                    <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
+                    <span class="d-block invalid-feedback"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="title" th:text="#{entity.article.title}"></label>
+                    <input id="title" class="form-control" th:field="*{title}">
+                    <span class="d-block invalid-feedback"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="content" th:text="#{entity.article.content}"></label>
+                    <div id="editor"></div>
+                    <textarea id="content" class="form-control d-none" th:field="*{content}"></textarea>
+                    <span class="d-block invalid-feedback"></span>
+                </div>
+
+                <div class="d-flex justify-content-center p-3 mb-3 rounded">
+                    <button type="submit" name="update" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
+                    <a type="button" class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
+                    <button type="submit" name="delete" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
+                </div>
+            </form>
+        </section>
     </body>
 </html>
