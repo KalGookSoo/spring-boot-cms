@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.board.controller;
 
 import com.kalgooksoo.cms.board.command.CreateArticleCommand;
+import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.service.ArticleService;
 import com.kalgooksoo.cms.message.CmsMessageSource;
@@ -35,6 +36,19 @@ public class ArticleApiController {
     )
     public ResponseEntity<Article> post(@Valid CreateArticleCommand command) throws IOException {
         Article article = articleService.create(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(article);
+    }
+
+    @PostMapping(
+            value = "/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Article> put(
+            @PathVariable String id,
+            @Valid UpdateArticleCommand command
+    ) throws IOException {
+        Article article = articleService.update(id, command);
         return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 

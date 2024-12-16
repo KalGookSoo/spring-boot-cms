@@ -175,7 +175,6 @@ public class ArticleController {
                 outputStream.closeEntry();
             }
         }
-
     }
 
     private String getContentDisposition(String userAgent, String fileName) {

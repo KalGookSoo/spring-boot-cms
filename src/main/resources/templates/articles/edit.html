@@ -29,18 +29,47 @@
                 });
 
                 document.form.addEventListener('submit', e => {
-                    e.preventDefault();
-                    const method = e.submitter.name === 'update' ? 'post' : 'delete';
-                    debugger;
+                    if (e.submitter.name === 'update') {
+                        return updateArticle(e);
+                    }
                 });
+
+                const updateArticle = e => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    formData.append('content', editor.getHTML());
+                    formData.delete('multipartFiles');// FormData Constructor에 form element를 삽입하면 input[type="file"]요소에 empty file이 하나 첨부되는 현상을 발견했다.
+                    [...e.target.elements.multipartFiles.files].forEach(file => formData.append('multipartFiles', file));
+                    const httpEntity = {
+                        method: 'post',
+                        headers: {
+                            'X-XSRF-TOKEN': e.target._csrf.value
+                        },
+                        body: formData
+                    };
+                    const articleId = /*[[${article.id}]]*/'';
+                    fetch(`${CONTEXT_PATH}/api/articles/${articleId}`, httpEntity)
+                        .then(async response => {
+                            const responseBody = await response.text();
+                            if (response.status === 201) {
+                                alert(/*[[#{command.success.update}]]*/'');
+                                location.href = /*[[@{/articles/list(categoryId=${command.categoryId})}]]*/'';
+                            } else if (response.status === 400) {
+                                const errors = JSON.parse(responseBody).errors;
+                                errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
+                            } else {
+                                alert(responseBody);
+                            }
+                        });
+                };
+
             });
         </script>
     </head>
 
     <body layout:fragment="content">
         <section class="flex-grow-1 p-3 border border-primary rounded">
-            <form name="form" th:action="@{'/articles/' + ${article.id}}" th:object="${command}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <form name="form" th:action="@{'/articles/' + ${article.id}}" th:object="${command}" th:method="delete">
                 <input type="file" name="multipartFiles" multiple>
                 <div class="form-group mb-3 d-none">
                     <label for="categoryId" th:text="#{entity.category.id}"></label>

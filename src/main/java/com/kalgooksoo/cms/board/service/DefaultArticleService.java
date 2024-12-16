@@ -79,11 +79,8 @@ public class DefaultArticleService implements ArticleService {
     @Override
     public String delete(@NonNull String id) {
         Article article = articleRepository.getReferenceById(id);
-        String categoryId = article.getCategory().getId();
-        // TODO Removal propagate
         articleRepository.delete(article);
-        return categoryId;
-
+        return article.getCategory().getId();
     }
 
     @Transactional
