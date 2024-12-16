@@ -25,7 +25,7 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping("/list")
     public String getMenus(Model model) {
         // Query
@@ -39,7 +39,7 @@ public class MenuController {
         return "menus/list";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping("/excel-export")
     public View exportExcel(Model model) {
         // Query

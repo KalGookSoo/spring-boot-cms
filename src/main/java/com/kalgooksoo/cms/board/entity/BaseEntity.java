@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -19,7 +20,7 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter(AccessLevel.PROTECTED)
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     @Id
     @UuidGenerator

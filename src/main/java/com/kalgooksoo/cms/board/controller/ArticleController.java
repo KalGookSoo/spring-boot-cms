@@ -96,28 +96,6 @@ public class ArticleController {
         return "articles/view";
     }
 
-    @PostMapping
-    public String create(
-            @ModelAttribute("command") @Valid CreateArticleCommand command,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model
-    ) throws IOException {
-        // Validation
-        if (bindingResult.hasErrors()) {
-            return getNew(command, bindingResult, model);
-        }
-
-        // Command
-        articleService.create(command);
-
-        // Model
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.create"));
-
-        // View
-        return "redirect:/articles/list?categoryId=" + command.getCategoryId();
-    }
-
     @GetMapping("/{id}/edit")
     public String getEdit(
             @PathVariable String id,
@@ -138,29 +116,6 @@ public class ArticleController {
         return "articles/edit";
     }
 
-    @PutMapping("/{id}")
-    public String update(
-            @PathVariable String id,
-            @ModelAttribute("command") @Valid UpdateArticleCommand command,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model
-    ) {
-        // Validation
-        if (bindingResult.hasErrors()) {
-            return getEdit(id, command, bindingResult, model);
-        }
-
-        // Command
-        articleService.update(id, command);
-
-        // Model
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.update"));
-
-        // View
-        return String.format("redirect:/articles/%s/edit", id);
-    }
-
     @DeleteMapping("/{id}")
     public String delete(
             @PathVariable String id,
@@ -170,7 +125,8 @@ public class ArticleController {
         String categoryId = articleService.delete(id);
 
         // Model
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("command.success.delete"));
+        String message = messageSource.getMessage("command.success.delete");
+        redirectAttributes.addFlashAttribute("message", message);
 
         // View
         return "redirect:/articles/list?categoryId=" + categoryId;

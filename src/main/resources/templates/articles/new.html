@@ -1,72 +1,90 @@
 <!DOCTYPE html>
 <!--suppress HtmlFormInputWithoutLabel -->
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"
+      th:lang="${#locale.language}"
+>
+    <head>
+        <title th:text="|#{entity.article} #{label.create}|"></title>
 
-    <title th:text="#{entity.article}"></title>
+        <link rel="stylesheet" th:href="@{/css/attachment.css}"/>
+        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
-    <!-- CSS -->
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-     <link rel="stylesheet" th:href="@{/css/attachment.css}" />
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+        <script th:src="@{/js/AttachmentManager.js}"></script>
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
-    <!-- JS -->
-    <script th:src="@{/js/bootstrap.js}"></script>
-    <script th:src="@{/js/global.js}"></script>
-    <script th:src="@{/js/AttachmentManager.js}"></script>
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+        <script th:inline="javascript">
 
-    <style>
-        header, aside, main, footer {
-            border: 1px dashed red;
-            box-sizing: border-box;
-        }
-    </style>
+            document.addEventListener('DOMContentLoaded', () => {
+                const Editor = toastui.Editor;
+                const initialValue = '';
+                const editor = new Editor({
+                    el: document.getElementById('editor'),
+                    height: 'auto',
+                    initialEditType: 'wysiwyg',
+                    initialValue: initialValue,
+                    previewStyle: 'vertical',
+                    usageStatistics: false
+                });
 
-    <script th:if="${message}" th:inline="javascript">
-        alert([[${message}]]);
-    </script>
+                document.form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    formData.append('content', editor.getHTML());
+                    formData.delete('multipartFiles');// FormData Constructor에 form element를 삽입하면 input[type="file"]요소에 empty file이 하나 첨부되는 현상을 발견했다.
+                    [...e.target.elements.multipartFiles.files].forEach(file => formData.append('multipartFiles', file));
+                    const httpEntity = {
+                        method: 'post',
+                        headers: {
+                            'X-XSRF-TOKEN': e.target._csrf.value
+                        },
+                        body: formData
+                    };
 
-</head>
+                    fetch(`/api/articles`, httpEntity)
+                        .then(async response => {
+                            const responseBody = await response.text();
+                            if (response.status === 201) {
+                                alert(/*[[#{command.success.create}]]*/'');
+                                location.href = /*[[@{/articles/list(categoryId=${command.categoryId})}]]*/'';
+                            } else if (response.status === 400) {
+                                const errors = JSON.parse(responseBody).errors;
+                                errors.forEach(error => e.target.elements[error.field].parentElement.querySelector(`.invalid-feedback`).textContent = error.message);
+                            } else {
+                                alert(responseBody);
+                            }
+                        })
+                });
 
-<body>
+            });
+        </script>
 
-    <header th:replace="~{header :: header}"></header>
+    </head>
 
-    <div class="d-flex">
-
-        <aside th:replace="~{aside :: aside}"></aside>
-
-        <main class="flex-grow-1 p-3">
-
-            <form name="form" enctype="multipart/form-data" th:action="@{/articles}" th:method="post" th:object="${command}">
+    <body layout:fragment="content">
+        <section class="flex-grow-1 p-3 border border-primary rounded">
+            <form name="form" enctype="multipart/form-data" th:method="post" th:object="${command}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <input type="file" name="multipartFiles" multiple>
                 <div class="form-group mb-3 d-none">
                     <label for="categoryId" th:text="#{entity.category.id}"></label>
                     <input id="categoryId" class="form-control-plaintext" th:field="*{categoryId}" readonly>
-                    <span class="d-block invalid-feedback" th:errors="*{categoryId}" th:if="${#fields.hasErrors('categoryId')}"></span>
+                    <span class="d-block invalid-feedback"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="title" th:text="#{entity.article.title}"></label>
                     <input id="title" class="form-control" th:field="*{title}">
-                    <span class="d-block invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <!--<label class="form-label" th:text="#{entity.attachments}"></label>-->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Launch demo modal
-                    </button>
+                    <span class="d-block invalid-feedback"></span>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="editor" th:text="#{entity.article.content}"></label>
                     <div id="editor"></div>
                     <textarea id="content" class="form-control d-none" th:field="*{content}"></textarea>
-                    <span class="d-block invalid-feedback" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></span>
+                    <span class="d-block invalid-feedback"></span>
                 </div>
 
                 <div class="d-flex justify-content-center p-3 mb-3 rounded">
@@ -75,189 +93,6 @@
                 </div>
             </form>
 
-        </main>
-
-    </div>
-
-    <footer th:replace="~{footer :: footer}"></footer>
-    <section id="file">
-
-    </section>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h1 class="h4 text-center mb-3">Drag &amp; drop file upload example</h1>
-                    <form name="attachmentForm">
-                        <fieldset class="upload-drop-zone text-center mb-3 p-4">
-                            <legend class="visually-hidden">Image uploader</legend>
-                            <svg class="upload-svg" width="60" height="60" aria-hidden="true">
-                                <use href="#icon-imageUpload"></use>
-                            </svg>
-                            <p class="small my-2">Drag &amp; Drop logo image(s) inside dashed region<br><i>or</i></p>
-                            <!-- TODO 첨부파일 목록 -->
-<!--
-                            <input id="upload-image-logo" data-post-name="image-logo"
-                                   data-post-url="https://someplace.com/image/uploads/logos/"
-                                   class="position-absolute invisible" type="file">
-                            <label class="btn btn-upload mb-3" for="upload-image-logo">Choose file(s)</label>
--->
-                            <input type="file" id="multipartFiles" name="multipartFiles" class="position-absolute invisible" multiple>
-                            <label for="multipartFiles" class="btn btn-upload mb-3">Choose file(s)</label>
-                        </fieldset>
-                        <fieldset class="upload-drop-zone text-center mb-3 p-4">
-                            <legend>첨부파일 목록</legend>
-                            <table class="table table-hover border">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Size</th>
-                                    <th>-</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td colspan="100%" class="text-center"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </fieldset>
-                    </form>
-                    <svg style="display:none">
-                        <defs>
-                            <symbol id="icon-imageUpload" clip-rule="evenodd" viewBox="0 0 96 96">
-                                <path d="M47 6a21 21 0 0 0-12.3 3.8c-2.7 2.1-4.4 5-4.7 7.1-5.8 1.2-10.3 5.6-10.3 10.6 0 6 5.8 11 13 11h12.6V22.7l-7.1 6.8c-.4.3-.9.5-1.4.5-1 0-2-.8-2-1.7 0-.4.3-.9.6-1.2l10.3-8.8c.3-.4.8-.6 1.3-.6.6 0 1 .2 1.4.6l10.2 8.8c.4.3.6.8.6 1.2 0 1-.9 1.7-2 1.7-.5 0-1-.2-1.3-.5l-7.2-6.8v15.6h14.4c6.1 0 11.2-4.1 11.2-9.4 0-5-4-8.8-9.5-9.4C63.8 11.8 56 5.8 47 6Zm-1.7 42.7V38.4h3.4v10.3c0 .8-.7 1.5-1.7 1.5s-1.7-.7-1.7-1.5Z M27 49c-4 0-7 2-7 6v29c0 3 3 6 6 6h42c3 0 6-3 6-6V55c0-4-3-6-7-6H28Zm41 3c1 0 3 1 3 3v19l-13-6a2 2 0 0 0-2 0L44 79l-10-5a2 2 0 0 0-2 0l-9 7V55c0-2 2-3 4-3h41Z M40 62c0 2-2 4-5 4s-5-2-5-4 2-4 5-4 5 2 5 4Z"/>
-                            </symbol>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-attach">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script th:inline="javascript">
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const Editor = toastui.Editor;
-            const initialValue = [[${command.content}]] || '';
-            const editor = new Editor({
-                el: document.getElementById('editor'),
-                height: 'auto',
-                initialEditType: 'wysiwyg',
-                initialValue: initialValue,
-                previewStyle: 'vertical',
-                usageStatistics: false
-            });
-
-            document.updateForm.addEventListener('submit', e => {
-                e.target.elements.content.value = editor.getHTML();
-            });
-
-            document.addEventListener('click', e => {
-                if (e.target.closest(`button.btn-attach`)) {
-                    const transfer = new DataTransfer();
-                    [...document.updateForm.multipartFiles.files, ...document.attachmentForm.multipartFiles.files]
-                        .forEach(file => transfer.items.add(file));
-                    document.updateForm.multipartFiles.files = transfer.files;
-
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // Drag and drop - single or multiple image files
-            // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-            // https://codepen.io/joezimjs/pen/yPWQbd?editors=1000
-
-
-            // Four objects of interest: drop zones, input elements, gallery elements, and the files.
-            // dataRefs = {files: [image files], input: element ref, gallery: element ref}
-
-            const preventDefaults = event => {
-                event.preventDefault();
-                event.stopPropagation();
-            };
-
-            // TODO Refactor
-            const highlight = event =>
-                event.target.classList.add('highlight');
-
-            // TODO Refactor
-            const unhighlight = event =>
-                event.target.classList.remove('highlight');
-
-            const getInputAndGalleryRefs = element => {
-                const zone = element.closest('.upload-drop-zone') || false;
-
-                const input = zone.querySelector('input[type="file"]') || false;
-                return {input: input};
-            }
-
-            const handleDrop = event => {
-                const dataRefs = getInputAndGalleryRefs(event.target);
-                dataRefs.files = event.dataTransfer.files;
-                handleFiles(dataRefs);
-            }
-
-            const uploadDropZone = document.querySelector('.upload-drop-zone');
-            const dataRefs = getInputAndGalleryRefs(uploadDropZone);
-
-            // Prevent default drag behaviors
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
-                uploadDropZone.addEventListener(event, preventDefaults, false);
-                document.getElementById('exampleModal').addEventListener(event, preventDefaults, false);
-            });
-
-            // Highlighting drop area when item is dragged over it
-            ['dragenter', 'dragover'].forEach(event => {
-                uploadDropZone.addEventListener(event, highlight, false);
-            });
-            ['dragleave', 'drop'].forEach(event => {
-                uploadDropZone.addEventListener(event, unhighlight, false);
-            });
-
-            // Handle dropped files
-            uploadDropZone.addEventListener('drop', handleDrop, false);
-
-            // Handle browse selected files
-            dataRefs.input.addEventListener('change', event => {
-                dataRefs.files = event.target.files;
-                handleFiles(dataRefs);
-            }, false);
-
-            // Handle selected and dropped files
-            const handleFiles = dataRefs => {
-                if (!dataRefs.files.length) return;
-                const tbody = document.querySelector(`.modal table tbody`);
-
-                const createRowTemplate = (file, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${file.name}</td>
-                    <td>${file.size}</td>
-                    <td><button class="btn btn-danger" data-id="${index + 1}">🗑</button></td>
-                </tr>
-                `;
-
-                const offset = tbody.querySelectorAll('tr').length;
-                [...dataRefs.files].forEach((file, index) => {
-                    tbody.insertAdjacentHTML('beforeend', createRowTemplate(file, offset + index));
-                });
-            }
-        });
-    </script>
-
-</body>
+        </section>
+    </body>
 </html>

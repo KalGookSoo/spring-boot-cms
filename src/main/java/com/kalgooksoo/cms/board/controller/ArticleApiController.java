@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.board.controller;
 
+import com.kalgooksoo.cms.board.command.CreateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Attachment;
 import com.kalgooksoo.cms.board.service.ArticleService;
@@ -7,6 +8,7 @@ import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.core.file.FileIOService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -44,16 +44,12 @@ public class ArticleApiController {
     private final ArticleService articleService;
 
     @PostMapping(
-            value = "/{id}/attachments/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Article> upload(
-            @PathVariable String id,
-            List<MultipartFile> multipartFiles
-    ) throws IOException {
-        Article article = articleService.addAttachments(id, multipartFiles);
-        return ResponseEntity.ok(article);
+    public ResponseEntity<Article> post(@Valid CreateArticleCommand command) throws IOException {
+        Article article = articleService.create(command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 
     @GetMapping("/{id}/attachments/{attachmentId}/download")

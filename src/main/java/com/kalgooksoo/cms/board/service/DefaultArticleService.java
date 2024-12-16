@@ -53,10 +53,9 @@ public class DefaultArticleService implements ArticleService {
     @Override
     public Article create(@NonNull CreateArticleCommand command) throws IOException {
         Category category = categoryRepository.getReferenceById(command.getCategoryId());
-        Article article = Article.create(command.getTitle(), command.getContent());
+        Article article = Article.create(command);
         for (MultipartFile multipartFile : command.getMultipartFiles()) {
             Attachment attachment = Attachment.create(filepath, multipartFile);
-            attachmentRepository.save(attachment);
             article.addAttachment(attachment);
             writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
         }

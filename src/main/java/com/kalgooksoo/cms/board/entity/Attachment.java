@@ -1,12 +1,10 @@
 package com.kalgooksoo.cms.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -21,6 +19,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = true, exclude = {"articles", "replies"})
+@ToString(exclude = {"articles", "replies"})
 
 @Entity
 @Table(name = "tb_attachment")
@@ -29,9 +29,11 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class Attachment extends BaseEntity {
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "attachments")
     private final Set<Article> articles = new LinkedHashSet<>();
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "attachments")
     private final Set<Reply> replies = new LinkedHashSet<>();
 

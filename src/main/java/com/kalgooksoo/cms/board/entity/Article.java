@@ -1,10 +1,10 @@
 package com.kalgooksoo.cms.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kalgooksoo.cms.board.command.CreateArticleCommand;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -19,6 +19,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = true, exclude = {"category", "replies", "views", "attachments", "votes"})
+@ToString(exclude = {"category", "replies", "views", "attachments", "votes"})
 
 @Entity
 @Table(name = "tb_article")
@@ -27,17 +29,21 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class Article extends BaseEntity {
 
+    @JsonBackReference
     @Comment("카테고리 식별자")
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Reply> replies = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<View> views = new ArrayList<>();
 
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_article_attachment",
@@ -46,6 +52,7 @@ public class Article extends BaseEntity {
     )
     private Set<Attachment> attachments = new LinkedHashSet<>();
 
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_article_vote",
@@ -61,10 +68,10 @@ public class Article extends BaseEntity {
     @Comment("본문")
     private String content;
 
-    public static Article create(String title, String content) {
+    public static Article create(CreateArticleCommand command) {
         Article article = new Article();
-        article.title = title;
-        article.content = content;
+        article.title = command.getTitle();
+        article.content = command.getContent();
         return article;
     }
 

@@ -77,6 +77,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
         this.sequence = command.sequence();
     }
 
+    @Override
     public void addChild(Menu child) {
         children.add(child);
         parent = this;

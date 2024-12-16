@@ -27,14 +27,14 @@ public class CategoryApiController {
 
     private final CmsMessageSource messageSource;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping
     public ResponseEntity<Collection<Category>> get() {
         List<Category> categories = categoryService.findAll();
         return ResponseEntity.ok(HierarchicalFactory.build(categories));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<String> post(@RequestBody @Valid CreateCategoryCommand command) {
         categoryService.create(command);
@@ -42,7 +42,7 @@ public class CategoryApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<String> put(@PathVariable String id, @RequestBody @Valid UpdateCategoryCommand command) {
         categoryService.update(id, command);
@@ -50,7 +50,7 @@ public class CategoryApiController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
         categoryService.delete(id);

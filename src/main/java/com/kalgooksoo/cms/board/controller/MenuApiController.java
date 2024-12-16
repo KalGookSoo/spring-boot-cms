@@ -27,14 +27,14 @@ public class MenuApiController {
 
     private final CmsMessageSource messageSource;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping
     public ResponseEntity<Collection<Menu>> get() {
         List<Menu> menus = menuService.findAll();
         return ResponseEntity.ok(HierarchicalFactory.build(menus));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<String> post(@RequestBody @Valid CreateMenuCommand command) {
         menuService.create(command);
@@ -42,7 +42,7 @@ public class MenuApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<String> put(@PathVariable String id, @RequestBody @Valid UpdateMenuCommand command) {
         menuService.update(id, command);
@@ -50,7 +50,7 @@ public class MenuApiController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
         menuService.delete(id);

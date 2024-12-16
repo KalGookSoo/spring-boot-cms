@@ -1,10 +1,10 @@
 package com.kalgooksoo.cms.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kalgooksoo.cms.board.Hierarchical;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -18,13 +18,16 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = true, exclude = {"article"})
+@ToString(exclude = {"article"})
 
 @Entity
 @Table(name = "tb_reply")
 @Comment("답글")
 @DynamicInsert
-public class Reply extends BaseEntity {
+public class Reply extends BaseEntity implements Hierarchical<Reply> {
 
+    @JsonBackReference
     @Comment("상위 답글 식별자")
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
@@ -33,10 +36,11 @@ public class Reply extends BaseEntity {
     /**
      * 하위 답글
      */
+    @JsonManagedReference
     @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Reply> children = new ArrayList<>();
 
-
+    @JsonBackReference
     @Comment("게시글 식별자")
     @ManyToOne
     @JoinColumn(name = "article_id", referencedColumnName = "id")
@@ -45,6 +49,7 @@ public class Reply extends BaseEntity {
     /**
      * 첨부파일
      */
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_reply_attachment",
@@ -56,6 +61,7 @@ public class Reply extends BaseEntity {
     /**
      * 투표
      */
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_reply_vote",
@@ -86,6 +92,12 @@ public class Reply extends BaseEntity {
     public void remove(Reply reply) {
         children.remove(reply);
         reply.parent = null;
+    }
+
+    @Override
+    public void addChild(Reply child) {
+        children.add(child);
+        child.parent = this;
     }
 
 }
