@@ -1,7 +1,10 @@
 package com.kalgooksoo.cms.board.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -16,7 +19,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_vote")

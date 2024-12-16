@@ -100,19 +100,9 @@ public class Article extends BaseEntity {
         attachment.getArticles().add(this);
     }
 
-    public void removeAttachment(Attachment attachment) {
-        attachments.remove(attachment);
-        attachment.getArticles().remove(attachment);
-    }
-
     public void addVote(Vote vote) {
         votes.add(vote);
         vote.getArticles().add(this);
-    }
-
-    public void removeVote(Vote vote) {
-        votes.remove(vote);
-        vote.getArticles().remove(vote);
     }
 
 }

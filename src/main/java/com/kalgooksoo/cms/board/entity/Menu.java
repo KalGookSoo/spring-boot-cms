@@ -56,8 +56,8 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_menu_authority",
-            joinColumns = @JoinColumn(name = "menuId"),
-            inverseJoinColumns = @JoinColumn(name = "authorityId")
+            joinColumns = @JoinColumn(name = "menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private final Set<Authority> authorities = new LinkedHashSet<>();
 

@@ -6,7 +6,6 @@ import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.entity.CategoryType;
 import com.kalgooksoo.cms.board.repository.ArticleRepository;
-import com.kalgooksoo.cms.board.repository.AttachmentRepository;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,15 +43,12 @@ class ArticleServiceTest {
     private ArticleRepository articleRepository;
 
     @Autowired
-    private AttachmentRepository attachmentRepository;
-
-    @Autowired
     private TestEntityManager entityManager;
 
     @BeforeEach
     void setup(@TempDir Path tempDir) {
         categoryService = new DefaultCategoryService(categoryRepository);
-        articleService = new DefaultArticleService(tempDir.toString(), categoryRepository, articleRepository, attachmentRepository);
+        articleService = new DefaultArticleService(tempDir.toString(), categoryRepository, articleRepository);
     }
 
     @Test

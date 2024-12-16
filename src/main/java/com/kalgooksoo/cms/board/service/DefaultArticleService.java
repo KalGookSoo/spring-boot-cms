@@ -6,7 +6,6 @@ import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Attachment;
 import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.repository.ArticleRepository;
-import com.kalgooksoo.cms.board.repository.AttachmentRepository;
 import com.kalgooksoo.cms.board.repository.CategoryRepository;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.core.file.FileIOService;
@@ -24,24 +23,21 @@ import java.util.NoSuchElementException;
 @Service
 public class DefaultArticleService implements ArticleService {
 
+    @Value("${com.kalgooksoo.cms.filepath}")
     private final String filepath;
 
     private final CategoryRepository categoryRepository;
 
     private final ArticleRepository articleRepository;
 
-    private final AttachmentRepository attachmentRepository;
-
     public DefaultArticleService(
             @Value("${com.kalgooksoo.cms.filepath}") String filepath,
             CategoryRepository categoryRepository,
-            ArticleRepository articleRepository,
-            AttachmentRepository attachmentRepository
+            ArticleRepository articleRepository
     ) {
         this.filepath = filepath;
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
-        this.attachmentRepository = attachmentRepository;
     }
 
     @Override

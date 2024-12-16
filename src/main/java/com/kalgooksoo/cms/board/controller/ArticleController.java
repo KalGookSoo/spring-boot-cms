@@ -3,40 +3,17 @@ package com.kalgooksoo.cms.board.controller;
 import com.kalgooksoo.cms.board.command.CreateArticleCommand;
 import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
-import com.kalgooksoo.cms.board.entity.Attachment;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
 import com.kalgooksoo.cms.message.CmsMessageSource;
-import com.kalgooksoo.core.file.FileIOService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 @Tag(name = "ArticleController", description = "게시글 컨트롤러")
 @Controller

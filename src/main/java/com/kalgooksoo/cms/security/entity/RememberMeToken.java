@@ -19,7 +19,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode
-@SuppressWarnings("JpaDataSourceORMInspection")
 
 @Entity
 @Table(name = "tb_remember_me_token")
@@ -43,4 +42,5 @@ public class RememberMeToken {
         this.token = token;
         this.lastUsed = lastUsed;
     }
+
 }
