@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Transactional
 @Service
 public class DefaultArticleService implements ArticleService {
 
@@ -45,7 +46,6 @@ public class DefaultArticleService implements ArticleService {
         return articleRepository.searchAll(search);
     }
 
-    @Transactional
     @Override
     public Article create(@NonNull CreateArticleCommand command) throws IOException {
         Category category = categoryRepository.getReferenceById(command.getCategoryId());
@@ -67,15 +67,19 @@ public class DefaultArticleService implements ArticleService {
     }
 
     @Override
-    public Article update(@NonNull String id, @NonNull UpdateArticleCommand command) {
+    public Article update(@NonNull String id, @NonNull UpdateArticleCommand command) throws IOException {
         Article article = articleRepository.getReferenceById(id);
-        article.update(command.getTitle(), command.getContent());
+        article.update(command);
+        for (MultipartFile multipartFile : command.getMultipartFiles()) {
+            Attachment attachment = Attachment.create(filepath, multipartFile);
+            article.addAttachment(attachment);
+            writeFile(attachment.getAbsolutePath(), multipartFile.getBytes());
+        }
         Category category = article.getCategory();
         categoryRepository.save(category);
         return article;
     }
 
-    @Transactional
     @Override
     public String delete(@NonNull String id) {
         Article article = articleRepository.getReferenceById(id);
@@ -83,7 +87,6 @@ public class DefaultArticleService implements ArticleService {
         return article.getCategory().getId();
     }
 
-    @Transactional
     @Override
     public Article addAttachments(@NonNull String id, @NonNull List<MultipartFile> multipartFiles) throws IOException {
         if (multipartFiles.isEmpty()) {
@@ -98,7 +101,6 @@ public class DefaultArticleService implements ArticleService {
         return articleRepository.save(article);
     }
 
-    @Transactional
     @Override
     public Article removeAttachment(@NonNull String id, @NonNull String attachmentId) {
         Article article = articleRepository.getReferenceById(id);

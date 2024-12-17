@@ -11,6 +11,7 @@
     </head>
     <body layout:fragment="content">
         <section class="flex-grow-1 p-3 border border-primary rounded">
+            <h2 class="mb-4" th:text="${category.name}"></h2>
             <div class="d-flex justify-content-end p-3 mb-3 rounded">
                 <a class="btn btn-primary mx-2" th:href="@{/articles/new(categoryId=${search.categoryId})}" th:text="#{label.create}"></a>
             </div>
@@ -22,9 +23,6 @@
                         <th class="d-none" th:text="#{entity.article.id}"></th>
                         <th class="d-none" th:text="#{entity.category.id}"></th>
                         <th th:text="#{entity.article.title}"></th>
-                        <!--/*
-                        <th class="d-none" th:text="#{entity.article.content}"></th>
-                        */-->
                         <th th:text="#{entity.createdBy}"></th>
                         <th th:text="#{entity.createdDate}"></th>
                         <th th:text="#{entity.lastModifiedBy}"></th>
@@ -49,11 +47,6 @@
                         <td>
                             <input type="text" class="form-control-plaintext" name="title" th:value="${article.title}" readonly>
                         </td>
-                        <!--/*
-                        <td class="d-none">
-                            <input type="text" class="form-control-plaintext" name="content" th:value="${article.content}" readonly>
-                        </td>
-                        */-->
                         <td>
                             <input type="text" class="form-control-plaintext" name="createdBy" th:value="${article.createdBy}" readonly>
                         </td>

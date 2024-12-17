@@ -19,7 +19,7 @@ public interface ArticleService {
 
     Article find(@NonNull String id);
 
-    Article update(@NonNull String id, @NonNull UpdateArticleCommand command);
+    Article update(@NonNull String id, @NonNull UpdateArticleCommand command) throws IOException;
 
     String delete(@NonNull String id);
 

@@ -10,34 +10,30 @@
         <title th:text="|#{entity.article} #{label.update}|"></title>
 
         <link rel="stylesheet" th:href="@{/css/attachment.css}"/>
-        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
         <script th:src="@{/js/AttachmentManager.js}"></script>
-        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', e => {
-                const Editor = toastui.Editor;
-                const initialValue = /*[[${command.content}]]*/'' || '';
-                const editor = new Editor({
-                    el: document.getElementById('editor'),
-                    height: 'auto',
-                    initialEditType: 'wysiwyg',
-                    initialValue: initialValue,
-                    previewStyle: 'vertical',
-                    usageStatistics: false
-                });
-
-                document.form.addEventListener('submit', e => {
+                const _document = e.target;
+                _document.form.addEventListener('submit', e => {
                     if (e.submitter.name === 'update') {
                         return updateArticle(e);
+                    } else if (e.submitter.name === 'delete') {
+                        e.target.elements._method = 'delete';
+                    }
+                });
+
+                _document.addEventListener('click', e => {
+                    if (e.target.closest(`.attached`)) {
+                        debugger;
+                        // TODO fetch delete api
                     }
                 });
 
                 const updateArticle = e => {
                     e.preventDefault();
                     const formData = new FormData(e.target);
-                    formData.append('content', editor.getHTML());
                     formData.delete('multipartFiles');// FormData Constructor에 form element를 삽입하면 input[type="file"]요소에 empty file이 하나 첨부되는 현상을 발견했다.
                     [...e.target.elements.multipartFiles.files].forEach(file => formData.append('multipartFiles', file));
                     const httpEntity = {
@@ -48,7 +44,7 @@
                         body: formData
                     };
                     const articleId = /*[[${article.id}]]*/'';
-                    fetch(`${CONTEXT_PATH}/api/articles/${articleId}`, httpEntity)
+                    fetch(`/api/articles/${articleId}`, httpEntity)
                         .then(async response => {
                             const responseBody = await response.text();
                             if (response.status === 201) {
@@ -69,7 +65,7 @@
 
     <body layout:fragment="content">
         <section class="flex-grow-1 p-3 border border-primary rounded">
-            <form name="form" th:action="@{'/articles/' + ${article.id}}" th:object="${command}" th:method="delete">
+            <form name="form" th:action="@{'/articles/' + ${article.id}}" th:object="${command}" th:method="post">
                 <input type="file" name="multipartFiles" multiple>
                 <div class="form-group mb-3 d-none">
                     <label for="categoryId" th:text="#{entity.category.id}"></label>
@@ -84,14 +80,75 @@
 
                 <div class="form-group mb-3">
                     <label for="content" th:text="#{entity.article.content}"></label>
-                    <div id="editor"></div>
-                    <textarea id="content" class="form-control d-none" th:field="*{content}"></textarea>
+                    <textarea id="content" class="form-control" th:field="*{content}"></textarea>
                     <span class="d-block invalid-feedback"></span>
                 </div>
 
+                <table id="attachments" class="table table-hover border">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th class="d-none" th:text="#{entity.id}"></th>
+                        <th th:text="#{entity.name}"></th>
+                        <th th:text="#{entity.attachment.size}"></th>
+                        <th th:text="#{entity.createdBy}"></th>
+                        <th th:text="#{entity.createdDate}"></th>
+                        <th th:text="#{entity.lastModifiedBy}"></th>
+                        <th th:text="#{entity.lastModifiedDate}"></th>
+                        <th th:text="#{label.delete}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${attachments.isEmpty()}">
+                        <td colspan="100%" class="text-center" th:text="#{search.result.empty}"></td>
+                    </tr>
+                    <tr th:if="${!attachments.isEmpty()}" th:each="attachment, status : ${attachments}">
+                        <td>
+                            <input type="number" class="form-control-plaintext" name="index"
+                                   th:value="${status.index + 1}" readonly>
+                        </td>
+                        <td class="d-none">
+                            <input type="text" class="form-control-plaintext" name="id" th:value="${attachment.id}"
+                                   readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" name="originalName"
+                                   th:value="${attachment.originalName}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" name="size" th:value="${attachment.size}"
+                                   readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" name="createdBy"
+                                   th:value="${article.createdBy}" readonly>
+                        </td>
+                        <td>
+                            <input type="datetime-local" class="form-control-plaintext" name="createdDate"
+                                   th:value="${article.createdDate?.withNano(0)}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control-plaintext" name="lastModifiedBy"
+                                   th:value="${article.lastModifiedBy}" readonly>
+                        </td>
+                        <td>
+                            <input type="datetime-local" class="form-control-plaintext" name="lastModifiedDate"
+                                   th:value="${article.lastModifiedDate?.withNano(0)}" readonly>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger attached" th:data-article-id="${article.id}"
+                                    th:data-attachment-id="${attachment.id}"
+                                    th:text="#{label.delete}"
+                                    th:title="#{label.delete}"
+                            ></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
                 <div class="d-flex justify-content-center p-3 mb-3 rounded">
                     <button type="submit" name="update" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                    <a type="button" class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
+                    <a class="btn btn-secondary mx-2" th:href="@{'/articles/' + ${article.id}}" th:text="#{label.cancel}"></a>
                     <button type="submit" name="delete" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
                 </div>
             </form>

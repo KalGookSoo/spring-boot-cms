@@ -4,8 +4,10 @@ import com.kalgooksoo.cms.board.command.CreateArticleCommand;
 import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import com.kalgooksoo.cms.board.entity.Article;
 import com.kalgooksoo.cms.board.entity.Attachment;
+import com.kalgooksoo.cms.board.entity.Category;
 import com.kalgooksoo.cms.board.search.ArticleSearch;
 import com.kalgooksoo.cms.board.service.ArticleService;
+import com.kalgooksoo.cms.board.service.CategoryService;
 import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.core.file.FileIOService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +40,8 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 public class ArticleController {
 
+    private final CategoryService categoryService;
+
     private final ArticleService articleService;
 
     private final CmsMessageSource messageSource;
@@ -48,9 +52,11 @@ public class ArticleController {
             Model model
     ) {
         // Query
+        Category category = categoryService.find(search.getCategoryId());
         Page<Article> page = articleService.findAll(search);
 
         // Model
+        model.addAttribute("category", category);
         model.addAttribute("page", page);
 
         // View
@@ -102,6 +108,7 @@ public class ArticleController {
         command = bindingResult.hasErrors() ? command : new UpdateArticleCommand(article.getCategory().getId(), article.getTitle(), article.getContent());
 
         // Model
+        model.addAttribute("category", article.getCategory());
         model.addAttribute("article", article);
         model.addAttribute("attachments", article.getAttachments());
         model.addAttribute("command", command);

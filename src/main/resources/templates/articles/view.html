@@ -17,11 +17,9 @@
                 <input id="categoryId" class="form-control-plaintext" th:field="${article.category.id}" readonly>
             </div>
             <div class="form-group mb-3">
-                <label for="title" th:text="#{entity.article.title}"></label>
-                <input id="title" class="form-control-plaintext" th:field="${article.title}">
+                <h2 th:text="${article.title}"></h2>
             </div>
             <div class="form-group mb-3">
-                <label th:text="#{entity.article.content}"></label>
                 <div th:utext="${article.content}"></div>
             </div>
 
@@ -76,7 +74,7 @@
                 </tbody>
             </table>
 
-            <!--
+            <!--/*
                     <div class="form-group mb-3" th:each="attachment : ${attachments}">
                         <p th:text="|#{entity.attachment} #{label.list}|"></p>
                         <label th:text="#{entity.name}"></label>
@@ -87,7 +85,7 @@
                         <div th:text="${attachment.size}"></div>
                         <a target="_blank" th:text="#{label.download}" th:href="@{'/articles/' + ${id} + '/attachments/' + ${attachment.id} + '/download'}"></a>
                     </div>
-            -->
+            */-->
 
             <div class="d-flex justify-content-center p-3 mb-3 rounded">
                 <a class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${category.id})}" th:text="#{label.list}"></a>

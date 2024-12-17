@@ -3,6 +3,7 @@ package com.kalgooksoo.cms.board.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kalgooksoo.cms.board.command.CreateArticleCommand;
+import com.kalgooksoo.cms.board.command.UpdateArticleCommand;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -75,9 +76,9 @@ public class Article extends BaseEntity {
         return article;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void update(UpdateArticleCommand command) {
+        this.title = command.getTitle();
+        this.content = command.getContent();
     }
 
     public void addReply(Reply reply) {

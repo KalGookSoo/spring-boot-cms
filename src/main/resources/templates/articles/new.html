@@ -10,29 +10,16 @@
         <title th:text="|#{entity.article} #{label.create}|"></title>
 
         <link rel="stylesheet" th:href="@{/css/attachment.css}"/>
-        <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
         <script th:src="@{/js/AttachmentManager.js}"></script>
-        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
         <script th:inline="javascript">
 
-            document.addEventListener('DOMContentLoaded', () => {
-                const Editor = toastui.Editor;
-                const initialValue = '';
-                const editor = new Editor({
-                    el: document.getElementById('editor'),
-                    height: 'auto',
-                    initialEditType: 'wysiwyg',
-                    initialValue: initialValue,
-                    previewStyle: 'vertical',
-                    usageStatistics: false
-                });
-
-                document.form.addEventListener('submit', e => {
+            document.addEventListener('DOMContentLoaded', e => {
+                const _document = e.target;
+                _document.form.addEventListener('submit', e => {
                     e.preventDefault();
                     const formData = new FormData(e.target);
-                    formData.append('content', editor.getHTML());
                     formData.delete('multipartFiles');// FormData Constructor에 form element를 삽입하면 input[type="file"]요소에 empty file이 하나 첨부되는 현상을 발견했다.
                     [...e.target.elements.multipartFiles.files].forEach(file => formData.append('multipartFiles', file));
                     const httpEntity = {
@@ -81,15 +68,14 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="editor" th:text="#{entity.article.content}"></label>
-                    <div id="editor"></div>
-                    <textarea id="content" class="form-control d-none" th:field="*{content}"></textarea>
+                    <label for="content" th:text="#{entity.article.content}"></label>
+                    <textarea id="content" class="form-control" th:field="*{content}"></textarea>
                     <span class="d-block invalid-feedback"></span>
                 </div>
 
                 <div class="d-flex justify-content-center p-3 mb-3 rounded">
                     <button type="submit" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
-                    <a type="button" class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
+                    <a class="btn btn-secondary mx-2" th:href="@{/articles/list(categoryId=${command.categoryId})}" th:text="#{label.list}"></a>
                 </div>
             </form>
 
