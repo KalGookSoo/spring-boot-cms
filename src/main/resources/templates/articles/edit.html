@@ -25,9 +25,28 @@
                 });
 
                 _document.addEventListener('click', e => {
-                    if (e.target.closest(`.attached`)) {
-                        debugger;
-                        // TODO fetch delete api
+                    const $attached = e.target.closest(`.attached`);
+                    if ($attached) {
+                        $attached.closest(`tr`).remove();
+                        const articleId = $attached.dataset.articleId;
+                        const attachmentId = $attached.dataset.attachmentId;
+                        const httpEntity = {
+                            method: 'delete',
+                            headers: {
+                                'content-type': 'application/json',
+                                'X-XSRF-TOKEN': _document.form._csrf.value
+                            }
+                        };
+
+                        fetch(`/api/articles/${articleId}/attachments/${attachmentId}`, httpEntity)
+                            .then(async response => {
+                                const responseBody = await response.text();
+                                if (response.ok) {
+                                    alert(/*[[#{command.success.delete}]]*/'');
+                                } else {
+                                    alert(responseBody);
+                                }
+                            });
                     }
                 });
 
