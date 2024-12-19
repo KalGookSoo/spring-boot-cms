@@ -15,21 +15,10 @@
 
             document.addEventListener('DOMContentLoaded', e => {
                 const _document = e.target;
-                const $tree = document.querySelectorAll(`.list-group details`);
                 const $nodeButtons = document.querySelectorAll(`.list-group details summary button`);
                 const $dialog = document.querySelector('dialog');
 
                 _document.addEventListener('click', e => {
-
-                    const $expandButton = e.target.closest(`button[name="expand"]`);
-                    if ($expandButton) {
-                        [...$tree].forEach(detail => detail.open = true);
-                    }
-
-                    const $collapseButton = e.target.closest(`button[name="collapse"]`);
-                    if ($collapseButton) {
-                        [...$tree].forEach(detail => detail.open = false);
-                    }
 
                     const $refreshButton = e.target.closest(`button[name="refresh"]`);
                     if ($refreshButton) {
@@ -177,11 +166,11 @@
             </div>
 
             <div>
-                <button type="button" name="expand" class="btn btn-outline-primary">➕</button>
-                <button type="button" name="collapse" class="btn btn-outline-primary">➖</button>
+                <button type="button" name="expand" class="btn btn-outline-primary" data-target-ref="categories">➕</button>
+                <button type="button" name="collapse" class="btn btn-outline-primary" data-target-ref="categories">➖</button>
             </div>
 
-            <div class="list-group" th:fragment="tree(categories)">
+            <div id="categories" class="list-group" th:fragment="tree(categories)">
                 <details class="list-group-item" th:each="category : ${categories}">
                     <summary>
                         <button type="button" class="btn"
