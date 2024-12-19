@@ -44,7 +44,7 @@
                 </tr>
                 <tr th:if="${!attachments.isEmpty()}" th:each="attachment, status : ${attachments}">
                     <td>
-                        <input type="number" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
+                        <input type="number" min="1" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
                     </td>
                     <td class="d-none">
                         <input type="text" class="form-control-plaintext" name="id" th:value="${attachment.id}" readonly>

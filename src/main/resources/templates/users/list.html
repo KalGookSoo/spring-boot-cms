@@ -59,7 +59,7 @@
                 <tbody>
                 <tr th:data-id="${user.id}" th:each="user, status : ${page.content}">
                     <td>
-                        <input type="number" class="form-control-plaintext" th:value="${status.index + 1}" readonly>
+                        <input type="number" min="1" class="form-control-plaintext" th:value="${status.index + 1}" readonly>
                     </td>
                     <td class="d-none">
                         <input type="text" class="form-control-plaintext" th:value="${user.id}" readonly>

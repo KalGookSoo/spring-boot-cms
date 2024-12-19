@@ -36,7 +36,7 @@
                     </tr>
                     <tr th:if="${!page.isEmpty()}" th:each="article, status : ${page.content}">
                         <td>
-                            <input type="number" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
+                            <input type="number" min="1" class="form-control-plaintext" name="index" th:value="${status.index + 1}" readonly>
                         </td>
                         <td class="d-none">
                             <input type="text" class="form-control-plaintext" name="id" th:value="${article.id}" readonly>
