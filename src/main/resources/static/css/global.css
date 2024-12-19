@@ -8,6 +8,6 @@ dialog {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-input:invalid {
+input:out-of-range {
     border: 1px solid red;
 }
