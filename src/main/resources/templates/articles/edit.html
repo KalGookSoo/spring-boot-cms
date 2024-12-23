@@ -47,7 +47,12 @@
                                     alert(responseBody);
                                 }
                             });
+                    } else if (e.target.closest(`[name="preview"]`)) {
+                        const $dialog = _document.getElementById('preview');
+                        $dialog.showModal();
+                        $dialog.innerHTML = `<pre>${_document.form.content.value}</pre>`;
                     }
+
                 });
 
                 const updateArticle = e => {
@@ -166,11 +171,13 @@
                 </table>
 
                 <div class="d-flex justify-content-center p-3 mb-3 rounded">
+                    <button type="button" name="preview" class="btn btn-secondary mx-2" th:text="#{label.preview}"></button>
                     <button type="submit" name="update" class="btn btn-primary mx-2" th:text="#{label.save}"></button>
                     <a class="btn btn-secondary mx-2" th:href="@{'/articles/' + ${article.id}}" th:text="#{label.cancel}"></a>
                     <button type="submit" name="delete" class="btn btn-danger mx-2" th:text="#{label.delete}"></button>
                 </div>
             </form>
+            <dialog id="preview"></dialog>
         </section>
     </body>
 </html>
