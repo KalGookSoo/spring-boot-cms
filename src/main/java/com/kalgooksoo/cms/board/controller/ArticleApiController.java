@@ -44,12 +44,12 @@ public class ArticleApiController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Article> put(
+    public ResponseEntity<Void> put(
             @PathVariable String id,
             @Valid UpdateArticleCommand command
     ) throws IOException {
-        Article article = articleService.update(id, command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(article);
+        articleService.update(id, command);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
     }
 
     @DeleteMapping("/{id}/attachments/{attachmentId}")
