@@ -9,6 +9,8 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -72,13 +74,13 @@ public class Article extends BaseEntity {
     public static Article create(CreateArticleCommand command) {
         Article article = new Article();
         article.title = command.getTitle();
-        article.content = command.getContent();
+        article.content = Jsoup.clean(command.getContent(), Safelist.relaxed());
         return article;
     }
 
     public void update(UpdateArticleCommand command) {
         this.title = command.getTitle();
-        this.content = command.getContent();
+        this.content = Jsoup.clean(command.getContent(), Safelist.relaxed());
     }
 
     public void addReply(Reply reply) {
