@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Getter
 @Setter
@@ -35,4 +36,17 @@ public abstract class PageVO {
     public Sort sort() {
         return Sort.by(Sort.Direction.fromString(sortDirection), sort);
     }
+
+    protected UriComponentsBuilder getUriComponentsBuilder() {
+        return UriComponentsBuilder.newInstance()
+                .queryParam("page", page)
+                .queryParam("size", size)
+                .queryParam("sort", sort)
+                .queryParam("sortDirection", sortDirection);
+    }
+
+    public String getUriString() {
+        return getUriComponentsBuilder().toUriString();
+    }
+
 }

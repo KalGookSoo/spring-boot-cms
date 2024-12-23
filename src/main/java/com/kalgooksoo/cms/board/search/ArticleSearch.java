@@ -42,4 +42,13 @@ public class ArticleSearch extends PageVO {
         return content == null || content.isEmpty();
     }
 
+    @Override
+    public String getUriString() {
+        return getUriComponentsBuilder()
+                .queryParam("categoryId", categoryId)
+                .queryParam("title", title)
+                .queryParam("content", content)
+                .toUriString();
+    }
+
 }
