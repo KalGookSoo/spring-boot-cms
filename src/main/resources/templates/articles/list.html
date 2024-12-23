@@ -70,7 +70,7 @@
                         <li class="page-item" th:classappend="${page.hasPrevious() ? '' : 'disabled'}">
                             <a class="page-link"
                                aria-label="Previous"
-                               th:href="@{${page.hasPrevious() ? '/articles?page=' + page.previousPageable.pageNumber : '#'}}"
+                               th:href="@{${page.hasPrevious() ? '/articles/list' + search.uriComponentsBuilder.replaceQueryParam('page', page.previousPageable.pageNumber) : '#'}}"
                             >
                                 <span>&laquo;</span>
                             </a>
@@ -78,12 +78,12 @@
                         <li class="page-item" th:each="pageIndex : ${#numbers.sequence(0, page.totalPages - 1)}"
                             th:classappend="${pageIndex == page.number ? 'active' : ''}"
                         >
-                            <a class="page-link" th:href="@{'/articles/list' + ${search.uriString}}" th:text="${pageIndex + 1}"></a>
+                            <a class="page-link" th:href="@{'/articles/list' + ${search.uriComponentsBuilder.toUriString()}}" th:text="${pageIndex + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${page.hasNext() ? '' : 'disabled'}">
                             <a class="page-link"
                                aria-label="Next"
-                               th:href="@{${page.hasNext() ? '/articles?page=' + page.nextPageable.pageNumber : '#'}}"
+                               th:href="@{${page.hasNext() ? '/articles/list' + search.uriComponentsBuilder.replaceQueryParam('page', page.nextPageable.pageNumber) : '#'}}"
                             >
                                 <span>&raquo;</span>
                             </a>

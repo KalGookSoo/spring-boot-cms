@@ -45,8 +45,4 @@ public abstract class PageVO {
                 .queryParam("sortDirection", sortDirection);
     }
 
-    public String getUriString() {
-        return getUriComponentsBuilder().toUriString();
-    }
-
 }

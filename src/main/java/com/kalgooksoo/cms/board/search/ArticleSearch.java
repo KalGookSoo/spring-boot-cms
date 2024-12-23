@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.Assert;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -43,12 +46,11 @@ public class ArticleSearch extends PageVO {
     }
 
     @Override
-    public String getUriString() {
-        return getUriComponentsBuilder()
-                .queryParam("categoryId", categoryId)
-                .queryParam("title", title)
-                .queryParam("content", content)
-                .toUriString();
+    public UriComponentsBuilder getUriComponentsBuilder() {
+        return super.getUriComponentsBuilder()
+                .queryParamIfPresent("categoryId", Optional.ofNullable(categoryId))
+                .queryParamIfPresent("title", Optional.ofNullable(title))
+                .queryParamIfPresent("content", Optional.ofNullable(content));
     }
 
 }
