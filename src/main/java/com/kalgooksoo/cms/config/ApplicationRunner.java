@@ -1,7 +1,7 @@
 package com.kalgooksoo.cms.config;
 
-import com.kalgooksoo.cms.user.command.CreateUserCommand;
-import com.kalgooksoo.cms.user.service.UserService;
+import com.kalgooksoo.cms.command.CreateUserCommand;
+import com.kalgooksoo.cms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

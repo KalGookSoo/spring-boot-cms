@@ -2,8 +2,8 @@ package com.kalgooksoo.cms.config;
 
 import com.kalgooksoo.cms.security.repository.RememberMeTokenRepository;
 import com.kalgooksoo.cms.security.service.JpaPersistentTokenRepository;
-import com.kalgooksoo.cms.user.repository.UserPrincipalRepository;
-import com.kalgooksoo.cms.user.service.DefaultUserDetailsService;
+import com.kalgooksoo.cms.repository.UserPrincipalRepository;
+import com.kalgooksoo.cms.service.DefaultUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
