@@ -10,6 +10,9 @@
                 <a th:href="@{/users/list}" th:text="|#{entity.user} #{label.list}|"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/authorities/list}" th:text="|#{entity.authority} #{label.list}|"></a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{/categories/list}" th:text="|#{entity.category} #{label.list}|"></a>
             </li>
             <li sec:authorize="hasRole('ROLE_ADMIN')">

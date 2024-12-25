@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,9 +36,11 @@ public class Authority implements Serializable {
     @Comment("식별자")
     private String id;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<User> users = new LinkedHashSet<>();
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<Menu> menus = new LinkedHashSet<>();
 

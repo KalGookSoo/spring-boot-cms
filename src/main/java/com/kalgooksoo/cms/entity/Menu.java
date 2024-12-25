@@ -52,6 +52,7 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
     @JsonManagedReference
     private List<Menu> children = new ArrayList<>();
 
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_menu_authority",

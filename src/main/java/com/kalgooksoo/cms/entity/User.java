@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -70,6 +71,7 @@ public class User implements Serializable {
     @Comment("연락처")
     private ContactNumber contactNumber;
 
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "tb_user_authority",
