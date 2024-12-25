@@ -6,6 +6,7 @@ import com.kalgooksoo.cms.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.entity.Authority;
 import com.kalgooksoo.cms.entity.User;
 import com.kalgooksoo.cms.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ import java.util.Set;
 /**
  * 계정 컨트롤러
  */
+@Tag(name = "UserController", description = "계정 컨트롤러")
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor

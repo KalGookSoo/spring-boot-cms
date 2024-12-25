@@ -1,5 +1,6 @@
 package com.kalgooksoo.cms.message;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
@@ -9,14 +10,15 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+@Tag(name = "MessageApiController", description = "메세지 API 컨트롤러")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/messages")
 @RequiredArgsConstructor
-public class MessageRestController {
+public class MessageApiController {
 
     private final CmsMessageSource messageSource;
 
-    @GetMapping("/messages")
+    @GetMapping
     public ResponseEntity<Map<String, String>> getAllMessages() {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", LocaleContextHolder.getLocale());
         Map<String, String> messages = resourceBundle.keySet()
@@ -25,7 +27,7 @@ public class MessageRestController {
         return ResponseEntity.ok(messages);
     }
 
-    @GetMapping("/messages/{code}")
+    @GetMapping("/{code}")
     public ResponseEntity<String> getMessageByCode(@PathVariable String code, @RequestParam(required = false) String[] args) {
         String message = messageSource.getMessage(code, args);
         return ResponseEntity.ok(message);

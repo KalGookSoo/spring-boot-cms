@@ -11,7 +11,6 @@
         <title th:text="|#{entity.category} #{label.list}|"></title>
 
         <script th:inline="javascript">
-            const contextPath = /* [[@{/}]] */'';
 
             document.addEventListener('DOMContentLoaded', e => {
                 const _document = e.target;
@@ -53,7 +52,7 @@
                             }
                         };
 
-                        fetch(`${contextPath}/api/categories/${$deleteButton.dataset.id}`, httpEntity)
+                        fetch(`/api/categories/${$deleteButton.dataset.id}`, httpEntity)
                             .then(async response => {
                                 const responseBody = await response.text();
                                 if (response.ok) {
@@ -95,7 +94,7 @@
                         body: JSON.stringify(payload)
                     };
 
-                    fetch(`${contextPath}/api/categories`, httpEntity)
+                    fetch(`/api/categories`, httpEntity)
                         .then(async response => {
                             const responseBody = await response.text();
                             if (response.status === 201) {
@@ -137,7 +136,7 @@
                         body: JSON.stringify(payload)
                     };
 
-                    fetch(`${contextPath}/api/categories/${payload.id}`, httpEntity)
+                    fetch(`/api/categories/${payload.id}`, httpEntity)
                         .then(async response => {
                             const responseBody = await response.text();
                             if (response.status === 202) {
