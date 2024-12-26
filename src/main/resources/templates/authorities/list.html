@@ -33,7 +33,6 @@
                 const response = await responsePromise;
                 const data = await response.json();
                 const grid = new Grid($grid, data, columns, options);
-                grid.build();
             });
         </script>
     </head>
@@ -41,32 +40,7 @@
     <body layout:fragment="content">
         <section class="flex-grow-1 p-3">
             <form name="form">
-                <table id="grid" class="table table-hover border"><!--
-                    <thead>
-                    <tr>
-                        <th>checkbox</th>
-                        <th>index</th>
-                        <th class="d-none" th:text="|#{entity.authority} #{entity.id}|"></th>
-                        <th th:text="#{entity.name}"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="authority : ${authorities}" th:data-id="${authority.id}">
-                        <td>
-                            <input type="checkbox" class="form-control-plaintext">
-                        </td>
-                        <td>
-                            <input type="number" min="1" class="form-control-plaintext" th:value="${authorityStat.index + 1}" readonly>
-                        </td>
-                        <td class="d-none">
-                            <input type="text" class="form-control-plaintext" th:value="${authority.id}" readonly>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control-plaintext" th:value="${authority.name}" readonly>
-                        </td>
-                    </tr>
-                    </tbody>
-                --></table>
+                <table id="grid" class="table table-hover border"></table>
             </form>
         </section>
     </body>

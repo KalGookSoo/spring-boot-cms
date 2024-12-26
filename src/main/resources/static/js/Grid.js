@@ -9,9 +9,6 @@ class Grid {
         this.columns = columns;
         this.events = {};
 
-        this.rootElement.addEventListener('click', (e) => this.clickHandler(e));
-        this.rootElement.addEventListener('contextmenu', (e) => this.contextMenuHandler(e));
-
         this.options = {
             hasCheckbox: options.hasCheckbox || false,
             hasIndex: options.hasIndex || false,
@@ -25,43 +22,53 @@ class Grid {
             hasColumnSort: options.hasColumnSort || false,
         };
 
+        this.build();
+        this.resetMatrix();
+        this.contextMenu = this.createContextMenu();
 
+        this.rootElement.addEventListener('click', (e) => this.clickHandler(e));
+        this.rootElement.addEventListener('contextmenu', (e) => this.contextMenuHandler(e));
     }
 
     clickHandler(e) {
         const $cell = e.target.closest(`th, td`);
         if ($cell) {
             const $row = $cell.closest(`tbody tr`);
-            const id = $row.dataset.id;
-            if (!!id) {
-                this.emit('lastCheck', id);
-            }
-            const row = $row.dataset.row;
-            const column = $cell.dataset.col;
-            this.emit('click', row, column, this.getCellValue(row, column));
+            const rowIndex = $row.dataset.rowIndex;
+            const colIndex = $cell.dataset.colIndex;
+            this.emit('click', rowIndex, colIndex, this.getCellValue(rowIndex, colIndex));
         }
+
+        this.handleContextMenuBackdropClick(e);
     }
 
     contextMenuHandler(e) {
-
+        e.preventDefault();
+        this.contextMenu.style.left = `${e.clientX}px`;
+        this.contextMenu.style.top = `${e.clientY}px`;
+        this.openContextMenu();
     }
 
-    getCellValue(row, column) {
-        const $row = this.rootElement.querySelectorAll(`tbody tr`)[row];
-        const $cell = $row.querySelectorAll(`th, td`)[column];
-        return $cell.dataset.form === 'td' ? $cell.querySelector(`span`).textContent : this.columns[column].header;
+    getCellValue(rowIndex, colIndex) {
+        const $row = this.rootElement.querySelectorAll(`tbody tr`)[rowIndex];
+        const $cell = $row.querySelectorAll(`th, td`)[colIndex];
+        return $cell.localName === 'th' || $cell.localName === 'td' ? $cell.querySelector(`input`).value : this.columns[colIndex].header;
     }
 
     getCellValueByColumn(columnName) {
-        return this.getCellValue(row, this.getColumnIndex(columnName));
+
     }
 
     getColumnIndex(columnName) {
         return this.columns.findIndex(column => column.name === columnName);
     }
 
-    getActiveRows() {
-        return this.rootElement.querySelectorAll(`tbody tr.active`);
+    getCheckedRows() {
+
+    }
+
+    getCheckedRowIndexes() {
+
     }
 
     /**
@@ -102,9 +109,6 @@ class Grid {
     }
 
     build() {
-        // createHeaders();
-        // createBodies();
-
         // Create Table header
         this.rootElement.createTHead();
         const headerRow = this.rootElement.tHead.insertRow();
@@ -159,20 +163,53 @@ class Grid {
         });
 
         this.rootElement.createTFoot();
-        this.calculateCoordinates();
+
     }
 
-    calculateCoordinates() {
-        const $rows = this.rootElement.querySelectorAll(`tbody tr`);
-        $rows.forEach(($row, index) => {
-            $row.dataset.row = index;
+    resetMatrix() {
+        const rows = this.rootElement.querySelectorAll(`tbody tr`);
+        rows.forEach((row, index) => {
+            row.dataset.rowIndex = index;
 
-            const $columns = $row.querySelectorAll(`th, td`);
-            $columns.forEach(($column, index) => {
-                $column.dataset.col = index;
+            const columns = row.querySelectorAll(`th, td`);
+            columns.forEach((column, index) => {
+                let offset = 0;
+                if (this.options.hasCheckbox) {
+                    offset++;
+                }
+                if (this.options.hasIndex) {
+                    offset++;
+                }
+                column.dataset.colIndex = index;
             });
         });
     }
 
+    createContextMenu() {
+        const dialog = document.createElement('dialog');
+        dialog.classList.add('grid-context-menu');
+        const ul = `
+            <ul class="list-group">
+                <li class="list-group-item"><button type="button" class="btn" name="add">추가</button></li>
+                <li class="list-group-item"><button type="button" class="btn" name="delete">삭제</button></li>
+                <li class="list-group-item"><button type="button" class="btn" name="save">저장</button></li>
+            </ul>
+        `;
+        dialog.insertAdjacentHTML('beforeend', ul);
+        this.rootElement.appendChild(dialog);
+        return dialog;
+    }
+
+    openContextMenu() {
+        this.contextMenu.showModal();
+    }
+
+    handleContextMenuBackdropClick(e) {
+        e.target === this.contextMenu && this.closeContextMenu();
+    }
+
+    closeContextMenu() {
+        this.contextMenu.close();
+    }
 
 }
