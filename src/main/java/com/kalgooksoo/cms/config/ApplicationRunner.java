@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.config;
 
 import com.kalgooksoo.cms.command.CreateUserCommand;
+import com.kalgooksoo.cms.service.AuthorityService;
 import com.kalgooksoo.cms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +22,11 @@ public class ApplicationRunner implements CommandLineRunner, ApplicationListener
 
     private final UserService userService;
 
-    public ApplicationRunner(UserService userService) {
+    private final AuthorityService authorityService;
+
+    public ApplicationRunner(UserService userService, AuthorityService authorityService) {
         this.userService = userService;
+        this.authorityService = authorityService;
     }
 
     @Override
