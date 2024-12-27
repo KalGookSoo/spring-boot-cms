@@ -1,9 +1,6 @@
 class Grid {
 
     constructor(rootElement, models, columns, options = {}) {
-        if (!this.rootElement instanceof HTMLTableElement) {
-            throw new Error('rootElement must be an instance of HTMLTableElement');
-        }
         this.rootElement = rootElement;
         this.models = models;
         this.columns = columns;
@@ -19,7 +16,7 @@ class Grid {
             hasFilter: options.hasFilter || false,
             hasPagination: options.hasPagination || false,
             hasColumnFilter: options.hasColumnFilter || false,
-            hasColumnSort: options.hasColumnSort || false,
+            hasColumnSort: options.hasColumnSort || false
         };
 
         this.build();
@@ -28,6 +25,37 @@ class Grid {
 
         this.rootElement.addEventListener('click', (e) => this.clickHandler(e));
         this.rootElement.addEventListener('contextmenu', (e) => this.contextMenuHandler(e));
+        
+        this.rootElement.addEventListener('input', (e) => {
+            const $input = e.target.closest('input');
+            if ($input) {
+                const previousValue = $input.dataset.previousValue || '';
+                const currentValue = $input.value;
+
+                if (previousValue !== currentValue) {
+                    this.emit('valueChanged', $input, previousValue, currentValue);
+                }
+
+                // Update the previous value attribute
+                $input.dataset.previousValue = currentValue;
+            }
+        });
+
+
+        this.rootElement.addEventListener('change', (e) => {
+            const $input = e.target.closest('select, textarea');
+            if ($input) {
+                const previousValue = $input.dataset.previousValue || '';
+                const currentValue = $input.value;
+
+                if (previousValue !== currentValue) {
+                    this.emit('valueChanged', $input, previousValue, currentValue);
+                }
+
+                // Update the previous value attribute
+                $input.dataset.previousValue = currentValue;
+            }
+        });
     }
 
     clickHandler(e) {
@@ -64,10 +92,25 @@ class Grid {
     }
 
     getCheckedRows() {
+        const inputs = this.rootElement.querySelectorAll(`tbody tr input[name="checked"]:checked`);
+        return [...inputs].map(input => input.closest('tr'));
+    }
 
+    getCheckedModels(identifier) {
+        const checkedRows = this.getCheckedRows();
+        const identifiers = checkedRows.map(row => row.querySelector(`[name="${identifier}"]`).value);
+        return this.models.filter(model => identifiers.includes(model[identifier]));
     }
 
     getCheckedRowIndexes() {
+        this.getCreatedRows().map(row => row.dataset.rowIndex);
+    }
+
+    getCreatedRows() {
+
+    }
+
+    getUpdatedRows() {
 
     }
 
@@ -112,9 +155,13 @@ class Grid {
         // Create Table header
         this.rootElement.createTHead();
         const headerRow = this.rootElement.tHead.insertRow();
+
+        const th = headerRow.insertCell();
+        th.textContent = 'Action';
+
         if (this.options.hasCheckbox) {
             const th = headerRow.insertCell();
-            const checkbox = `<input type="checkbox" name="all">`;
+            const checkbox = `<input type="checkbox" class="form-check-input" name="all">`;
             th.insertAdjacentHTML('beforeend', checkbox);
         }
 
@@ -135,9 +182,20 @@ class Grid {
         const tbody = this.rootElement.tBodies[0];
         this.models.forEach((model, index) => {
             const tr = tbody.insertRow();
+
+            const td = tr.insertCell();
+            td.innerHTML = `
+                <select name="action" class="form-select" disabled>
+                    <option value="C">생성</option>
+                    <option value="R" selected>읽기</option>
+                    <option value="U">수정</option>
+                    <option value="D">삭제</option>
+                </select>
+            `;
+
             if (this.options.hasCheckbox) {
                 const td = tr.insertCell();
-                const checkbox = `<input type="checkbox" name="">`;
+                const checkbox = `<input type="checkbox" class="form-check-input" name="checked">`;
                 td.insertAdjacentHTML('beforeend', checkbox);
             }
 
@@ -210,6 +268,45 @@ class Grid {
 
     closeContextMenu() {
         this.contextMenu.close();
+    }
+
+    addRow(index = 0) {
+        // this.columns를 순회하여 row를 구성한다.
+        const tr = this.rootElement.tBodies[0].insertRow(index);
+        if (this.options.hasCheckbox) {
+            const td = tr.insertCell();
+            const checkbox = `<input type="checkbox" class="form-check-input" name="checked">`;
+            td.insertAdjacentHTML('beforeend', checkbox);
+        }
+
+        if (this.options.hasIndex) {
+            const td = tr.insertCell();
+            const input = `<input type="number" min="1" class="form-control-plaintext" readonly>`;
+            td.insertAdjacentHTML('beforeend', input);
+        }
+
+        this.columns.forEach(column => {
+            const td = tr.insertCell();
+            if (column.hidden) {
+                td.classList.add('d-none');
+            }
+            const input = document.createElement('input');
+            input.type = column.type;
+            input.name = column.name;
+            const formControlStyle = column.editable ? 'form-control' : 'form-control-plaintext';
+            input.classList.add(formControlStyle);
+            td.appendChild(input);
+        });
+        this.resetMatrix();
+    }
+
+    getCreatedRows() {
+        return undefined;
+    }
+
+
+    getUpdatedRows() {
+        return undefined;
     }
 
 }

@@ -10,12 +10,22 @@
     <head>
         <title th:text="|#{entity.authority} #{label.list}|"></title>
 
+        <style>
+            #grid {
+                width: 100%;
+                height: 200px;
+                overflow: auto;
+            }
+        </style>
+
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', async e => {
+                const _document = e.target;
                 const $grid = document.getElementById('grid');
                 const columns = [
                     {name: 'id', header: /*[[#{entity.id}]]*/'', type: 'text', hidden: true, editable: false},
-                    {name: 'name', header: /*[[#{entity.name}]]*/'', type: 'text', hidden: false, editable: false}
+                    {name: 'name', header: /*[[#{entity.name}]]*/'', type: 'text', hidden: false, editable: true},
+                    {name: 'alias', header: /*[[#{entity.alias}]]*/'', type: 'text', hidden: false, editable: true}
                 ];
                 const options = {
                     hasCheckbox: true,
@@ -33,13 +43,52 @@
                 const response = await responsePromise;
                 const data = await response.json();
                 const grid = new Grid($grid, data, columns, options);
+
+                _document.addEventListener('click', e => {
+                    if (e.target.closest(`[name="create"]`)) {
+                        grid.addRow();
+
+                    } else if (e.target.closest(`[name="save"]`)) {
+                        debugger;
+                        const createdRows = grid.getCreatedRows();
+                        const updatedRows = grid.getUpdatedRows();
+
+                    } else if (e.target.closest(`[name="delete"]`)) {
+                        const checkedRows = grid.getCheckedRows();
+                        const ids = checkedRows.map(row => row.querySelector(`[name="id"]`).value);
+
+                        const httpEntity = {
+                            method: 'delete',
+                            headers: {
+                                'content-type': 'application/json',
+                                'X-XSRF-TOKEN': _document.grid._csrf.value
+                            },
+                            body: JSON.stringify(ids)
+                        };
+
+                        fetch(`/api/authorities`, httpEntity)
+                            .then(async response => {
+                                const responseBody = await response.text();
+                                if (response.ok) {
+                                    alert(responseBody);
+                                } else {
+                                    alert(responseBody);
+                                }
+                            });
+                    }
+                });
             });
         </script>
     </head>
 
     <body layout:fragment="content">
         <section class="flex-grow-1 p-3">
-            <form name="form">
+            <div>
+                <button type="button" name="create" class="btn btn-outline-primary" th:text="#{label.create}"></button>
+                <button type="button" name="save" class="btn btn-primary" th:text="#{label.save}"></button>
+                <button type="button" name="delete" class="btn btn-danger" th:text="#{label.delete}"></button>
+            </div>
+            <form name="form" th:method="post">
                 <table id="grid" class="table table-hover border"></table>
             </form>
         </section>

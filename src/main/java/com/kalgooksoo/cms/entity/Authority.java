@@ -1,6 +1,7 @@
 package com.kalgooksoo.cms.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.kalgooksoo.cms.command.AuthoritySaveCommand;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,6 +37,12 @@ public class Authority implements Serializable {
     @Comment("식별자")
     private String id;
 
+    @Comment("이름")
+    private String name;
+
+    @Comment("별칭")
+    private String alias;
+
     @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<User> users = new LinkedHashSet<>();
@@ -43,9 +50,6 @@ public class Authority implements Serializable {
     @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<Menu> menus = new LinkedHashSet<>();
-
-    @Comment("이름")
-    private String name;
 
     private Authority(String name, User user) {
         this.name = name;
@@ -63,6 +67,21 @@ public class Authority implements Serializable {
             throw new IllegalArgumentException("name must start with 'ROLE_'\n name: " + name);
         }
         return new Authority(name, user);
+    }
+
+    public static Authority create(AuthoritySaveCommand command) {
+        if (!command.getName().startsWith("ROLE_")) {
+            throw new IllegalArgumentException("name must start with 'ROLE_'\n name: " + command.getName());
+        }
+        Authority authority = new Authority();
+        authority.name = command.getName();
+        authority.alias = command.getAlias();
+        return authority;
+    }
+
+    public void update(AuthoritySaveCommand command) {
+        this.name = command.getName();
+        this.alias = command.getAlias();
     }
 
 }
