@@ -273,6 +273,17 @@ class Grid {
     addRow(index = 0) {
         // this.columns를 순회하여 row를 구성한다.
         const tr = this.rootElement.tBodies[0].insertRow(index);
+
+        const td = tr.insertCell();
+        td.innerHTML = `
+                <select name="action" class="form-select" disabled>
+                    <option value="C" selected>생성</option>
+                    <option value="R">읽기</option>
+                    <option value="U">수정</option>
+                    <option value="D">삭제</option>
+                </select>
+            `;
+
         if (this.options.hasCheckbox) {
             const td = tr.insertCell();
             const checkbox = `<input type="checkbox" class="form-check-input" name="checked">`;
