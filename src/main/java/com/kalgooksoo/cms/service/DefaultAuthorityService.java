@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -27,12 +28,11 @@ public class DefaultAuthorityService implements AuthorityService {
     @Override
     public void saveAll(List<AuthoritySaveCommand> commands) {
         // 생성 목록
-        List<AuthoritySaveCommand> createCommands = commands.stream()
+        List<Authority> authorities = new ArrayList<>();
+        commands.stream()
                 .filter(command -> command.getId() == null)
-                .toList();
-        List<Authority> authorities = createCommands.stream()
                 .map(Authority::create)
-                .toList();
+                .forEach(authorities::add);
 
         // 수정 목록
         List<AuthoritySaveCommand> updateCommands = commands.stream()
@@ -44,13 +44,11 @@ public class DefaultAuthorityService implements AuthorityService {
         Map<String, Authority> foundAuthorities = authorityRepository.findAllById(ids)
                 .stream()
                 .collect(Collectors.toMap(Authority::getId, Function.identity()));
-        updateCommands.stream()
-                .map(command -> {
-                    Authority authority = foundAuthorities.get(command.getId());
-                    authority.update(command);
-                    return authority;
-                })
-                .forEach(authorities::add);
+        for (AuthoritySaveCommand updateCommand : updateCommands) {
+            Authority authority = foundAuthorities.get(updateCommand.getId());
+            authority.update(updateCommand);
+            authorities.add(authority);
+        }
 
         authorityRepository.saveAll(authorities);
     }

@@ -25,13 +25,13 @@ public class ExampleService {
 
         for(CommandWrapper<Command<String>> commandWrapper : commandWrappers) {
             switch (commandWrapper.type()) {
-                case CREATE:
+                case C:
                     commandsByCreate.add(commandWrapper.command());
                     break;
-                case UPDATE:
+                case U:
                     commandsByUpdate.add(commandWrapper.command());
                     break;
-                case DELETE:
+                case D:
                     // Assuming payload ID is fetchable via getId()
                     commandsByDelete.add(commandWrapper.command().getId());
                     break;

@@ -1,12 +1,14 @@
 package com.kalgooksoo.cms.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.kalgooksoo.cms.command.AuthoritySaveCommand;
 import com.kalgooksoo.cms.entity.Authority;
 import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.service.AuthorityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,18 +29,20 @@ public class AuthorityApiController {
         return ResponseEntity.ok(authorities);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody JsonNode jsonNode) {
-        System.out.println(jsonNode);
-//        authorityService.saveAll(null);
+    public ResponseEntity<String> post(@RequestBody List<@Valid AuthoritySaveCommand> commands) {
+        System.out.println(commands);
+        authorityService.saveAll(commands);
         String message = messageSource.getMessage("command.success.save");
         return ResponseEntity.ok(message);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping
-    public ResponseEntity<String> delete(@RequestBody JsonNode jsonNode) {
-        System.out.println(jsonNode);
-//        authorityService.deleteAll(null);
+    public ResponseEntity<String> delete(@RequestBody List<String> ids) {
+        System.out.println(ids);
+        authorityService.deleteAll(null);
         String message = messageSource.getMessage("command.success.delete");
         return ResponseEntity.ok(message);
     }

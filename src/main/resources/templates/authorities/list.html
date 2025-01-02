@@ -39,7 +39,7 @@
                     hasColumnFilter: true,
                     hasColumnSort: true,
                 }
-                const responsePromise = fetch(`/api/authorities`);
+                const responsePromise = fetch(_document.form.action);
                 const response = await responsePromise;
                 const data = await response.json();
                 const grid = new Grid($grid, data, columns, options);
@@ -49,24 +49,43 @@
                         grid.addRow();
 
                     } else if (e.target.closest(`[name="save"]`)) {
-                        debugger;
-                        const createdRows = grid.getCreatedRows();
-                        const updatedRows = grid.getUpdatedRows();
+                        const models = [...grid.getModelsByAction('C'), ...grid.getModelsByAction('U')];
+
+                        const httpEntity = {
+                            method: 'post',
+                            headers: {
+                                'content-type': 'application/json',
+                                'X-XSRF-TOKEN': _document.form._csrf.value
+                            },
+                            body: JSON.stringify(models)
+                        };
+
+                        fetch(_document.form.action, httpEntity)
+                            .then(async response => {
+                                const responseBody = await response.text();
+                                if (response.ok) {
+                                    alert(responseBody);
+                                } else {
+                                    alert(responseBody);
+                                }
+                            });
+
 
                     } else if (e.target.closest(`[name="delete"]`)) {
-                        const checkedRows = grid.getCheckedRows();
-                        const ids = checkedRows.map(row => row.querySelector(`[name="id"]`).value);
+                        // const models = grid.getModelsByAction('D');
+                        const models = grid.getModelsByChecked(true);
+                        const ids = models.map(model => model.id);
 
                         const httpEntity = {
                             method: 'delete',
                             headers: {
                                 'content-type': 'application/json',
-                                'X-XSRF-TOKEN': _document.grid._csrf.value
+                                'X-XSRF-TOKEN': _document.form._csrf.value
                             },
                             body: JSON.stringify(ids)
                         };
 
-                        fetch(`/api/authorities`, httpEntity)
+                        fetch(_document.form.action, httpEntity)
                             .then(async response => {
                                 const responseBody = await response.text();
                                 if (response.ok) {
@@ -88,7 +107,7 @@
                 <button type="button" name="save" class="btn btn-primary" th:text="#{label.save}"></button>
                 <button type="button" name="delete" class="btn btn-danger" th:text="#{label.delete}"></button>
             </div>
-            <form name="form" th:method="post">
+            <form name="form" th:action="@{/api/authorities}" th:method="post">
                 <table id="grid" class="table table-hover border"></table>
             </form>
         </section>

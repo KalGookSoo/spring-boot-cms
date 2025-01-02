@@ -41,7 +41,6 @@ class Grid {
             }
         });
 
-
         this.rootElement.addEventListener('change', (e) => {
             const $input = e.target.closest('select, textarea');
             if ($input) {
@@ -81,37 +80,6 @@ class Grid {
         const $row = this.rootElement.querySelectorAll(`tbody tr`)[rowIndex];
         const $cell = $row.querySelectorAll(`th, td`)[colIndex];
         return $cell.localName === 'th' || $cell.localName === 'td' ? $cell.querySelector(`input`).value : this.columns[colIndex].header;
-    }
-
-    getCellValueByColumn(columnName) {
-
-    }
-
-    getColumnIndex(columnName) {
-        return this.columns.findIndex(column => column.name === columnName);
-    }
-
-    getCheckedRows() {
-        const inputs = this.rootElement.querySelectorAll(`tbody tr input[name="checked"]:checked`);
-        return [...inputs].map(input => input.closest('tr'));
-    }
-
-    getCheckedModels(identifier) {
-        const checkedRows = this.getCheckedRows();
-        const identifiers = checkedRows.map(row => row.querySelector(`[name="${identifier}"]`).value);
-        return this.models.filter(model => identifiers.includes(model[identifier]));
-    }
-
-    getCheckedRowIndexes() {
-        this.getCreatedRows().map(row => row.dataset.rowIndex);
-    }
-
-    getCreatedRows() {
-
-    }
-
-    getUpdatedRows() {
-
     }
 
     /**
@@ -185,7 +153,7 @@ class Grid {
 
             const td = tr.insertCell();
             td.innerHTML = `
-                <select name="action" class="form-select" disabled>
+                <select name="_action" class="form-select" disabled>
                     <option value="C">생성</option>
                     <option value="R" selected>읽기</option>
                     <option value="U">수정</option>
@@ -195,13 +163,13 @@ class Grid {
 
             if (this.options.hasCheckbox) {
                 const td = tr.insertCell();
-                const checkbox = `<input type="checkbox" class="form-check-input" name="checked">`;
+                const checkbox = `<input type="checkbox" class="form-check-input" name="_checked">`;
                 td.insertAdjacentHTML('beforeend', checkbox);
             }
 
             if (this.options.hasIndex) {
                 const td = tr.insertCell();
-                const input = `<input type="number" min="1" class="form-control-plaintext" value="${index + 1}" readonly>`;
+                const input = `<input type="number" min="1" class="form-control-plaintext" name="_sequence" value="${index + 1}" readonly>`;
                 td.insertAdjacentHTML('beforeend', input);
             }
 
@@ -276,7 +244,7 @@ class Grid {
 
         const td = tr.insertCell();
         td.innerHTML = `
-                <select name="action" class="form-select" disabled>
+                <select name="_action" class="form-select" disabled>
                     <option value="C" selected>생성</option>
                     <option value="R">읽기</option>
                     <option value="U">수정</option>
@@ -286,13 +254,13 @@ class Grid {
 
         if (this.options.hasCheckbox) {
             const td = tr.insertCell();
-            const checkbox = `<input type="checkbox" class="form-check-input" name="checked">`;
+            const checkbox = `<input type="checkbox" class="form-check-input" name="_checked">`;
             td.insertAdjacentHTML('beforeend', checkbox);
         }
 
         if (this.options.hasIndex) {
             const td = tr.insertCell();
-            const input = `<input type="number" min="1" class="form-control-plaintext" readonly>`;
+            const input = `<input type="number" min="1" class="form-control-plaintext" name="_sequence" readonly>`;
             td.insertAdjacentHTML('beforeend', input);
         }
 
@@ -311,13 +279,35 @@ class Grid {
         this.resetMatrix();
     }
 
-    getCreatedRows() {
-        return undefined;
+    getRowsByAction(action) {
+        const selectElements = this.rootElement.querySelectorAll(`tbody tr select[name="_action"]`);
+        return [...selectElements].filter(select => select.value === action).map(select => select.closest('tr'));
     }
 
+    getModelsByAction(action) {
+        const rowsByAction = this.getRowsByAction(action);
+        return rowsByAction.map(row => {
+            return [...row.querySelectorAll('input, select, textarea')].reduce((acc, element) => {
+                acc[element.name] = element.value;
+                return acc;
+            }, {});
+        });
+    }
 
-    getUpdatedRows() {
-        return undefined;
+    getModelsByChecked(checked) {
+        const inputs = this.rootElement.querySelectorAll(`tbody tr input[name="_checked"]`);
+        return [...inputs].filter(input => input.checked === checked)
+            .map(input => {
+                const tr = input.closest('tr');
+                return [...tr.querySelectorAll('input, select, textarea')].reduce((acc, element) => {
+                    acc[element.name] = element.value;
+                    return acc;
+                }, {});
+            });
+    }
+
+    getModels(tr) {
+
     }
 
 }

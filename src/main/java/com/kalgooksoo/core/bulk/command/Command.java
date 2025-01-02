@@ -1,5 +1,12 @@
 package com.kalgooksoo.core.bulk.command;
 
-public interface Command<ID> {
-    ID getId();
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public abstract class Command<ID> {
+    private CommandType _action;
+    private Long _sequence;
+    public abstract ID getId();
 }
