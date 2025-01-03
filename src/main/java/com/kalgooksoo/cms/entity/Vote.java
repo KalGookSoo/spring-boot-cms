@@ -1,10 +1,7 @@
 package com.kalgooksoo.cms.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -19,6 +16,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = true, exclude = {"articles", "replies"})
+@ToString(callSuper = true, exclude = {"articles", "replies"})
 
 @Entity
 @Table(name = "tb_vote")

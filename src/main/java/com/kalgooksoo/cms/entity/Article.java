@@ -23,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(callSuper = true, exclude = {"category", "replies", "views", "attachments", "votes"})
-@ToString(exclude = {"category", "replies", "views", "attachments", "votes"})
+@ToString(callSuper = true, exclude = {"category", "replies", "views", "attachments", "votes"})
 
 @Entity
 @Table(name = "tb_article")
