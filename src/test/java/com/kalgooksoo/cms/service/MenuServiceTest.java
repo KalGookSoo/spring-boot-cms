@@ -56,16 +56,16 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성 - 메뉴 & 부모 메뉴 반환")
     void createShouldReturnMenuWithParent() {
         // Given
-        CreateMenuCommand createParentMenuCommand = new CreateMenuCommand(null, "메뉴", "/", 1);
-        Menu createdParentMenu = menuService.create(createParentMenuCommand);
-        CreateMenuCommand createMenuCommand = new CreateMenuCommand(createdParentMenu.getId(), "메뉴", "/", 1);
+        CreateMenuCommand parentCommand = new CreateMenuCommand(null, "메뉴", "/", 1);
+        Menu parent = menuService.create(parentCommand);
+        CreateMenuCommand childCommand = new CreateMenuCommand(parent.getId(), "메뉴", "/", 1);
 
         // When
-        Menu createdMenu = menuService.create(createMenuCommand);
+        Menu createdMenu = menuService.create(childCommand);
         entityManager.flush();
 
         // Then
-        assertEquals(createdParentMenu, createdMenu);
+        assertEquals(parent, createdMenu.getParent());
     }
 
     @Test
