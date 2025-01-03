@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter(AccessLevel.PROTECTED)
+@ToString
 public class BaseEntity implements Serializable {
 
     @Id
