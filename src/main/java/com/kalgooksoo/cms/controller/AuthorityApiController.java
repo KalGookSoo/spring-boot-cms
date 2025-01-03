@@ -32,7 +32,6 @@ public class AuthorityApiController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping
     public ResponseEntity<String> post(@RequestBody List<@Valid AuthoritySaveCommand> commands) {
-        System.out.println(commands);
         authorityService.saveAll(commands);
         String message = messageSource.getMessage("command.success.save");
         return ResponseEntity.ok(message);
@@ -41,8 +40,7 @@ public class AuthorityApiController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping
     public ResponseEntity<String> delete(@RequestBody List<String> ids) {
-        System.out.println(ids);
-        authorityService.deleteAll(null);
+        authorityService.deleteAll(ids);
         String message = messageSource.getMessage("command.success.delete");
         return ResponseEntity.ok(message);
     }
