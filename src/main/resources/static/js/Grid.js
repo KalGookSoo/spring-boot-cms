@@ -23,36 +23,22 @@ class Grid {
         this.resetMatrix();
         this.contextMenu = this.createContextMenu();
 
-        this.rootElement.addEventListener('click', (e) => this.clickHandler(e));
-        this.rootElement.addEventListener('contextmenu', (e) => this.contextMenuHandler(e));
+        this.rootElement.addEventListener('click', e => this.clickHandler(e));
+        this.rootElement.addEventListener('contextmenu', e => this.contextMenuHandler(e));
         
-        this.rootElement.addEventListener('input', (e) => {
-            const $input = e.target.closest('input');
-            if ($input) {
-                const previousValue = $input.dataset.previousValue || '';
-                const currentValue = $input.value;
+        this.rootElement.addEventListener('input', e => {
 
-                if (previousValue !== currentValue) {
-                    this.emit('valueChanged', $input, previousValue, currentValue);
-                }
-
-                // Update the previous value attribute
-                $input.dataset.previousValue = currentValue;
-            }
         });
 
-        this.rootElement.addEventListener('change', (e) => {
-            const $input = e.target.closest('select, textarea');
-            if ($input) {
-                const previousValue = $input.dataset.previousValue || '';
-                const currentValue = $input.value;
-
-                if (previousValue !== currentValue) {
-                    this.emit('valueChanged', $input, previousValue, currentValue);
+        this.rootElement.addEventListener('change', e => {
+            const $input = e.target.closest('input, select, textarea');
+            const span = $input.parentElement.querySelector(`.original-value`);
+            if (span) {
+                const originalValue = span.textContent;
+                if (e.target.value !== originalValue) {// TODO text type이 아닌 number, datetime-local 과 같은 경우 e.target.value의 타입을 확인하고 검증해볼 것
+                    this.emit('change', $input, originalValue, e.target.value);
+                    e.target.closest(`[name="_action"]`).value = 'U';
                 }
-
-                // Update the previous value attribute
-                $input.dataset.previousValue = currentValue;
             }
         });
     }
@@ -184,7 +170,13 @@ class Grid {
                 input.value = model[column.name];
                 const formControlStyle = column.editable ? 'form-control' : 'form-control-plaintext';
                 input.classList.add(formControlStyle);
+                // input.classList.add('d-none');
+                const span = document.createElement('span');
+                span.classList.add('form-control-plaintext', 'd-none', 'original-value');
+                span.textContent = model[column.name];
+
                 td.appendChild(input);
+                td.appendChild(span);
             });
         });
 
