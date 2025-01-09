@@ -4,7 +4,6 @@ import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -16,7 +15,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Embeddable
 @Getter
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor(access = PROTECTED)
 public class ContactNumber implements Serializable {
 
@@ -25,14 +23,6 @@ public class ContactNumber implements Serializable {
     private String middle;
 
     private String last;
-
-    /**
-     * 연락처 표현식을 반환합니다.
-     * @return 연락처 표현식
-     */
-    public String getValue() {
-        return first + "-" + middle + "-" + last;
-    }
 
     /**
      * 연락처 생성자
@@ -45,4 +35,10 @@ public class ContactNumber implements Serializable {
         this.middle = middle;
         this.last = last;
     }
+
+    @Override
+    public String toString() {
+        return first + "-" + middle + "-" + last;
+    }
+
 }

@@ -7,11 +7,11 @@ import com.kalgooksoo.cms.entity.ContactNumber;
 import com.kalgooksoo.cms.entity.Email;
 import com.kalgooksoo.cms.entity.User;
 import com.kalgooksoo.cms.repository.UserRepository;
+import com.kalgooksoo.cms.repository.UserSearchRepository;
 import com.kalgooksoo.cms.search.UserSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,8 @@ import java.util.NoSuchElementException;
 public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
+
+    private final UserSearchRepository userSearchRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -85,8 +87,7 @@ public class DefaultUserService implements UserService {
      */
     @Override
     public User findByUsername(@NonNull String username) {
-        Specification<User> specification = (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("username"), username);
-        return userRepository.findOne(specification).orElseThrow(NoSuchElementException::new);
+        return userRepository.findByUsername(username).orElseThrow(NoSuchElementException::new);
     }
 
     /**
@@ -104,7 +105,7 @@ public class DefaultUserService implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
-        return userRepository.searchAll(search, pageable);
+        return userSearchRepository.searchAll(search, pageable);
     }
 
     /**

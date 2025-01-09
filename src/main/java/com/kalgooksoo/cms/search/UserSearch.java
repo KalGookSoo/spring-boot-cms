@@ -1,12 +1,12 @@
 package com.kalgooksoo.cms.search;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kalgooksoo.cms.entity.ContactNumber;
-import com.kalgooksoo.cms.entity.Email;
 import com.kalgooksoo.core.page.PageVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 /**
  * 계정 검색 조건
@@ -20,23 +20,17 @@ public class UserSearch extends PageVO {
 
     private String name;
 
-    private Email email;
+    private String email;
 
-    private ContactNumber contactNumber;
+    private String contactNumber;
 
-    @JsonIgnore
-    public boolean isEmptyUsername() {
-        return username == null || username.isEmpty();
-    }
-
-    @JsonIgnore
-    public boolean isEmptyName() {
-        return name == null || name.isEmpty();
-    }
-
-    @JsonIgnore
-    public boolean isEmptyContactNumber() {
-        return contactNumber == null || contactNumber.getValue().isEmpty();
+    @Override
+    protected UriComponentsBuilder getUriComponentsBuilder() {
+        return super.getUriComponentsBuilder()
+                .queryParamIfPresent("username", Optional.ofNullable(username))
+                .queryParamIfPresent("name", Optional.ofNullable(name))
+                .queryParamIfPresent("email", Optional.ofNullable(email))
+                .queryParamIfPresent("contactNumber", Optional.ofNullable(contactNumber));
     }
 
 }

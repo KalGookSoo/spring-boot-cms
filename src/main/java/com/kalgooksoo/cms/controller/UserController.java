@@ -5,6 +5,7 @@ import com.kalgooksoo.cms.command.UpdateUserCommand;
 import com.kalgooksoo.cms.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.entity.Authority;
 import com.kalgooksoo.cms.entity.User;
+import com.kalgooksoo.cms.search.UserSearch;
 import com.kalgooksoo.cms.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,11 +48,12 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public String getList(
+            UserSearch search,
             @PageableDefault Pageable pageable,
             Model model
     ) {
         // Query
-        Page<User> page = userService.findAll(pageable);
+        Page<User> page = userService.findAll(search, pageable);
 
         // Model
         model.addAttribute("page", page);

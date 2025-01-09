@@ -3,10 +3,10 @@ package com.kalgooksoo.cms.service;
 import com.kalgooksoo.cms.command.CreateUserCommand;
 import com.kalgooksoo.cms.command.UpdateUserCommand;
 import com.kalgooksoo.cms.entity.User;
+import com.kalgooksoo.cms.repository.DefaultUserRepository;
 import com.kalgooksoo.cms.repository.UserRepository;
+import com.kalgooksoo.cms.repository.UserSearchRepository;
 import com.kalgooksoo.cms.search.UserSearch;
-import com.kalgooksoo.cms.service.DefaultUserService;
-import com.kalgooksoo.cms.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        userService = new DefaultUserService(userRepository, passwordEncoder);
+        UserSearchRepository userSearchRepository = new DefaultUserRepository(entityManager.getEntityManager());
+        userService = new DefaultUserService(userRepository, userSearchRepository, passwordEncoder);
     }
 
     @Test
