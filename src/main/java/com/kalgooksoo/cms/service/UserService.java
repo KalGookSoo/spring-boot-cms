@@ -59,11 +59,11 @@ public interface UserService {
 
     /**
      * 계정 목록 조회
-     * @param search   검색 조건
-     * @param pageable 페이지 정보
+     *
+     * @param search 검색 조건
      * @return 계정 목록
      */
-    Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable);
+    Page<User> findAll(@NonNull UserSearch search);
 
     /**
      * 계정 삭제

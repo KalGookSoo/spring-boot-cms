@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -47,14 +45,15 @@ class UserSearchRepositoryTest {
         userRepository.save(user2);
         userRepository.save(user3);
 
-        Sort sort = Sort.by(Sort.Order.desc("createdDate"));
-        PageRequest pageable = PageRequest.of(0, 10, sort);
-
         UserSearch search = new UserSearch();
         search.setUsername("tester3");
+        search.setPage(0);
+        search.setSize(10);
+        search.setSort("createdDate");
+        search.setSortDirection("desc");
 
         // When
-        Page<User> page = userSearchRepository.searchAll(search, pageable);
+        Page<User> page = userSearchRepository.searchAll(search);
 
         // Then
         List<User> users = page.getContent();
@@ -67,10 +66,15 @@ class UserSearchRepositoryTest {
         // Given
         UserSearch search = new UserSearch();
         search.setUsername("tester3");
+        search.setPage(0);
+        search.setSize(10);
+        search.setSort("createdDate");
+        search.setSortDirection("desc");
         search.setEmail("tester@test.co.kr");
+        search.setContactNumber("01012341234");
 
         // When
-        Page<User> page = userSearchRepository.searchAll(search, PageRequest.of(0, 10));
+        Page<User> page = userSearchRepository.searchAll(search);
 
         // Then
         assertTrue(page.isEmpty());

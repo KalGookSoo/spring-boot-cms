@@ -1,10 +1,10 @@
 package com.kalgooksoo.cms.controller;
 
-import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.command.UpdateUserCommand;
 import com.kalgooksoo.cms.command.UpdateUserPasswordCommand;
 import com.kalgooksoo.cms.entity.Authority;
 import com.kalgooksoo.cms.entity.User;
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.search.UserSearch;
 import com.kalgooksoo.cms.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -41,7 +39,6 @@ public class UserController {
 
     /**
      * 계정 목록 화면을 반환합니다.
-     * @param pageable 페이지네이션 요청 정보
      * @param model    모델
      * @return 계정 목록 화면
      */
@@ -49,11 +46,10 @@ public class UserController {
     @GetMapping("/list")
     public String getList(
             UserSearch search,
-            @PageableDefault Pageable pageable,
             Model model
     ) {
         // Query
-        Page<User> page = userService.findAll(search, pageable);
+        Page<User> page = userService.findAll(search);
 
         // Model
         model.addAttribute("page", page);

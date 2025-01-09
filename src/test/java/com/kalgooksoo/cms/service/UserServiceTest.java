@@ -200,7 +200,7 @@ class UserServiceTest {
         search.setUsername("tester");
 
         // When
-        Page<User> page = userService.findAll(search, pageRequest);
+        Page<User> page = userService.findAll(search);
 
         // Then
         assertFalse(page.isEmpty());
@@ -216,7 +216,7 @@ class UserServiceTest {
         search.setUsername("tester");
 
         // When
-        Page<User> page = userService.findAll(search, pageRequest);
+        Page<User> page = userService.findAll(search);
 
         // Then
         assertTrue(page.isEmpty());

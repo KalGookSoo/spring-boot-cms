@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
 public interface UserSearchRepository {
-    Page<User> searchAll(@NonNull UserSearch search, @NonNull Pageable pageable);
+    Page<User> searchAll(@NonNull UserSearch search);
 }

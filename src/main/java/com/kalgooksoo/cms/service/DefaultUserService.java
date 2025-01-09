@@ -100,12 +100,12 @@ public class DefaultUserService implements UserService {
     }
 
     /**
-     * @see UserService#findAll(UserSearch, Pageable)
+     * @see UserService#findAll(UserSearch)
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<User> findAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
-        return userSearchRepository.searchAll(search, pageable);
+    public Page<User> findAll(@NonNull UserSearch search) {
+        return userSearchRepository.searchAll(search);
     }
 
     /**

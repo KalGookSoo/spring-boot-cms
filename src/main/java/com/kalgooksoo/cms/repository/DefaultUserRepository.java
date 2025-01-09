@@ -22,9 +22,14 @@ public class DefaultUserRepository implements UserSearchRepository {
     private final EntityManager em;
 
     @Override
-    public Page<User> searchAll(@NonNull UserSearch search, @NonNull Pageable pageable) {
+    public Page<User> searchAll(@NonNull UserSearch search) {
+        Pageable pageable = search.pageable();
         String jpql = "select user from User user where 1=1";
         jpql += generateJpql(search);
+
+        if (pageable.getSort().isSorted()) {
+            jpql += " order by " + pageable.getSort().toString().replace(":", "");
+        }
 
         TypedQuery<User> query = em.createQuery(jpql, User.class);
         setParameters(query, search);
