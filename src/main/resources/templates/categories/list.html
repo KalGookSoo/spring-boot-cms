@@ -215,7 +215,7 @@
                 <div class="form-group">
                     <label for="type" th:text="#{entity.category.type}"></label>
                     <select name="type" id="type" class="form-select" >
-                        <option th:each="type, status : ${T(com.kalgooksoo.cms.board.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
+                        <option th:each="type, status : ${T(com.kalgooksoo.cms.entity.CategoryType).values()}" th:value="${type.name}" th:text="${type.description}"></option>
                     </select>
                     <span class="d-block invalid-feedback"></span>
                 </div>
