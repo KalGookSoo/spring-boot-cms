@@ -195,9 +195,10 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("12341234");
         userService.createUser(createUserCommand);
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
         UserSearch search = new UserSearch();
         search.setUsername("tester");
+        search.setPage(0);
+        search.setSize(10);
 
         // When
         Page<User> page = userService.findAll(search);
@@ -211,9 +212,10 @@ class UserServiceTest {
     @DisplayName("페이지네이션 정보와 검색 조건에 기반한 계정 목록을 조회합니다. 계정이 없을 경우 빈 페이지를 반환합니다.")
     void searchShouldReturnEmptyPage() {
         // Given
-        PageRequest pageRequest = PageRequest.of(0, 10);
         UserSearch search = new UserSearch();
         search.setUsername("tester");
+        search.setPage(0);
+        search.setSize(10);
 
         // When
         Page<User> page = userService.findAll(search);
