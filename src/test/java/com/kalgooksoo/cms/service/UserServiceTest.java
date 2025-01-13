@@ -3,7 +3,6 @@ package com.kalgooksoo.cms.service;
 import com.kalgooksoo.cms.command.CreateUserCommand;
 import com.kalgooksoo.cms.command.UpdateUserCommand;
 import com.kalgooksoo.cms.entity.User;
-import com.kalgooksoo.cms.repository.DefaultUserRepository;
 import com.kalgooksoo.cms.repository.UserRepository;
 import com.kalgooksoo.cms.repository.UserSearchRepository;
 import com.kalgooksoo.cms.search.UserSearch;
@@ -47,7 +46,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        UserSearchRepository userSearchRepository = new DefaultUserRepository(entityManager.getEntityManager());
+        UserSearchRepository userSearchRepository = new UserSearchRepository(entityManager.getEntityManager());
         userService = new DefaultUserService(userRepository, userSearchRepository, passwordEncoder);
     }
 

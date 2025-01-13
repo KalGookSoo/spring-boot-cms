@@ -31,7 +31,7 @@ class UserSearchRepositoryTest {
 
     @BeforeEach
     void setup() {
-        userSearchRepository = new DefaultUserRepository(entityManager.getEntityManager());
+        userSearchRepository = new UserSearchRepository(entityManager.getEntityManager());
     }
 
     @Test
@@ -53,7 +53,7 @@ class UserSearchRepositoryTest {
         search.setSortDirection("desc");
 
         // When
-        Page<User> page = userSearchRepository.searchAll(search);
+        Page<User> page = userSearchRepository.search(search);
 
         // Then
         List<User> users = page.getContent();
@@ -74,7 +74,7 @@ class UserSearchRepositoryTest {
         search.setContactNumber("01012341234");
 
         // When
-        Page<User> page = userSearchRepository.searchAll(search);
+        Page<User> page = userSearchRepository.search(search);
 
         // Then
         assertTrue(page.isEmpty());
