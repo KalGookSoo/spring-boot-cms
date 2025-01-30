@@ -1,30 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
-    <aside id="aside" class="p-3 flex-grow-0" th:fragment="aside">
-        <!-- Sidebar content -->
-        <h3>Sidebar</h3>
-        <!-- Add your menu items here -->
-        <ul>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/users/list}" th:text="|#{entity.user} #{label.list}|"></a>
-            </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/authorities/list}" th:text="|#{entity.authority} #{label.list}|"></a>
-            </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/categories/list}" th:text="|#{entity.category} #{label.list}|"></a>
-            </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/menus/list}" th:text="|#{entity.menu} #{label.list}|"></a>
-            </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/swagger-ui/index.html}">swagger-ui</a>
-            </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/v3/api-docs.yaml}">OAS download</a>
-            </li>
-        </ul>
+    <aside id="aside" th:fragment="aside">
+
+        <header id="header">
+            <h1>
+                <a th:href="@{/}">
+                    <img alt="logo" th:src="@{/images/test-logo.png}"/>
+                </a>
+            </h1>
+            <section class="user" sec:authorize="isAuthenticated()">
+                <strong th:text="#{message.welcome(${#authentication.principal.username})}"></strong>
+                <div class="user_mn">
+                    <form class="d-inline-block" th:action="@{/sign-out}" th:method="post">
+                        <button class="btn-link" type="submit">
+                            <img th:src="@{/images/aside/icon_logout.png}" th:alt="#{label.sign.out}"/>
+                            [[#{label.sign.out}]]
+                        </button>
+                    </form>
+                    <a th:href="@{/}">
+                        <img th:src="@{/images/aside/icon_setting.png}" th:alt="|패스워드 변경|"/>
+                        패스워드 변경
+                    </a>
+                </div>
+            </section>
+        </header>
+
+        <section id="left_menu">
+            <ul class="sub1_ul">
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/users/list}" th:text="|#{entity.user} #{label.list}|"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/authorities/list}" th:text="|#{entity.authority} #{label.list}|"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/categories/list}" th:text="|#{entity.category} #{label.list}|"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/menus/list}" th:text="|#{entity.menu} #{label.list}|"></a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/swagger-ui/index.html}">swagger-ui</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="sub_1depth" th:href="@{/v3/api-docs.yaml}">OAS download</a>
+                </li>
+            </ul>
+        </section>
+
     </aside>
 
 </html>

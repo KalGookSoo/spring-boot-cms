@@ -10,8 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/signin.css}">
 
-    <script th:if="${message}" th:inline="javascript">
-        alert([[${message}]]);
+    <script th:if="${message != null}" th:inline="javascript">
+        alert(/*[[${message}]]*/'');
     </script>
 </head>
 <body>

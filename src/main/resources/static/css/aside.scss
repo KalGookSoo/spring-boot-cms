@@ -1,0 +1,190 @@
+$background-color: #2B303A;
+$text-color: #cfcfd1;
+$header-bg: #1f242d;
+$user-bg: #2b303a;
+$user-border: #171b23;
+$user-hover: #fff;
+$link-color: #95989d;
+$site-bg: #363b45;
+$site-border: #20242d;
+$site-color: #d4d4d4;
+$border-color: #373c48;
+$bg-color-sub2: #1f242d;
+$link-hover-bg: #2392d2;
+$link-hover-color: #f5f5f5;
+$hover-color: #2b303a;
+$active-color: #0C111B;
+
+
+#aside {
+  background-color: $background-color;
+  color: $text-color;
+}
+
+#header {
+  background: $header-bg;
+  clear: both;
+  padding: 15px 18px 18px 18px;
+  min-height: 140px;
+
+  h1 {
+    margin: 0;
+    float: none;
+    padding: 0;
+    width: auto;
+
+    a {
+      display: block;
+      margin: 0 auto;
+    }
+
+    img {
+      max-width: 190px;
+      margin: 0;
+    }
+  }
+
+  .user {
+    background: $user-bg;
+    border: 1px solid $user-border;
+    border-radius: 2px;
+    color: $user-hover;
+    padding: 10px;
+    line-height: 18px;
+    margin: 10px 0 0;
+    width: 175px;
+
+    strong {
+      color: $user-hover;
+      font-weight: bold;
+      letter-spacing: -1px;
+    }
+
+    .user_mn {
+      display: block;
+      margin-top: 5px;
+
+      a, button {
+        background: none;
+        border: none;
+        margin-right: 5px;
+        position: relative;
+        font-size: 11px;
+        color: $link-color;
+        letter-spacing: -1px;
+
+        &:hover {
+          color: $user-hover;
+        }
+
+        img {
+          vertical-align: -4px;
+          margin-right: 1px;
+        }
+      }
+    }
+  }
+}
+
+#left_menu {
+  ul {
+    border-bottom: 1px solid $border-color;
+
+    li {
+      a {
+        background: url('../images/aside/icon_open.png') no-repeat right 50%;
+        border-top: 1px solid $border-color;
+        padding: 8px 0 9px 18px;
+        display: block;
+        color: $link-color;
+        text-decoration: none;
+        line-height: 20px;
+
+        &.sub_1depth:hover,
+        &.sub_1depth_on {
+          background: url('../images/aside/icon_close.png') no-repeat right 50%;
+          background-color: $link-hover-bg;
+          color: $link-hover-color;
+          font-weight: bold;
+          text-decoration: none;
+          letter-spacing: -1px;
+        }
+      }
+
+      ul {
+        &.sub2_ul {
+          background-color: $bg-color-sub2;
+          border-top: 1px solid $border-color;
+        }
+
+        li {
+          a {
+            &.sub_2depth {
+              border: none;
+              background: url('../images/aside/icon_menu.png') no-repeat 28px 50%;
+              display: block;
+              padding: 4px 0 4px 45px;
+              line-height: 24px;
+
+              &:hover {
+                background-color: $hover-color;
+                color: #fff;
+              }
+
+              &.sub_2depth_on {
+                background-color: $active-color;
+                color: #fff;
+              }
+            }
+
+            img {
+              display: none;
+            }
+          }
+        }
+
+        background: $bg-color-sub2;
+        border: none;
+      }
+    }
+  }
+}
+
+// 콘텐츠 관리 left menu
+.Btnclose {
+  display: block;
+  float: right;
+  margin-right: 10px;
+}
+
+.SiteCate {
+  margin: 5px 0 0 18px;
+  width: 197px;
+
+  select {
+    color: #666;
+    font-size: 12px;
+    padding: 5px 3px;
+    margin: 3px 0 0 0;
+    letter-spacing: -1px;
+    width: 197px;
+
+    option {
+      color: #666;
+      font-size: 12px;
+      line-height: 22px;
+    }
+  }
+}
+
+.SiteTxt {
+  background: $site-bg;
+  border: 1px solid $site-border;
+  border-radius: 2px;
+  color: $site-color;
+  padding: 10px;
+  margin: 10px 0 10px 16px;
+  text-align: center;
+  letter-spacing: -1px;
+  width: 179px;
+}

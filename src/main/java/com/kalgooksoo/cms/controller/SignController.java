@@ -1,8 +1,8 @@
 package com.kalgooksoo.cms.controller;
 
-import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.command.CreateUserCommand;
 import com.kalgooksoo.cms.command.SignInCommand;
+import com.kalgooksoo.cms.message.CmsMessageSource;
 import com.kalgooksoo.cms.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,8 @@ public class SignController {
             @ModelAttribute("command") SignInCommand command
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication == null || authentication instanceof AnonymousAuthenticationToken ? "sign_in" : "redirect:/";
+        boolean isAuthenticated = authentication == null || authentication instanceof AnonymousAuthenticationToken;
+        return isAuthenticated ? "sign_in" : "redirect:/";
     }
 
     /**

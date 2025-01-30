@@ -12,12 +12,14 @@
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/aside.css}">
+    <link rel="stylesheet" th:href="@{/css/content.css}">
     <link rel="stylesheet" th:href="@{/css/grid.css}">
 
     <!-- JS -->
     <script th:src="@{/js/bootstrap.js}"></script>
     <script th:inline="javascript">
-        const CONTEXT_PATH = /*[[@{/}]]*/'';
+        sessionStorage.setItem("contextPath", /*[[@{/}]]*/'');
     </script>
     <script th:src="@{/js/global.js}"></script>
     <script th:src="@{/js/Grid.js}"></script>
@@ -28,14 +30,12 @@
 </head>
 <body>
 
-    <header th:replace="~{header :: header}"></header>
     <main class="d-flex">
         <aside th:replace="~{aside :: aside}"></aside>
-        <section class="d-flex flex-grow-1">
+        <section class="d-flex flex-grow-1 content_wrap">
             <th:block layout:fragment="content"></th:block>
         </section>
     </main>
-    <footer th:replace="~{footer :: footer}"></footer>
 
 </body>
 </html>

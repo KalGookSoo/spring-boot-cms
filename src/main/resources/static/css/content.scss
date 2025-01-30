@@ -1,0 +1,11 @@
+@charset "UTF-8";
+@import url(global.css);
+
+.content_wrap {
+  background: #fff;
+  border: 1px solid #aab3b3;
+  clear: both;
+  padding: 10px;
+  overflow: auto;
+  min-width: 900px
+}
