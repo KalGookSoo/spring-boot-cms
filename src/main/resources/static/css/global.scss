@@ -1,4 +1,5 @@
-@charset "UTF-8";
+@charset "utf-8";
+
 /* 공통설정 */
 * {
   margin: 0;
@@ -62,22 +63,24 @@ option {
   color: #666;
 }
 
-a:link {
-  color: #444;
-  text-decoration: none;
-  cursor: hand;
-}
-a:visited {
-  color: #444;
-  text-decoration: none;
-}
-a:hover {
-  color: #000;
-  text-decoration: none;
-}
-a:active {
-  color: #000;
-  text-decoration: none;
+a {
+  &:link {
+    color: #444;
+    text-decoration: none;
+    cursor: hand;
+  }
+  &:visited {
+    color: #444;
+    text-decoration: none;
+  }
+  &:hover {
+    color: #000;
+    text-decoration: none;
+  }
+  &:active {
+    color: #000;
+    text-decoration: none;
+  }
 }
 
 address,
@@ -197,7 +200,7 @@ hr,
 
 /* 전체 아이콘 */
 .icon {
-  background-image: url("../images/icon-all.png");
+  background-image: url('../images/icon-all.png');
   background-repeat: no-repeat;
   display: inline-block;
   width: 16px;
@@ -363,5 +366,3 @@ dialog {
 input:out-of-range {
   border: 1px solid red;
 }
-
-/*# sourceMappingURL=global.css.map */

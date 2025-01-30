@@ -17,6 +17,11 @@ $active-color: #0C111B;
 
 
 #aside {
+  width: 240px; /* 왼쪽 메뉴 너비 고정 */
+  height: 100%; /* 세로 꽉 채움 */
+  border-right: 1px solid #ccc; /* 좌우 구분선 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden; /* 가로 스크롤 비활성화 */
   background-color: $background-color;
   color: $text-color;
 }
