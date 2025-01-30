@@ -105,7 +105,7 @@ public class DefaultUserService implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> findAll(@NonNull UserSearch search) {
-        return userSearchRepository.searchAll(search);
+        return userSearchRepository.search(search);
     }
 
     /**
