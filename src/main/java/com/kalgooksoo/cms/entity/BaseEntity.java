@@ -34,6 +34,10 @@ public class BaseEntity implements Serializable {
     @Comment("생성자")
     private String createdBy;
 
+    @Column(length = 45, updatable = false)
+    @Comment("생성 IP")
+    private String createdIp;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Comment("생성일시")
@@ -43,10 +47,17 @@ public class BaseEntity implements Serializable {
     @Comment("수정자")
     private String lastModifiedBy;
 
+    @Column(length = 45, updatable = false)
+    @Comment("생성 IP")
+    private String modifiedIp;
+
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Comment("수정일시")
     private LocalDateTime lastModifiedDate;
+
+    @Version
+    private long version;
 
     @Override
     public boolean equals(Object o) {
