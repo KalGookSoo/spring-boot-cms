@@ -48,8 +48,8 @@ public class BaseEntity implements Serializable {
     private String lastModifiedBy;
 
     @Column(length = 45, updatable = false)
-    @Comment("생성 IP")
-    private String modifiedIp;
+    @Comment("수정 IP")
+    private String lastModifiedIp;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
