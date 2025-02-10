@@ -208,8 +208,4 @@ public class User extends BaseEntity {
         return Optional.ofNullable(contactNumber).orElseGet(ContactNumber::new);
     }
 
-//    @Version
-//    @Setter(PROTECTED)
-//    private String version;
-
 }
