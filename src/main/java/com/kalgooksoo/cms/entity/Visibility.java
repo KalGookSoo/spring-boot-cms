@@ -3,16 +3,16 @@ package com.kalgooksoo.cms.entity;
 import lombok.Getter;
 
 /**
- * 카테고리 타입
+ * 공개여부
  */
 @Getter
-public enum CategoryType {
-    LIST("목록"),
-    CARD("카드");
+public enum Visibility {
+    PUBLIC("공개"),
+    PRIVATE("비공개");
 
     private final String description;
 
-    CategoryType(String description) {
+    Visibility(String description) {
         this.description = description;
     }
 }

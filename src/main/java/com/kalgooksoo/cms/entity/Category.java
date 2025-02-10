@@ -19,6 +19,9 @@ import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
+/**
+ * 카테고리
+ */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(callSuper = true, exclude = {"parent", "children", "articles"})
@@ -31,21 +34,39 @@ import static lombok.AccessLevel.PROTECTED;
 @Comment("카테고리")
 public class Category extends BaseEntity implements Hierarchical<Category> {
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Article> articles = new ArrayList<>();
-
     @Comment("이름")
     private String name;
+
+    @Comment("설명")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Comment("타입")
     private CategoryType type;
+
+    @Enumerated(EnumType.STRING)
+    @Comment("공개여부")
+    private Visibility visibility;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Comment("부모 식별자")
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonBackReference
     private Category parent;
+
+    @JsonBackReference
+    @Comment("사이트 식별자")
+    @ManyToOne
+    @JoinColumn(name = "site_id", referencedColumnName = "id")
+    private Site site;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Article> articles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    @JsonManagedReference
+    private List<Notification> notifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "parent")
     @JsonManagedReference

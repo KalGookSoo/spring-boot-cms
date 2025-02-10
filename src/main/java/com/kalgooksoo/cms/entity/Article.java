@@ -32,7 +32,18 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class Article extends BaseEntity {
 
-    @JsonBackReference
+    @Enumerated(EnumType.STRING)
+    @Comment("공개여부")
+    private Visibility visibility;
+
+    @Comment("제목")
+    private String title;
+
+    @Lob
+    @Comment("본문")
+    private String content;
+
+        @JsonBackReference
     @Comment("카테고리 식별자")
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
@@ -63,13 +74,6 @@ public class Article extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "vote_id")
     )
     private Set<Vote> votes = new LinkedHashSet<>();
-
-    @Comment("제목")
-    private String title;
-
-    @Lob
-    @Comment("본문")
-    private String content;
 
     public static Article create(CreateArticleCommand command) {
         Article article = new Article();

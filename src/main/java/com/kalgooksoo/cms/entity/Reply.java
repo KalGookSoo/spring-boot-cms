@@ -27,6 +27,14 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 public class Reply extends BaseEntity implements Hierarchical<Reply> {
 
+    @Enumerated(EnumType.STRING)
+    @Comment("공개여부")
+    private Visibility visibility;
+
+    @Comment("본문")
+    @Lob
+    private String content;
+
     @JsonBackReference
     @Comment("상위 답글 식별자")
     @ManyToOne
@@ -69,10 +77,6 @@ public class Reply extends BaseEntity implements Hierarchical<Reply> {
             inverseJoinColumns = @JoinColumn(name = "vote_id")
     )
     private Set<Vote> votes = new LinkedHashSet<>();
-
-    @Comment("본문")
-    @Lob
-    private String content;
 
     public static Reply create(String content) {
         Reply reply = new Reply();

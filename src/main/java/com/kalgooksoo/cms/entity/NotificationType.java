@@ -3,16 +3,17 @@ package com.kalgooksoo.cms.entity;
 import lombok.Getter;
 
 /**
- * 카테고리 타입
+ * 알림 타입
  */
 @Getter
-public enum CategoryType {
-    LIST("목록"),
-    CARD("카드");
+public enum NotificationType {
+    TOKTOK("톡톡"),
+    SMS("문자"),
+    EMAIL("이메일");
 
     private final String description;
 
-    CategoryType(String description) {
+    NotificationType(String description) {
         this.description = description;
     }
 }

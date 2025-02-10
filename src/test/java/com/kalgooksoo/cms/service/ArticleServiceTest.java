@@ -59,7 +59,7 @@ class ArticleServiceTest {
     @DisplayName("게시글 생성 테스트")
     void create() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.PUBLIC);
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.LIST);
         Category createdCategory = categoryService.create(createCategoryCommand);
         entityManager.flush();
         CreateArticleCommand command = new CreateArticleCommand(createdCategory.getId());
@@ -88,7 +88,7 @@ class ArticleServiceTest {
     @DisplayName("게시글 삭제 테스트")
     void delete() {
         // Given
-        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.PUBLIC);
+        CreateCategoryCommand createCategoryCommand = new CreateCategoryCommand(null, "카테고리", CategoryType.LIST);
         Category createdCategory = categoryService.create(createCategoryCommand);
         entityManager.flush();
         entityManager.clear();

@@ -1,8 +1,10 @@
 package com.kalgooksoo.cms.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -19,8 +21,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"articles", "replies"})
-@ToString(callSuper = true, exclude = {"articles", "replies"})
+@EqualsAndHashCode(callSuper = true, exclude = {"sites", "articles", "replies"})
+@ToString(callSuper = true, exclude = {"sites", "articles", "replies"})
 
 @Entity
 @Table(name = "tb_attachment")
@@ -28,14 +30,6 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 @DynamicUpdate
 public class Attachment extends BaseEntity {
-
-    @JsonManagedReference
-    @ManyToMany(mappedBy = "attachments")
-    private final Set<Article> articles = new LinkedHashSet<>();
-
-    @JsonManagedReference
-    @ManyToMany(mappedBy = "attachments")
-    private final Set<Reply> replies = new LinkedHashSet<>();
 
     @Comment("원본이름")
     private String originalName;
@@ -51,6 +45,18 @@ public class Attachment extends BaseEntity {
 
     @Comment("크기")
     private long size;
+
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "attachments")
+    private final Set<Site> sites = new LinkedHashSet<>();
+
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "attachments")
+    private final Set<Article> articles = new LinkedHashSet<>();
+
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "attachments")
+    private final Set<Reply> replies = new LinkedHashSet<>();
 
     public static Attachment create(String pathName, MultipartFile multipartFile) {
         Attachment attachment = new Attachment();
