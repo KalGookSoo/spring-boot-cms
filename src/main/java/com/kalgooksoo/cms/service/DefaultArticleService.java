@@ -6,6 +6,7 @@ import com.kalgooksoo.cms.entity.Article;
 import com.kalgooksoo.cms.entity.Attachment;
 import com.kalgooksoo.cms.entity.Category;
 import com.kalgooksoo.cms.repository.ArticleRepository;
+import com.kalgooksoo.cms.repository.ArticleSearchRepository;
 import com.kalgooksoo.cms.repository.CategoryRepository;
 import com.kalgooksoo.cms.search.ArticleSearch;
 import com.kalgooksoo.core.file.FileIOService;
@@ -31,19 +32,23 @@ public class DefaultArticleService implements ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    private final ArticleSearchRepository articleSearchRepository;
+
     public DefaultArticleService(
             @Value("${com.kalgooksoo.cms.filepath}") String filepath,
             CategoryRepository categoryRepository,
-            ArticleRepository articleRepository
+            ArticleRepository articleRepository,
+            ArticleSearchRepository articleSearchRepository
     ) {
         this.filepath = filepath;
         this.categoryRepository = categoryRepository;
         this.articleRepository = articleRepository;
+        this.articleSearchRepository = articleSearchRepository;
     }
 
     @Override
     public Page<Article> findAll(@NonNull ArticleSearch search) {
-        return articleRepository.searchAll(search);
+        return articleSearchRepository.search(search);
     }
 
     @Override

@@ -62,8 +62,8 @@ public class OpenApiFactory {
     private Info apiInfo() {
         Contact contact = new Contact()
                 .name("kimdoyeob")
-                .email("look3915@naver.com")
-                .url("https://github.com/KalGookSoo/springboot-msa");
+                .email("ga.miro3721@gmail.com")
+                .url("https://github.com/KalGookSoo/spring-boot-cms");
 
         License license = new License()
                 .name("Apache 2.0")

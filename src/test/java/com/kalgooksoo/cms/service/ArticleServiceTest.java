@@ -6,6 +6,7 @@ import com.kalgooksoo.cms.entity.Article;
 import com.kalgooksoo.cms.entity.Category;
 import com.kalgooksoo.cms.entity.CategoryType;
 import com.kalgooksoo.cms.repository.ArticleRepository;
+import com.kalgooksoo.cms.repository.ArticleSearchRepository;
 import com.kalgooksoo.cms.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ class ArticleServiceTest {
     @BeforeEach
     void setup(@TempDir Path tempDir) {
         categoryService = new DefaultCategoryService(categoryRepository);
-        articleService = new DefaultArticleService(tempDir.toString(), categoryRepository, articleRepository);
+        articleService = new DefaultArticleService(tempDir.toString(), categoryRepository, articleRepository, new ArticleSearchRepository(entityManager.getEntityManager()));
     }
 
     @Test
