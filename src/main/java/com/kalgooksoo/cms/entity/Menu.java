@@ -23,8 +23,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"parent", "children"})
-@ToString(callSuper = true, exclude = {"parent", "children"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_menu")
@@ -42,16 +42,22 @@ public class Menu extends BaseEntity implements Hierarchical<Menu> {
     @Comment("순번")
     private Integer sequence;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Comment("부모 식별자")
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonBackReference
     private Menu parent;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "parent")
     @JsonManagedReference
     private List<Menu> children = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

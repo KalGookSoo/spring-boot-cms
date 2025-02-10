@@ -2,16 +2,14 @@ package com.kalgooksoo.cms.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.kalgooksoo.cms.command.AuthoritySaveCommand;
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UuidGenerator;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -21,21 +19,17 @@ import static lombok.AccessLevel.PROTECTED;
  * 권한
  */
 @Getter
+@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_authority")
+@Comment("권한")
 @DynamicInsert
 @DynamicUpdate
-@Comment("권한")
-public class Authority implements Serializable {
-
-    @Id
-    @UuidGenerator
-    @Column(length = 36, nullable = false, updatable = false)
-    @Comment("식별자")
-    private String id;
+public class Authority extends BaseEntity {
 
     @Comment("이름")
     private String name;
@@ -43,10 +37,14 @@ public class Authority implements Serializable {
     @Comment("별칭")
     private String alias;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<User> users = new LinkedHashSet<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @ManyToMany(mappedBy = "authorities")
     private final Set<Menu> menus = new LinkedHashSet<>();

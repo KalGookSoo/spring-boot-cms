@@ -19,11 +19,14 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
+/**
+ * 게시글
+ */
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"category", "replies", "views", "attachments", "votes"})
-@ToString(callSuper = true, exclude = {"category", "replies", "views", "attachments", "votes"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_article")
@@ -32,9 +35,14 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class Article extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)
     @Comment("공개여부")
-    private Visibility visibility;
+    private boolean isPublic;
+
+    @Comment("고정여부")
+    private boolean isFixed;
+
+    @Comment("고정순서")
+    private Integer fixedOrder;
 
     @Comment("제목")
     private String title;
@@ -43,20 +51,36 @@ public class Article extends BaseEntity {
     @Comment("본문")
     private String content;
 
-        @JsonBackReference
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "thumbnail_id", referencedColumnName = "id")
+    @Comment("썸네일")
+    private Attachment thumbnail;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
     @Comment("카테고리 식별자")
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Reply> replies = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "article", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<View> views = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -66,6 +90,8 @@ public class Article extends BaseEntity {
     )
     private Set<Attachment> attachments = new LinkedHashSet<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

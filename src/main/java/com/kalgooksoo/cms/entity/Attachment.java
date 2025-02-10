@@ -1,8 +1,10 @@
 package com.kalgooksoo.cms.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -19,8 +21,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"sites", "articles", "replies"})
-@ToString(callSuper = true, exclude = {"sites", "articles", "replies"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_attachment")
@@ -44,14 +46,32 @@ public class Attachment extends BaseEntity {
     @Comment("크기")
     private long size;
 
-    @JsonManagedReference
-    @ManyToMany(mappedBy = "attachments")
-    private final Set<Site> sites = new LinkedHashSet<>();
-
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(mappedBy = "attachments")
     private final Set<Article> articles = new LinkedHashSet<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    @OneToOne(mappedBy = "profileImage")
+    private Site siteWithProfileImage;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    @OneToOne(mappedBy = "backgroundImage")
+    private Site siteWithBackgroundImage;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    @OneToOne(mappedBy = "thumbnail")
+    private Article articleWithThumbnail;
+
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(mappedBy = "attachments")
     private final Set<Reply> replies = new LinkedHashSet<>();

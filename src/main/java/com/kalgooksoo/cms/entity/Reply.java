@@ -18,8 +18,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"article"})
-@ToString(callSuper = true, exclude = {"article"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_reply")
@@ -27,36 +27,37 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicInsert
 public class Reply extends BaseEntity implements Hierarchical<Reply> {
 
-    @Enumerated(EnumType.STRING)
     @Comment("공개여부")
-    private Visibility visibility;
+    private boolean isPublic;
 
     @Comment("본문")
     @Lob
     private String content;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @Comment("상위 답글 식별자")
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private Reply parent;
 
-    /**
-     * 하위 답글
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Reply> children = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @Comment("게시글 식별자")
     @ManyToOne
     @JoinColumn(name = "article_id", referencedColumnName = "id")
     private Article article;
 
-    /**
-     * 첨부파일
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -66,9 +67,8 @@ public class Reply extends BaseEntity implements Hierarchical<Reply> {
     )
     private Set<Attachment> attachments = new LinkedHashSet<>();
 
-    /**
-     * 투표
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

@@ -3,9 +3,7 @@ package com.kalgooksoo.cms.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -25,23 +23,21 @@ import java.util.Set;
 
 import static lombok.AccessLevel.PROTECTED;
 
+/**
+ * 계정
+ */
 @Getter
+@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_user")
-@EntityListeners(AuditingEntityListener.class)
+@Comment("계정")
 @DynamicInsert
 @DynamicUpdate
-@Comment("계정")
-public class User implements Serializable {
-
-    @Id
-    @UuidGenerator
-    @Column(length = 36, nullable = false, updatable = false)
-    @Comment("식별자")
-    private String id;
+public class User extends BaseEntity {
 
     @Column(unique = true, nullable = false)
     @Comment("계정명")
@@ -71,6 +67,8 @@ public class User implements Serializable {
     @Comment("연락처")
     private ContactNumber contactNumber;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

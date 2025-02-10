@@ -17,8 +17,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"article"})
-@ToString(callSuper = true, exclude = {"article"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_view")
@@ -26,9 +26,8 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class View extends BaseEntity {
 
-    /**
-     * 게시글
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "article_id", referencedColumnName = "id")

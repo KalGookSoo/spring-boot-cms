@@ -2,9 +2,9 @@ package com.kalgooksoo.cms.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.kalgooksoo.core.hierarchy.Hierarchical;
 import com.kalgooksoo.cms.command.CreateCategoryCommand;
 import com.kalgooksoo.cms.command.UpdateCategoryCommand;
+import com.kalgooksoo.core.hierarchy.Hierarchical;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,8 +24,8 @@ import static lombok.AccessLevel.PROTECTED;
  */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"parent", "children", "articles"})
-@ToString(callSuper = true, exclude = {"parent", "children", "articles"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_category")
@@ -44,30 +44,39 @@ public class Category extends BaseEntity implements Hierarchical<Category> {
     @Comment("타입")
     private CategoryType type;
 
-    @Enumerated(EnumType.STRING)
     @Comment("공개여부")
-    private Visibility visibility;
+    private boolean isPublic;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Comment("부모 식별자")
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonBackReference
     private Category parent;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonBackReference
     @Comment("사이트 식별자")
     @ManyToOne
     @JoinColumn(name = "site_id", referencedColumnName = "id")
     private Site site;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Article> articles = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "category")
     @JsonManagedReference
     private List<Notification> notifications = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "parent")
     @JsonManagedReference
     private List<Category> children = new ArrayList<>();

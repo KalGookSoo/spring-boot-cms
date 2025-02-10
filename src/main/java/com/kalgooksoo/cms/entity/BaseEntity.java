@@ -57,6 +57,7 @@ public class BaseEntity implements Serializable {
     private LocalDateTime lastModifiedDate;
 
     @Version
+    @Comment("버전")
     private long version;
 
     @Override

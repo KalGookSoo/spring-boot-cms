@@ -2,6 +2,7 @@ package com.kalgooksoo.cms.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -16,8 +17,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = true, exclude = {"articles", "replies"})
-@ToString(callSuper = true, exclude = {"articles", "replies"})
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 
 @Entity
 @Table(name = "tb_vote")
@@ -25,22 +26,18 @@ import static lombok.AccessLevel.PROTECTED;
 @DynamicUpdate
 public class Vote extends BaseEntity {
 
-    /**
-     * 게시글
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany(mappedBy = "votes")
     private final Set<Article> articles = new LinkedHashSet<>();
 
-    /**
-     * 답글
-     */
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany(mappedBy = "votes")
     private final Set<Reply> replies = new LinkedHashSet<>();
 
-    /**
-     * 타입
-     */
     @Enumerated(EnumType.STRING)
+    @Comment("타입")
     private VoteType type;
 
 }
