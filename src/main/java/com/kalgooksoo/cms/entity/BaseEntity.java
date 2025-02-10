@@ -58,7 +58,7 @@ public class BaseEntity implements Serializable {
 
     @Version
     @Comment("버전")
-    private long version;
+    private int version;
 
     @Override
     public boolean equals(Object o) {
